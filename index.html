@@ -268,6 +268,11 @@
 
 <!-- ===================== ПАНЕЛЬ ===================== -->
 <section class="tabpane active" id="tab-dash">
+  <div id="installTip" class="card" style="display:none;">
+    <h2 style="margin-bottom:8px;">Установи приложение на телефон</h2>
+    <div class="sub-short" id="installSteps"></div>
+    <div class="row" style="margin-top:12px;"><button class="btn small" id="installOk">Понятно, скрыть</button></div>
+  </div>
   <div id="dashAlerts"></div>
 
   <div class="spend-hero">
@@ -1181,7 +1186,7 @@ let lastDaily=0;  // сколько можно тратить в день дал
 let LASTM={};      // главные цифры панели после последнего расчёта (для подсказок «что изменилось»)
 let lastRemain=0; // сколько осталось по норме на сегодня — для предупреждения о перерасходе
 function renderDash(c){
-  $('#todayLbl').textContent='сегодня: '+NOW.getDate()+' '+MONTHS_GEN[NOW.getMonth()]+' '+NOW.getFullYear()+' · v3.3';
+  $('#todayLbl').textContent='сегодня: '+NOW.getDate()+' '+MONTHS_GEN[NOW.getMonth()]+' '+NOW.getFullYear()+' · v3.4';
   // поля балансов: не трогаем то, которое сейчас редактируется
   const setVal=(sel,v)=>{const el=$(sel);const editing=document.activeElement===el&&el.closest('.tabpane').classList.contains('active');if(!editing)el.value=Math.round(v);};
   setVal('#inCash',c.cash);setVal('#inCard',c.card);setVal('#inDebt',c.debt);
@@ -1282,7 +1287,7 @@ function renderDash(c){
   }
   if(!LOAD_FAILED&&state.tx.length>=10){
     const since=state.lastBackup?-daysUntil(state.lastBackup):null;
-    if(since===null||since>=7)alerts.push(['warn',`Бэкап ${since===null?'ещё ни разу не делался':'был '+since+' дн. назад'}. Записи хранятся только в этом браузере — если его почистить или потерять телефон, они пропадут. Нажми «Бэкап» и сохрани файл в «Файлы» или облако.`]);
+    if(since===null||since>=14)alerts.push(['info',`Сохрани копию записей — на случай, если телефон потеряется. ${since===null?'Копии ещё нет':'Последняя — '+since+' дн. назад'}. <button class="btn small primary" data-backup="1" style="margin-left:4px;">Сохранить копию</button>`]);
   }
   if(LOAD_FAILED)alerts.unshift(['danger','Сохранённые данные не удалось прочитать. Я их НЕ трогаю и ничего не сохраняю, пока не разберёмся: нажми «Бэкап» — он скачает то, что лежит в браузере, — и пришли файл.']);
   else{
@@ -1380,7 +1385,7 @@ function renderDash(c){
     dsSub.innerHTML=`на предстоящие платежи и траты до конца ${curMonthGen} не хватает ${fmt(-longFree)}. Посмотри «Деньги: сейчас» — там видно, куда уходят деньги.`;
   }else{
     headDaily=bind.v;
-    const SHORT={plan:`по плану · ${untilTxt}`,money:`по деньгам · до конца ${curMonthGen}`,gap:`ниже обычного: впереди платежи · ${bind.until}`};
+    const SHORT={plan:`по плану · ${untilTxt}`,money:`по деньгам · до конца ${curMonthGen}`,gap:cp.safeAt>=cp.days-1?`по деньгам · до конца ${curMonthGen}`:`ниже обычного: впереди платежи · ${bind.until}`};
     showToday(bind.v,whyTxt[bind.k]+how,bind.n,bind.until,SHORT[bind.k]);
   }
   // деньги: сейчас физически + что станет к концу ноября
@@ -2331,6 +2336,7 @@ $('#ccGrace').addEventListener('input',e=>{state.cc.grace=Math.max(0,Math.round(
 $('#ccRate').addEventListener('input',e=>{state.cc.rate=Math.max(0,num(e.target.value));setupChanged();});
 
 /* ================= бэкап / сброс ================= */
+document.addEventListener('click',e=>{if(e.target.closest('[data-backup]'))$('#btnExport').click();});
 $('#btnExport').addEventListener('click',async()=>{
   const text=LOAD_FAILED?(localStorage.getItem(LS)||''):JSON.stringify(state,null,2);
   const name='finance-backup-'+TODAY_ISO+'.json';
@@ -2384,6 +2390,19 @@ function init(){
   document.querySelectorAll('.tabpane').forEach(p=>p.classList.toggle('active',p.id===(state.onboarded?'tab-dash':'tab-setup')));
 }
 function fitNav(){}
+/* подсказка установки: показываем, только если приложение открыто во вкладке браузера на телефоне */
+(function(){
+  const standalone=window.navigator.standalone===true||(window.matchMedia&&matchMedia('(display-mode: standalone)').matches);
+  const ios=/iPhone|iPad|iPod/i.test(navigator.userAgent),android=/Android/i.test(navigator.userAgent);
+  let hidden=false;try{hidden=localStorage.getItem('fin-install-tip')==='hidden';}catch(e){}
+  if(standalone||hidden||!(ios||android)||location.protocol!=='https:')return;
+  const box=document.getElementById('installTip');if(!box)return;
+  document.getElementById('installSteps').innerHTML=ios
+    ?'1. Нажми кнопку «Поделиться» внизу Safari (квадрат со стрелкой вверх)<br>2. Пролистай и выбери «На экран „Домой“» → «Добавить»<br>3. Дальше открывай только с этой иконки — так записи надёжно хранятся на телефоне'
+    :'1. Открой меню браузера (три точки)<br>2. Выбери «Установить приложение» или «Добавить на главный экран»<br>3. Дальше открывай только с этой иконки';
+  box.style.display='';
+  document.getElementById('installOk').addEventListener('click',()=>{box.style.display='none';try{localStorage.setItem('fin-install-tip','hidden');}catch(e){}});
+})();
 // просим браузер не стирать данные и включаем работу без интернета (когда открыто с сайта, а не из файла)
 try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();}catch(e){}
 if('serviceWorker' in navigator&&location.protocol==='https:'){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});}
@@ -2396,7 +2415,7 @@ function saveFolds(){try{localStorage.setItem('fin-folds-v1',JSON.stringify(FOLD
 function setupFolds(){
   FOLDS=loadFolds();
   document.querySelectorAll('.tabpane .card').forEach(card=>{
-    const h=card.querySelector(':scope>h2');if(!h||card.classList.contains('stat')||card.classList.contains('foldable'))return;
+    const h=card.querySelector(':scope>h2');if(!h||card.id==='installTip'||card.classList.contains('stat')||card.classList.contains('foldable'))return;
     card.classList.add('foldable');
     h.insertAdjacentHTML('afterbegin','<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>');
     h.insertAdjacentHTML('beforeend','<span class="h2-sum"></span>');
