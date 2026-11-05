@@ -1,0 +1,21 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Moi Finansy//RU
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:finance-evening-reminder@elliphante145-svg.github.io
+DTSTAMP:20261105T200000Z
+DTSTART:20261106T210000
+DTEND:20261106T210500
+RRULE:FREQ=DAILY
+SUMMARY:Внеси траты за сегодня — «Финансы»
+DESCRIPTION:Открой приложение «Финансы» и добавь операции за день.
+URL:https://elliphante145-svg.github.io/finance/
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Внеси траты за сегодня
+TRIGGER:PT0M
+END:VALARM
+END:VEVENT
+END:VCALENDAR

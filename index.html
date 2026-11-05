@@ -35,6 +35,9 @@
   }
 
   *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;text-size-adjust:100%;}
+  button,.btn,.tab,select,label,summary,a{touch-action:manipulation;}
+  img,svg{max-width:100%;}
   body{margin:0;font-family:var(--sans);color:var(--ink);font-size:15px;line-height:1.45;background:var(--bg);
     font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased;}
   b,strong{font-weight:600;}
@@ -122,6 +125,7 @@
   .btn.primary{background:var(--orange);color:#0a1430;border-color:var(--orange);font-weight:600;}
   .btn.primary:hover{background:#ff8a68;}
   .btn.small{padding:4px 10px;font-size:13px;border-radius:6px;}
+  a.btn{text-decoration:none;display:inline-flex;align-items:center;justify-content:center;}
   .btn.danger-text{color:var(--red);}
   .btn.ok-btn{color:var(--green);}
   .btn:focus-visible,.tab:focus-visible{outline:1px solid var(--gold);outline-offset:2px;}
@@ -242,6 +246,46 @@
   main{padding-bottom:calc(64px + env(safe-area-inset-bottom));}
   .toast-wrap{top:calc(16px + env(safe-area-inset-top));}
   @media(min-width:900px){ .side-head{padding-top:env(safe-area-inset-top);} aside.side{padding-top:calc(20px + env(safe-area-inset-top));} }
+  /* телефон: поля не меньше 16px — иначе iPhone приближает экран при вводе; кнопки крупнее под палец */
+  @media(max-width:900px){
+    input[type=text],input[type=number],input[type=date],select,textarea{font-size:16px !important;min-height:40px;}
+    .big-input{font-size:22px !important;}
+    .btn{min-height:40px;}
+    .btn.small{min-height:36px;padding:6px 12px;font-size:14px;}
+    .del{min-width:36px;min-height:36px;font-size:16px;}
+    .row>input[type=text]{min-width:0;}
+    .field{min-width:0;}
+    .field select,.field input{max-width:100%;}
+    main{padding-left:12px;padding-right:12px;}
+    .card{padding:16px;}
+    .toast-wrap{left:12px;right:12px;max-width:none;}
+    table{font-size:13px;}
+  }
+  /* журнал на телефоне: сначала сумма и чем платил, кнопка во всю ширину */
+  @media(max-width:600px){
+    #txForm{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+    #txForm .field{min-width:0 !important;}
+    #txForm .field input,#txForm .field select{width:100% !important;}
+    #fAmt{order:1;} #fMethod{order:2;} #txCatField{order:3;} #fType{order:4;} #txOneField,#txDebtField{order:5;grid-column:1/-1;}
+    #fDate{order:6;} #fNote{order:7;} #fAdd{order:8;grid-column:1/-1;} #fAdd label{display:none;} #fAdd .btn{width:100%;min-height:48px;font-size:16px;}
+  }
+  /* обучение */
+  #tour{position:fixed;z-index:70;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));max-width:440px;margin-left:auto;
+    background:var(--raised);border:1px solid var(--line2);border-radius:14px;padding:16px;box-shadow:0 12px 32px rgba(0,0,0,.5);animation:enter .3s var(--ease);}
+  #tour .t-top{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+  #tour .t-dots{display:flex;gap:4px;flex:1;}
+  #tour .t-dots i{width:18px;height:4px;border-radius:2px;background:var(--line2);}
+  #tour .t-dots i.on{background:var(--orange);}
+  #tour .t-x{border:0;background:none;color:var(--muted);font-size:13px;cursor:pointer;padding:6px;}
+  #tour h3{font-size:16px;color:var(--ink);margin:0 0 6px;font-weight:600;}
+  #tour .t-text{font-size:14px;color:var(--ink2);line-height:1.5;}
+  #tour .t-need{font-size:13px;margin-top:8px;display:flex;align-items:center;gap:8px;color:var(--muted);}
+  #tour .t-need.ok{color:var(--green);}
+  #tour .t-btns{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
+  #tour .t-btns .grow{flex:1;}
+  #tour .btn[disabled]{opacity:.45;cursor:not-allowed;}
+  .tour-focus{outline:2px solid var(--orange) !important;outline-offset:4px;border-radius:12px;scroll-margin-top:96px;}
+  body.touring main{padding-bottom:300px;}
   .catbar-row .prev{position:absolute;top:0;bottom:0;border-left:2px solid var(--muted);}
 </style>
 </head>
@@ -367,10 +411,18 @@
   <div class="card" id="howCard">
     <h2>Как пользоваться</h2>
     <ol class="howto">
-      <li>Раз заполни <b>Доходы − расходы</b> (зарплаты с датами выплат, кредиты, кредитка, долги, разовые траты) и настрой <b>План месяца</b>.</li>
-      <li>Каждый день заноси траты и поступления в <b>Журнал</b>. Начисления зарплаты появляются там сами — если пришло меньше, запись можно поправить (удалить и добавить свою).</li>
-      <li>Верхний блок всегда показывает твои возможности на сегодня. Если потратил больше дневного лимита — лимит на остальные дни станет меньше, всё пересчитается.</li>
+      <li><b>Доходы − расходы</b> — один раз: зарплаты (числа и суммы), кредиты, кредитка, долги, крупные разовые траты.</li>
+      <li><b>Панель</b> — впиши, сколько сейчас наличных и на карте.</li>
+      <li><b>План месяца</b> — сколько в месяц уходит на жизнь и сколько откладывать.</li>
+      <li><b>Журнал</b> — каждый день вноси траты. Зарплата появится сама. Положил наличные на карту — тип «Перевод».</li>
+      <li>Оранжевая цифра — сколько можно потратить сегодня, чтобы хватило на всё. «Подробнее» — откуда она.</li>
+      <li>Раз в две недели нажми «Сохранить копию» — на случай потери телефона.</li>
     </ol>
+    <div class="row" style="margin-top:12px;">
+      <button class="btn small" id="tourRestart">Пройти обучение заново</button>
+      <a class="btn small" href="reminder.ics" target="_blank" rel="noopener" id="remindLink">Напоминание в 21:00</a>
+    </div>
+    <div class="footer-note">Напоминание добавится в календарь телефона и будет каждый вечер в 21:00. Если не открылось: «Напоминания» → новое «Внести траты» → время 21:00 → повтор «Ежедневно».</div>
   </div>
 </section>
 
@@ -429,10 +481,10 @@
 <section class="tabpane" id="tab-tx">
   <div class="card">
     <h2>Новая запись</h2>
-    <div class="row">
-      <div class="field"><label>Дата</label><input type="date" id="txDate"></div>
-      <div class="field"><label>Сумма, ₽</label><input type="number" id="txAmount" inputmode="numeric" style="width:120px;" min="1" step="50"></div>
-      <div class="field"><label>Тип</label>
+    <div class="row" id="txForm">
+      <div class="field" id="fDate"><label>Дата</label><input type="date" id="txDate"></div>
+      <div class="field" id="fAmt"><label>Сумма, ₽</label><input type="number" id="txAmount" inputmode="numeric" style="width:120px;" min="1" step="50"></div>
+      <div class="field" id="fType"><label>Тип</label>
         <select id="txType">
           <option value="exp">Трата</option>
           <option value="inc">Доход / вернули долг</option>
@@ -446,15 +498,15 @@
       </div>
       <div class="field" id="txDebtField" style="display:none;"><label>Какой долг</label><select id="txDebt"></select></div>
       <div class="field" id="txOneField" style="display:none;"><label>Это разовая трата из плана?</label><select id="txOne"></select></div>
-      <div class="field"><label id="txMethodLbl">Чем оплачено / куда пришло</label>
+      <div class="field" id="fMethod"><label id="txMethodLbl">Кошелёк</label>
         <select id="txMethod">
           <option value="cash">Наличные</option>
           <option value="card">Карта</option>
           <option value="credit" id="txMethodCredit">Кредитка</option>
         </select>
       </div>
-      <div class="field" style="flex:1;min-width:160px;"><label>Примечание</label><input type="text" id="txNote" placeholder="необязательно"></div>
-      <div class="field"><label>&nbsp;</label><button class="btn primary" id="txAdd">Добавить</button></div>
+      <div class="field" id="fNote" style="flex:1;min-width:160px;"><label>Примечание</label><input type="text" id="txNote" placeholder="необязательно"></div>
+      <div class="field" id="fAdd"><label>&nbsp;</label><button class="btn primary" id="txAdd">Добавить</button></div>
     </div>
     <div class="footer-note">Начисления зарплаты попадают сюда автоматически в день выплаты. Платежи по кредитам отмечаются кнопкой «Внёс» на панели.</div>
   </div>
@@ -509,19 +561,19 @@
 
 <!-- ===================== ДОХОДЫ - РАСХОДЫ ===================== -->
 <section class="tabpane" id="tab-setup">
-  <div class="card">
+  <div class="card" id="setIncCard">
     <h2>Доходы (зарплаты, подработки)</h2>
     <div id="incomesForm"></div>
     <button class="btn small" id="addIncome">+ Добавить источник дохода</button>
     <div class="footer-note">Укажи, какого числа обычно приходят аванс и зарплата, сколько и куда. Система сама запишет начисление в журнал в день выплаты (если пришло меньше — удали запись и добавь свою). Если в середине месяца узнал, что будет больше или меньше — просто поправь суммы здесь.</div>
   </div>
-  <div class="card">
+  <div class="card" id="setCredCard">
     <h2>Кредиты</h2>
     <div id="creditsForm"></div>
     <button class="btn small" id="addCredit">+ Добавить кредит</button>
     <div class="footer-note">У каждого кредита — платёж в месяц и день, до которого нужно внести деньги (иначе просрочка). За 4 дня до даты платежа напомню на панели, а после внесения — отмечу «внесён».</div>
   </div>
-  <div class="card">
+  <div class="card" id="setCcCard">
     <h2>Кредитка</h2>
     <div class="row">
       <div class="field"><label>Лимит, ₽ (0 — если кредитки нет)</label><input type="number" id="ccLimit" style="width:140px;"></div>
@@ -531,13 +583,13 @@
     </div>
     <div class="hint">Долг правится на Панели. Дата — до какого числа банк просит внести деньги, чтобы не было процентов.</div>
   </div>
-  <div class="card">
+  <div class="card" id="setDebtCard">
     <h2>Долги</h2>
     <div id="debtsForm"></div>
     <button class="btn small" id="addDebt">+ Добавить долг</button>
     <div class="footer-note">Если есть долг — внеси его, и он учтётся в модели: покажет, сколько откладывать и когда закроешь. Дедлайн не обязателен: без него долг гасится ползунком в темпе, который сам выберешь.</div>
   </div>
-  <div class="card">
+  <div class="card" id="setOneCard">
     <h2>Разовые траты и события</h2>
     <div id="oneTimeForm"></div>
     <button class="btn small" id="addOneTime">+ Добавить разовую трату</button>
@@ -693,6 +745,7 @@ let state=load()||defaults();
   if(state.cc.rate===undefined)state.cc.rate=0;
   if(state.goal===undefined)state.goal=0;
   if(!Array.isArray(state.pots))state.pots=[];
+  if(state.tourDone===undefined)state.tourDone=!!(state.onboarded||state.tx.length||state.incomes.length);
   // разовые траты: с какого месяца начали копить (для равных взносов на дальние траты)
   state.oneTime.forEach(o=>{if(!o.start)o.start=TODAY_YM;});
   if(!Array.isArray(state.declinedCats))state.declinedCats=[];
@@ -1186,7 +1239,7 @@ let lastDaily=0;  // сколько можно тратить в день дал
 let LASTM={};      // главные цифры панели после последнего расчёта (для подсказок «что изменилось»)
 let lastRemain=0; // сколько осталось по норме на сегодня — для предупреждения о перерасходе
 function renderDash(c){
-  $('#todayLbl').textContent='сегодня: '+NOW.getDate()+' '+MONTHS_GEN[NOW.getMonth()]+' '+NOW.getFullYear()+' · v3.4';
+  $('#todayLbl').textContent='сегодня: '+NOW.getDate()+' '+MONTHS_GEN[NOW.getMonth()]+' '+NOW.getFullYear()+' · v3.5';
   // поля балансов: не трогаем то, которое сейчас редактируется
   const setVal=(sel,v)=>{const el=$(sel);const editing=document.activeElement===el&&el.closest('.tabpane').classList.contains('active');if(!editing)el.value=Math.round(v);};
   setVal('#inCash',c.cash);setVal('#inCard',c.card);setVal('#inDebt',c.debt);
@@ -1221,7 +1274,11 @@ function renderDash(c){
 
   /* баннеры */
   const alerts=[];
-  if(!state.onboarded){
+  if(state.onboarded&&NOW.getHours()>=20){
+    const todayOps=state.tx.filter(t=>t.date===TODAY_ISO&&!t.srcKey).length;
+    if(!todayOps)alerts.push(['info','Вечер — внеси траты за сегодня, пока помнишь. Если трат не было — просто пропусти. <button class="btn small primary" data-goto="tx" style="margin-left:4px;">Открыть журнал</button>','show']);
+  }
+  if(!state.onboarded&&state.tourDone){
     alerts.push(['info','Заполни свои цифры на вкладке <b>Доходы − расходы</b> — зарплаты с датами выплат, кредиты, кредитку, долги и разовые траты. Потом настрой <b>План месяца</b>. Дальше всё будет считаться само.']);
   }
   // кредиты: напоминание за 4 дня / просрочка
@@ -1304,7 +1361,7 @@ function renderDash(c){
     alerts.unshift(['danger',`<b>Кассовый разрыв ${fmtDateShort(day)}:</b> в сумме денег хватает, но не в нужный день — будет ${fmt(cp.low)}. Платежи: ${outs.join(', ')}${nextIn?`, а следующее поступление только ${fmtDateShort(nextIn.date)}`:''}. Подробнее — в блоке «Деньги по дням».`]);
   }
   {
-    const urgent=alerts.filter(a=>a[0]==='danger').slice(0,2),rest=alerts.filter(a=>!urgent.includes(a));
+    const urgent=alerts.filter(a=>a[0]==='danger'||a[2]==='show').slice(0,3),rest=alerts.filter(a=>!urgent.includes(a));
     const plain=h=>h.replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim();
     const col={warn:'var(--amber)',danger:'var(--red)',ok:'var(--green)',info:'var(--blue)'};
     let html=urgent.map(([t,h])=>`<div class="banner ${t}">${h}</div>`).join('');
@@ -1860,7 +1917,7 @@ function rebuildCats(){
 }
 function rebuildMethods(){
   const ty=$('#txType').value,sel=$('#txMethod'),prev=sel.value;
-  $('#txMethodLbl').textContent=ty==='move'?'Куда перевожу':'Чем оплачено / куда пришло';
+  $('#txMethodLbl').textContent=ty==='move'?'Куда перевожу':'Кошелёк';
   const opts=ty==='move'?[['cash','→ положил наличные на карту'],['card','→ снял с карты наличные']]:[['cash','Наличные'],['card','Карта']];
   if(ty==='exp')opts.push(['credit','Кредитка']); // доход/взнос/возврат долга на кредитку не бывает
   sel.innerHTML=opts.map(([v,l])=>`<option value="${v}" ${v===prev?'selected':''}>${l}</option>`).join('');
@@ -2196,6 +2253,7 @@ function trackChange(){
   clearTimeout(chgTimer);
   chgTimer=setTimeout(()=>{
     const a=chgBase||{},b={...LASTM};chgBase=null;
+    if(!state.tourDone)return; // во время обучения не отвлекаем всплывашками
     const gen=MONTHS_GEN[+NEXT_YM.split('-')[1]-1];
     const diff=(x,y)=>Math.abs(Math.round(y)-Math.round(x))>=1;
     const sg=v=>(v>=0?'+':'')+fmtN(v);
@@ -2336,7 +2394,7 @@ $('#ccGrace').addEventListener('input',e=>{state.cc.grace=Math.max(0,Math.round(
 $('#ccRate').addEventListener('input',e=>{state.cc.rate=Math.max(0,num(e.target.value));setupChanged();});
 
 /* ================= бэкап / сброс ================= */
-document.addEventListener('click',e=>{if(e.target.closest('[data-backup]'))$('#btnExport').click();});
+document.addEventListener('click',e=>{if(e.target.closest('[data-backup]'))$('#btnExport').click();const g=e.target.closest('[data-goto]');if(g)switchTab(g.dataset.goto);});
 $('#btnExport').addEventListener('click',async()=>{
   const text=LOAD_FAILED?(localStorage.getItem(LS)||''):JSON.stringify(state,null,2);
   const name='finance-backup-'+TODAY_ISO+'.json';
@@ -2388,8 +2446,57 @@ function init(){
   renderComputed(true);
   renderNav(state.onboarded?'dash':'setup');
   document.querySelectorAll('.tabpane').forEach(p=>p.classList.toggle('active',p.id===(state.onboarded?'tab-dash':'tab-setup')));
+  if(tourActive())setTimeout(tourShow,300);
 }
 function fitNav(){}
+/* ===== пошаговое обучение при первом запуске: переключает вкладки и ждёт, пока человек заполнит ===== */
+const TOUR=[
+  {title:'Привет! Настроим за 3 минуты',text:'Пройдём 5 коротких шагов: доходы → платежи → деньги сейчас → план трат → журнал. Дальше приложение само будет считать, сколько можно тратить в день, чтобы хватило до зарплаты.',next:'Начать'},
+  {tab:'setup',target:'#setIncCard',title:'Доходы',text:'Нажми «+ Добавить источник дохода». Впиши название (например «Работа»), число месяца и сумму каждой выплаты. Аванс и зарплата — две строки («+ выплату»).',done:()=>state.incomes.some(i=>i.pays.some(p=>num(p.amount)>0)),need:'Добавь хотя бы одну выплату с суммой'},
+  {tab:'setup',target:'#setCredCard',title:'Кредиты, кредитка, долги',text:'Если есть кредит, кредитка или долг — добавь здесь и в блоках ниже (листай вниз). Приложение будет заранее откладывать на платежи. Если ничего нет — просто «Дальше».'},
+  {tab:'dash',target:'.cards4',title:'Сколько денег сейчас',text:'Впиши, сколько у тебя сейчас наличных и сколько на карте. Если есть долг по кредитке — тоже.',done:()=>{const c=compute();return c.cash+c.card>0;},need:'Впиши наличные или сумму на карте'},
+  {tab:'plan',target:'#slSpend',title:'План трат',text:'Передвинь «Траты на жизнь» — сколько в месяц уходит на еду, проезд, мелочи. Можно примерно, потом поправишь. Ниже — сколько хочешь откладывать.',done:()=>state.plan.spending>0,need:'Передвинь ползунок «Траты на жизнь»'},
+  {tab:'tx',target:'#tab-tx .card',title:'Каждый день — журнал',text:'Сюда вноси траты: сумма, категория, наличные или карта → «Добавить». Зарплата появится сама в день выплаты. Ошибся — удали запись крестиком.'},
+  {tab:'dash',target:'.spend-hero',title:'Готово',text:'Оранжевая цифра — сколько можно потратить сегодня, чтобы хватило на всё до зарплаты. «Подробнее» — как посчитано. Хочешь напоминание каждый вечер в 21:00 внести траты?',remind:true,next:'Начать пользоваться'},
+];
+let tourTimer=null;
+function tourActive(){return !state.tourDone;}
+function tourEnd(silent){
+  state.tourDone=true;state.onboarded=true;save();
+  clearInterval(tourTimer);document.getElementById('tour')?.remove();document.body.classList.remove('touring');
+  document.querySelectorAll('.tour-focus').forEach(e=>e.classList.remove('tour-focus'));
+  switchTab('dash');renderComputed(true);
+  if(!silent)showToast('Обучение можно пройти заново: Панель → «Как пользоваться».');
+}
+function tourShow(){
+  if(!tourActive())return;
+  const i=Math.min(Math.max(0,state.tourStep||0),TOUR.length-1),st=TOUR[i];
+  document.querySelectorAll('.tour-focus').forEach(e=>e.classList.remove('tour-focus'));
+  if(st.tab&&!document.getElementById('tab-'+st.tab).classList.contains('active'))switchTab(st.tab);
+  let box=document.getElementById('tour');
+  if(!box){box=document.createElement('div');box.id='tour';box.setAttribute('role','dialog');document.body.appendChild(box);}
+  document.body.classList.add('touring');
+  const steps=TOUR.length-2,num0=i>=1&&i<=steps?`Шаг ${i} из ${steps}`:'';
+  box.innerHTML=`<div class="t-top"><div class="t-dots">${TOUR.map((x,k)=>`<i class="${k<=i?'on':''}"></i>`).join('')}</div><span class="muted" style="font-size:12px;">${num0}</span><button class="t-x" id="tourX" title="Закрыть обучение">Закрыть</button></div>
+    <h3>${st.title}</h3><div class="t-text">${st.text}</div>
+    ${st.done?`<div class="t-need" id="tourNeed"><span class="dot"></span><span></span></div>`:''}
+    ${st.remind?`<div class="t-btns"><a class="btn small" href="reminder.ics" target="_blank" rel="noopener">Добавить напоминание в календарь</a></div>`:''}
+    <div class="t-btns">${i>0?'<button class="btn small" id="tourBack">Назад</button>':''}<span class="grow"></span>
+      ${st.done?'<button class="btn small" id="tourSkip">Пропустить</button>':''}
+      <button class="btn small primary" id="tourNext">${st.next||'Дальше'}</button></div>`;
+  const tgt=st.target&&document.querySelector(st.target);
+  if(tgt){const el=tgt.closest('.slider-row')||tgt;el.classList.add('tour-focus');setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'start'}),60);}
+  const go=d=>{state.tourStep=i+d;save();if(state.tourStep>=TOUR.length)tourEnd(true);else tourShow();};
+  box.querySelector('#tourX').onclick=()=>tourEnd(false);
+  box.querySelector('#tourNext').onclick=()=>{if(st.done&&!st.done())return;if(i===TOUR.length-1){tourEnd(true);showToast('Готово. Хорошего учёта!');return;}go(1);};
+  const bk=box.querySelector('#tourBack');if(bk)bk.onclick=()=>go(-1);
+  const sk=box.querySelector('#tourSkip');if(sk)sk.onclick=()=>go(1);
+  const check=()=>{if(!st.done)return;const ok=!!st.done();const n=box.querySelector('#tourNeed');
+    if(n){n.classList.toggle('ok',ok);n.querySelector('.dot').style.background=ok?'var(--green)':'var(--muted)';n.querySelector('span:last-child').textContent=ok?'Отлично, можно дальше':st.need;}
+    const b=box.querySelector('#tourNext');if(b)b.disabled=!ok;};
+  clearInterval(tourTimer);check();tourTimer=setInterval(check,500);
+}
+document.addEventListener('click',e=>{if(e.target.id==='tourRestart'){state.tourDone=false;state.tourStep=0;save();tourShow();}});
 /* подсказка установки: показываем, только если приложение открыто во вкладке браузера на телефоне */
 (function(){
   const standalone=window.navigator.standalone===true||(window.matchMedia&&matchMedia('(display-mode: standalone)').matches);
