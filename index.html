@@ -159,7 +159,7 @@
   .btn:focus-visible,.tab:focus-visible{outline:1px solid var(--gold);outline-offset:2px;}
   .slider-row{margin-bottom:20px;}
   .slider-row .top-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;gap:12px;}
-  .slider-row .val{font-family:var(--mono);font-weight:500;font-size:17px;white-space:nowrap;color:var(--ink);}
+  .slider-row .val{font-family:var(--mono);font-weight:600;font-size:17px;white-space:nowrap;color:var(--ink);cursor:pointer;border-bottom:1.5px dashed var(--line2);}
   .slider-row .explain{font-size:13px;color:var(--muted);margin-bottom:4px;}
   input[type=range]{width:100%;accent-color:var(--gold);height:28px;}
   table{border-collapse:collapse;width:100%;font-size:13.5px;}
@@ -182,7 +182,13 @@
   .progress{background:var(--raised);border-radius:4px;height:8px;overflow:hidden;margin:8px 0;}
   .progress>div{height:100%;background:var(--green);border-radius:4px;}
   .footer-note{color:var(--muted);font-size:12.5px;margin-top:8px;}
-  .howto li{margin-bottom:4px;color:var(--ink2);}
+  .howto li{margin-bottom:6px;color:var(--ink2);}
+  .gloss{margin-top:10px;border-top:1px solid var(--line);padding-top:10px;}
+  .gloss summary{cursor:pointer;font-weight:600;color:var(--gold);padding:6px 0;}
+  .gloss dl{margin:8px 0 0;}
+  .gloss dt{font-weight:600;margin-top:10px;font-size:14px;}
+  .gloss dd{margin:2px 0 0;color:var(--ink2);font-size:14px;line-height:1.5;}
+  .gloss i{color:var(--muted);font-style:normal;}
   details.month{border:1px solid var(--line);border-radius:12px;margin-bottom:8px;background:var(--card);}
   details.month summary{cursor:pointer;padding:12px 16px;font-weight:500;font-size:14px;list-style:none;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;}
   details.month summary::-webkit-details-marker{display:none;}
@@ -218,7 +224,7 @@
   @media(max-width:900px){ .spend-hero .grid{grid-template-columns:1fr;gap:20px;} .spend-hero .metric+.metric{border-left:0;padding-left:0;border-top:1px solid var(--line);padding-top:20px;} }
   @media(max-width:600px){ .spend-hero{padding:20px;} .spend-hero .metric:first-child .v{font-size:40px;} .spend-hero .metric .v.mid{font-size:28px;} .stat::before{left:16px;top:22px;} .card{padding:16px;} }
   /* история: мини-графики */
-  .hchart{display:flex;gap:12px;align-items:flex-end;min-width:560px;padding-top:8px;}
+  .hchart{display:flex;gap:12px;align-items:flex-end;padding-top:8px;}
   .hcol{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;min-width:72px;}
   .hbars{display:flex;gap:4px;align-items:flex-end;height:120px;}
   .hbar{width:24px;border-radius:4px 4px 0 0;}
@@ -346,19 +352,15 @@
   .hero{position:relative;color:var(--hero-ink);border-radius:28px;padding:22px 22px 18px;margin-bottom:10px;cursor:pointer;overflow:hidden;isolation:isolate;
     background:radial-gradient(90% 70% at 100% 0%,rgba(123,160,91,.22),transparent 60%),linear-gradient(165deg,#125A47 0%,#0D4C3C 45%,#0A3F32 100%);
     box-shadow:inset 0 1px 0 rgba(255,255,255,.10),inset 0 -1px 0 rgba(0,0,0,.15),0 2px 4px rgba(13,76,60,.12),0 16px 36px -8px rgba(13,76,60,.40);
-    transform:perspective(900px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) scale(var(--press,1));
     transition:transform .14s cubic-bezier(.23,1,.32,1);-webkit-tap-highlight-color:transparent;}
   :root[data-theme="dark"] .hero{box-shadow:inset 0 1px 0 rgba(255,255,255,.10),inset 0 -1px 0 rgba(0,0,0,.2),0 16px 36px -8px rgba(0,0,0,.6);}
   .hero.danger:not(.is-empty){background:radial-gradient(90% 70% at 100% 0%,rgba(232,128,106,.22),transparent 60%),linear-gradient(165deg,#6E3326 0%,#5A281E 50%,#4A2018 100%);
     box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 16px 36px -8px rgba(90,40,30,.45);}
   .hero.danger:not(.is-empty) .cap{color:#F6C7A6;} .hero.danger .v.red-txt{color:#FFF1EA;}
-  .hero-sheen{position:absolute;inset:0;z-index:-1;pointer-events:none;border-radius:inherit;
-    background:radial-gradient(60% 50% at var(--gx,70%) var(--gy,20%),rgba(255,255,255,.13),transparent 70%);}
-  .chip{transform:perspective(700px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) scale(var(--press,1));}
-  .hero:active,.chip:active{--press:.985;}
+  .hero:active,.chip:active{transform:scale(.985);}
   .hero.is-empty{cursor:default;}
   .hero-empty{display:none;}
-  .hero.is-empty>:not(.hero-empty):not(.hero-sheen){display:none;}
+  .hero.is-empty>:not(.hero-empty){display:none;}
   .hero.is-empty .hero-empty{display:block;}
   .he-t{font-size:19px;line-height:1.35;font-weight:500;margin:8px 0 16px;color:var(--hero-ink);letter-spacing:-.01em;}
   .btn.he-btn{background:#F4F1EB;color:#0D4C3C;font-weight:600;min-height:46px;padding:0 20px;}
@@ -384,7 +386,7 @@
   /* две плашки под главной */
   .chips{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:4px;}
   .chip{background:var(--card);border-radius:22px;padding:14px 16px;box-shadow:var(--shadow);cursor:pointer;min-width:0;
-    transition:transform .18s var(--ease);-webkit-tap-highlight-color:transparent;}
+    transition:transform .14s cubic-bezier(.23,1,.32,1);-webkit-tap-highlight-color:transparent;}
   .chip .cap{font-size:12.5px;color:var(--muted);margin-bottom:4px;}
   .chip .v{font-size:22px;font-weight:600;letter-spacing:-.02em;line-height:1.15;white-space:nowrap;}
   .chip .v.green-txt{color:var(--green);} .chip .v.red-txt{color:var(--red);}
@@ -456,6 +458,54 @@
   .sheet #txAmount{font-size:22px !important;font-weight:600;}
   .sheet .footer-note{margin-top:12px;}
   body.sheet-open{overflow:hidden;}
+  .al-list{margin:6px 0 6px;padding-left:22px;}
+  .al-list li{margin:2px 0;}
+  .item{background:var(--deep);border-radius:16px;padding:12px;margin-bottom:10px;}
+  .item.off{opacity:.55;}
+  .item-h{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+  .item-h input{flex:1;min-width:0;font-weight:600;}
+  .nb{width:26px;height:26px;border-radius:50%;background:var(--gold-soft);color:var(--gold);font-size:13px;font-weight:600;display:inline-flex;align-items:center;justify-content:center;flex:none;}
+  .pay-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;align-items:end;margin-bottom:8px;}
+  .pay-grid .del{align-self:end;}
+  .pay-grid.g-pay{grid-template-columns:64px minmax(0,1fr) minmax(0,1fr) auto;}
+  .pay-grid.g-cr{grid-template-columns:minmax(0,1fr) 72px minmax(0,1fr);}
+  .pay-grid input,.pay-grid select{width:100%;min-width:0;}
+  .field>span{font-size:12px;color:var(--ink2);}
+  .field.inline{flex-direction:row;align-items:center;gap:8px;}
+  .item-foot{display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+  .linkish{border:0;background:none;color:var(--gold);font:inherit;font-size:13px;cursor:pointer;padding:8px 4px;min-height:36px;}
+  .cr-info{font-size:12.5px;}
+  .check-row{display:flex;gap:6px;align-items:center;margin-top:2px;}
+  .txr{display:flex;align-items:center;gap:10px;padding:10px 4px;border-bottom:1px solid var(--line);}
+  .txr:last-child{border-bottom:0;}
+  .txm{flex:1;min-width:0;}
+  .txc{font-size:14.5px;overflow-wrap:anywhere;}
+  .txs{font-size:12.5px;color:var(--muted);margin-top:1px;overflow-wrap:anywhere;}
+  .txa{font-weight:600;white-space:nowrap;font-size:15px;}
+  .hm{padding:10px 0;border-bottom:1px solid var(--line);}
+  .hm:last-of-type{border-bottom:0;}
+  .hm-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;font-size:14.5px;}
+  .hm-r{display:grid;grid-template-columns:52px 1fr auto;gap:8px;align-items:center;font-size:13px;margin:3px 0;}
+  .hm-r>span:last-child{min-width:64px;text-align:right;}
+  .hm-t{height:8px;border-radius:4px;background:var(--raised);overflow:hidden;}
+  .hm-t>div{height:100%;border-radius:4px;}
+  .hm-t .in{background:var(--chart-in);} .hm-t .out{background:var(--chart-out);}
+  .mline{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--line);font-size:15px;}
+  .mline.total{border-bottom:0;font-weight:600;}
+  .mcalc{font-size:14px;line-height:1.7;color:var(--ink2);margin-top:4px;}
+  .nospend-row{margin:-4px 0 12px;}
+  .flow-wrap{position:relative;margin-top:10px;touch-action:pan-y;}
+  .flow-wrap .flow-svg{height:190px;width:100%;}
+  .fdot{position:absolute;width:9px;height:9px;border-radius:50%;transform:translate(-50%,-50%);border:2px solid var(--card);pointer-events:none;}
+  .fdot.in{background:var(--chart-in);} .fdot.out{background:var(--chart-out);}
+  .fdot.min{width:13px;height:13px;background:transparent;border:2.5px solid var(--chart-line);}
+  .flab{position:absolute;transform:translate(-50%,10px);font-size:12px;font-weight:600;color:var(--ink);background:var(--card);padding:1px 6px;border-radius:6px;white-space:nowrap;pointer-events:none;}
+  .fzero{position:absolute;right:0;transform:translateY(-120%);font-size:11px;color:var(--red);pointer-events:none;}
+  .fcursor{position:absolute;top:0;bottom:0;width:0;border-left:1.5px solid var(--ink2);opacity:0;pointer-events:none;transition:opacity .12s;}
+  .fcursor.on{opacity:.8;}
+  .ftip{position:absolute;top:0;left:8px;background:var(--ink);color:var(--bg);font-size:12.5px;line-height:1.45;padding:6px 10px;border-radius:10px;white-space:nowrap;}
+  .ftip.left{left:auto;right:8px;}
+  .ftip .pos,.ftip .neg{color:inherit;opacity:.85;}
   .card.folded #flowRange{display:none;}
   #tour.top{top:calc(12px + env(safe-area-inset-top));bottom:auto;z-index:90;}
 
@@ -512,7 +562,6 @@
   }
   .btn:active,.sheet-x:active,.seg button:active,.icon-btn:active{transform:scale(.97);transition:transform .1s cubic-bezier(.23,1,.32,1);}
   @media(prefers-reduced-motion:reduce){
-    .hero,.chip{transform:none !important;}
     *,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important;}
   }
 </style>
@@ -552,7 +601,6 @@
       <div class="he-t">Добавь зарплату и даты выплат — и я посчитаю, сколько можно тратить каждый день</div>
       <button class="btn he-btn" type="button" data-goto="setup">Добавить доходы</button>
     </div>
-    <div class="hero-sheen" aria-hidden="true"></div>
   </div>
 
   <div class="chips">
@@ -651,6 +699,7 @@
 <!-- ===================== ЖУРНАЛ ===================== -->
 <section class="tabpane" id="tab-tx">
   <button class="btn primary block" type="button" data-sheet="add" id="txOpen">+ Новая запись</button>
+  <div class="nospend-row" id="noSpendRow"></div>
 
   <div class="card">
     <h2>Итоги текущего месяца</h2>
@@ -667,10 +716,10 @@
 <section class="tabpane" id="tab-history">
   <div class="card">
     <h2>Движение денег по месяцам</h2>
-    <div class="table-wrap"><div id="histMonths"></div></div>
+    <div id="histMonths"></div>
   </div>
   <div class="card">
-    <h2>Куда уходят деньги: месяц к месяцу</h2>
+    <h2>Куда уходят деньги</h2>
     <div id="histCats"></div>
   </div>
 </section>
@@ -773,13 +822,6 @@
       <button type="button" data-theme-set="dark">Тёмная</button>
     </div>
   </div>
-  <div class="card" id="motionCard" data-nofold>
-    <h2>Объём при наклоне</h2>
-    <label class="switch-row" style="margin:0;padding:0;border:0;">
-      <span><b>Плашки слегка поворачиваются за телефоном</b><span class="muted" id="tiltNote">как живая карточка: наклони телефон</span></span>
-      <input type="checkbox" id="tiltSwitch" class="switch">
-    </label>
-  </div>
   <div class="card" id="dataCard" data-nofold>
     <h2>Данные</h2>
     <div class="row">
@@ -793,13 +835,30 @@
   <div class="card" id="howCard">
     <h2>Как пользоваться</h2>
     <ol class="howto">
-      <li><b>План → Доходы и расходы</b> — один раз: зарплаты (числа и суммы), кредиты, кредитка, долги, крупные разовые траты.</li>
-      <li><b>Главная → «Деньги сейчас»</b> — впиши, сколько сейчас наличных и на карте.</li>
-      <li><b>План → План месяца</b> — сколько в месяц уходит на жизнь и сколько откладывать.</li>
-      <li><b>Кнопка «+»</b> — каждый день вноси траты. Зарплата появится сама. Положил наличные на карту — тип «Перевод».</li>
-      <li>Большая цифра на зелёной плашке — сколько можно потратить сегодня, чтобы хватило на всё. Нажми на неё — увидишь, откуда она.</li>
-      <li>Раз в две недели: «Ещё» → «Сохранить копию» — на случай потери телефона.</li>
+      <li><b>Один раз:</b> «План» → «Доходы и расходы» — зарплата, кредиты, долги, крупные траты.</li>
+      <li><b>Один раз:</b> на главной нажми «Деньги сейчас» и впиши наличные и карту.</li>
+      <li><b>Каждый день:</b> потратил — «+» внизу. Не тратил — ничего не нужно.</li>
+      <li><b>Смотри</b> на большую цифру — столько можно потратить сегодня. Нажми на неё — увидишь расчёт.</li>
+      <li><b>Раз в две недели:</b> «Ещё» → «Сохранить копию».</li>
     </ol>
+    <details class="gloss">
+      <summary>Словарик — что значат слова</summary>
+      <dl>
+        <dt>Можно потратить сегодня</dt><dd>Сколько тратить в день, чтобы хватило на всё до зарплаты. <i>Пример: 6 000 на 10 дней до зарплаты, платежей нет → 600 в день.</i></dd>
+        <dt>Деньги сейчас</dt><dd>Наличные + карта. Копилки и кредитка сюда не входят.</dd>
+        <dt>На жизнь до конца месяца</dt><dd>Что есть + что придёт − все платежи − подушка. Считаю до конца следующего месяца, чтобы платёж 1-го числа не стал сюрпризом.</dd>
+        <dt>Накопится</dt><dd>Сколько останется к концу следующего месяца, если жить по плану. <i>Минус — по плану денег не хватит.</i></dd>
+        <dt>Траты на жизнь</dt><dd>Повседневное: еда, проезд, мелочи, кафе. Кредиты и разовые траты сюда не входят.</dd>
+        <dt>Подушка</dt><dd>Сколько хочешь откладывать каждый месяц. Эти деньги не попадают в лимит на день.</dd>
+        <dt>Разовая трата</dt><dd>Крупная трата с месяцем: подарок, ремонт, отпуск. <i>Отпуск 30 000 через 4 месяца → копим по 7 500 в месяц.</i></dd>
+        <dt>Кредит и кредитка</dt><dd>Кредит — платёж каждый месяц. Кредитка — долг, который нужно вернуть до даты из банка, чтобы не было процентов.</dd>
+        <dt>Долг со сроком и без</dt><dd>Со сроком — делю на месяцы сам. Без срока — отдаёшь, сколько решишь в «План месяца».</dd>
+        <dt>Перевод</dt><dd>Положил наличные на карту или снял — это не трата, всего денег столько же.</dd>
+        <dt>Копилка</dt><dd>Деньги, убранные отдельно (вклад, конверт). На жизнь не считаются, но остаются твоими.</dd>
+        <dt>Меньше обычного</dt><dd>Скоро крупный платёж, а зарплата позже — лимит ниже, чтобы хватило. После зарплаты станет свободнее.</dd>
+        <dt>Подстраховка</dt><dd>Считать, что зарплата может прийти на 3 дня позже, — лимит чуть осторожнее.</dd>
+      </dl>
+    </details>
     <div class="row" style="margin-top:12px;">
       <button class="btn small" id="tourRestart">Пройти обучение заново</button>
       <a class="btn small" href="reminder.ics" target="_blank" rel="noopener" id="remindLink">Напоминание в 21:00</a>
@@ -1124,18 +1183,22 @@ function compute(){
   // кредиты
   const credits=state.credits.map(cr=>{
     const monthly=Math.max(0,num(cr.payment));
-    const paysLeft=Math.max(0,monthsIncl(NEXT_YM,cr.last));
     // «внесён» определяется по журналу: есть запись о платеже в этом месяце. Старую отметку без записи
     // принимаем только если она сделана до создания приложения (стартовые данные).
     const payTx=state.tx.filter(t=>t.creditId===cr.id&&t.date.slice(0,7)===TODAY_YM).sort((a,b)=>b.date.localeCompare(a.date))[0];
     const legacyPaid=(cr.lastPaid||'').slice(0,7)===TODAY_YM&&cr.lastPaid<=(state.created||'');
-    const paidThisMonth=!!payTx||legacyPaid;
+    // срок платежа прошёл ещё до того, как кредит внесли в приложение, — значит, уже заплачен (деньги ушли до учёта)
+    const addedAt=cr.added||state.created||'';
+    const autoPaid=payDateFor(TODAY_YM,cr.dueDay)<addedAt&&cr.unpaidYM!==TODAY_YM;
+    const markPaid=cr.paidYM===TODAY_YM;             // «уже был оплачен раньше» — без записи в журнал
+    const paidThisMonth=!!payTx||legacyPaid||autoPaid||markPaid;
     const paidDate=payTx?payTx.date:(legacyPaid?cr.lastPaid:'');
     const dueISO=paidThisMonth?null:payDateFor(TODAY_YM,cr.dueDay);
     const daysToDue=dueISO?daysUntil(dueISO):null;
     const remainPayMonths=Math.max(0,monthsIncl(TODAY_YM,cr.last)-(paidThisMonth?1:0));
+    const paysLeft=remainPayMonths;
     return {...cr,monthly,paysLeft,paidThisMonth,paidDate,dueISO,daysToDue,
-      active:monthly>0&&monthNum(cr.last)>=monthNum(TODAY_YM),remain:monthly*remainPayMonths};
+      active:monthly>0&&monthNum(cr.last)>=monthNum(TODAY_YM),remain:monthNum(cr.last)>=monthNum('2099-01')?0:monthly*remainPayMonths};
   });
   const creditRemain=credits.reduce((s,c)=>s+(c.active?c.remain:0),0);
   // долги
@@ -1373,66 +1436,6 @@ document.addEventListener('keydown',e=>{
     if(dy>110||(vy>.45&&dy>12))closeSheet();else sh.style.transform='';y0=null;sh=null;});
 })();
 
-/* ================= объём при наклоне ================= */
-const TILT=(function(){
-  const els=()=>[...document.querySelectorAll('#heroCard,.chips .chip')];
-  const reduce=()=>window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const needsAsk=typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function';
-  let on=false,listening=false,b0=null,g0=null,tx=0,ty=0,cx=0,cy=0,raf=0,lastEv=0;
-  const pref=()=>{try{return localStorage.getItem('fin-tilt');}catch(e){return null;}};
-  const setPref=v=>{try{localStorage.setItem('fin-tilt',v);}catch(e){}};
-  function apply(){
-    raf=0;cx+=(tx-cx)*0.18;cy+=(ty-cy)*0.18;           // мягкое догоняние, без рывков
-    els().forEach((el,i)=>{const k=i?0.55:1;               // маленькие плашки — слабее
-      el.style.setProperty('--rx',(cx*k).toFixed(2)+'deg');el.style.setProperty('--ry',(cy*k).toFixed(2)+'deg');
-      el.style.setProperty('--gx',(50+cy*7).toFixed(1)+'%');el.style.setProperty('--gy',(30-cx*7).toFixed(1)+'%');});
-    if(Math.abs(tx-cx)>0.02||Math.abs(ty-cy)>0.02)raf=requestAnimationFrame(apply);
-  }
-  const kick=()=>{if(!raf)raf=requestAnimationFrame(apply);};
-  function onOri(e){
-    if(e.beta==null||e.gamma==null)return;
-    const now=performance.now();if(now-lastEv<16)return;lastEv=now;
-    if(b0===null){b0=e.beta;g0=e.gamma;}
-    b0+=(e.beta-b0)*0.01;g0+=(e.gamma-g0)*0.01;           // «ноль» медленно подстраивается под то, как держишь телефон
-    const cl=(v,m)=>Math.max(-m,Math.min(m,v));
-    tx=cl(-(e.beta-b0)*0.35,6);ty=cl((e.gamma-g0)*0.35,6);kick();
-  }
-  function listen(v){
-    if(v&&!listening){window.addEventListener('deviceorientation',onOri);listening=true;}
-    if(!v&&listening){window.removeEventListener('deviceorientation',onOri);listening=false;tx=ty=0;b0=g0=null;kick();}
-  }
-  function enable(fromTap){
-    if(reduce())return Promise.resolve(false);
-    if(needsAsk){
-      // без касания айфон откажет молча (без окна), а Android-Chrome разрешит сразу
-      return DeviceOrientationEvent.requestPermission().then(r=>{const ok=r==='granted';listen(ok);return ok;}).catch(()=>false);
-    }
-    listen(true);return Promise.resolve(true);
-  }
-  function sync(){const sw=document.getElementById('tiltSwitch');if(sw)sw.checked=on;
-    const n=document.getElementById('tiltNote');if(n&&reduce())n.textContent='выключено: в телефоне включено «Уменьшение движения»';}
-  function init(){
-    const p=pref();
-    if(p!=='off')enable(false).then(ok=>{
-      on=ok||p==='on';sync();
-      // айфон: включено, но разрешение нужно подтвердить касанием — просим при первом касании
-      if(!ok&&p==='on')document.addEventListener('touchend',function once(){enable(true).then(r=>{on=r;sync();});},{once:true});
-    });
-    // компьютер: плашка поворачивается за мышью
-    if(window.matchMedia&&matchMedia('(hover: hover) and (pointer: fine)').matches){
-      document.addEventListener('pointermove',e=>{if(!on||reduce())return;const h=e.target.closest&&e.target.closest('#heroCard,.chip');
-        if(!h){if(tx||ty){tx=ty=0;kick();}return;}const r=h.getBoundingClientRect();
-        ty=((e.clientX-r.left)/r.width-.5)*8;tx=-((e.clientY-r.top)/r.height-.5)*8;kick();});
-    }
-    sync();
-    document.addEventListener('change',e=>{if(e.target.id!=='tiltSwitch')return;
-      on=e.target.checked;setPref(on?'on':'off');
-      if(on)enable(true).then(ok=>{if(!ok&&needsAsk){on=false;setPref('off');sync();showToast('Без разрешения на «движение и ориентацию» эффект не работает. Его можно дать при следующем включении.','warn');}});
-      else listen(false);
-    });
-  }
-  return {init};
-})();
 /* ================= тема ================= */
 function themePref(){try{return localStorage.getItem('fin-theme')||'auto';}catch(e){return 'auto';}}
 function applyTheme(){
@@ -1450,7 +1453,6 @@ document.getElementById('themeBtn').addEventListener('click',()=>setTheme(docume
 document.addEventListener('click',e=>{const b=e.target.closest('[data-theme-set]');if(b)setTheme(b.dataset.themeSet);});
 try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{if(themePref()==='auto')applyTheme();});}catch(e){}
 applyTheme();
-TILT.init();
 
 /* ================= toast ================= */
 function showToast(html,type='ok',ms=5000){
@@ -1567,6 +1569,24 @@ function runway(c){
   return {days:Math.floor(money/(month/30)),money,life,must,month};
 }
 let HOW_OPEN=false;
+let FLOW=null;
+/* «Деньги по дням»: палец/мышь над графиком показывает день и сумму */
+(function(){
+  const show=e=>{
+    const wrap=document.getElementById('flowWrap');if(!wrap||!FLOW)return;
+    const r=wrap.getBoundingClientRect();const x=((e.touches?e.touches[0].clientX:e.clientX)-r.left)/r.width;
+    const k=Math.max(0,Math.min(FLOW.n-1,Math.round(x*(FLOW.n-1))));
+    const d=addDaysISO(TODAY_ISO,k);const evs=FLOW.ev.filter(v=>v.date===d);
+    const cur=document.getElementById('fCursor'),tip=document.getElementById('fTip');
+    cur.style.left=(FLOW.X(k)/FLOW.W*100)+'%';cur.classList.add('on');
+    tip.innerHTML=`<b>${k===0?'Сегодня':fmtDateShort(d)}</b>: ≈ ${fmt(FLOW.L[k])}`+evs.map(v=>`<div class="${v.amount>0?'pos':'neg'}">${v.amount>0?'+':'−'}${fmtN(Math.abs(v.amount))} ${esc(v.label.replace(/ \(.*\)$/,''))}</div>`).join('');
+    tip.classList.toggle('left',x>.6);
+  };
+  const hide=()=>{const cur=document.getElementById('fCursor');if(cur)cur.classList.remove('on');};
+  document.addEventListener('pointermove',e=>{if(e.target.closest&&e.target.closest('#flowWrap'))show(e);else hide();});
+  document.addEventListener('touchmove',e=>{if(e.target.closest&&e.target.closest('#flowWrap'))show(e);},{passive:true});
+  document.addEventListener('touchstart',e=>{if(e.target.closest&&e.target.closest('#flowWrap'))show(e);},{passive:true});
+})();
 document.addEventListener('toggle',e=>{if(e.target&&e.target.id==='howDaily')HOW_OPEN=e.target.open;},true);
 function renderFlow(c,cp,daily,todayLeft){
   const gen=MONTHS_GEN[+NEXT_YM.split('-')[1]-1];
@@ -1582,32 +1602,36 @@ function renderFlow(c,cp,daily,todayLeft){
   }else if(minL<-1){
     v=`<div class="banner warn">Если тратить по ${fmt(daily)}/день, ${fmtDateRu(minDay)} будет ${fmt(minL)}.</div>`;
   }else{
-    v=`<div class="banner ok">Если тратить не больше <b>${fmt(daily)}</b> в день, денег хватит на все платежи в их даты до конца ${gen}. Самый «тонкий» день — <b>${fmtDateShort(minDay)}</b>: останется ≈ ${fmt(minL)}.</div>`;
+    v=`<div class="banner ok">Если тратить не больше <b>${fmt(daily)}</b> в день, денег хватит на все платежи до конца ${gen}. Меньше всего денег будет <b>${fmtDateShort(minDay)}</b> — около ${fmt(minL)}.</div>`;
   }
   $('#flowVerdict').innerHTML=v;
-  setSum('flowCard',cp.low<0?`<span style="color:var(--red)">не хватит ${fmtDateShort(addDaysISO(TODAY_ISO,cp.lowAt))}</span>`:`тонкий день ${fmtDateShort(minDay)} · ≈ ${fmt(minL)}`);
+  setSum('flowCard',cp.low<0?`<span style="color:var(--red)">не хватит ${fmtDateShort(addDaysISO(TODAY_ISO,cp.lowAt))}</span>`:`меньше всего ${fmtDateShort(minDay)}: ≈ ${fmt(minL)}`);
   // график
-  const W=640,H=136,P=8,n=L.length;
-  const all=[...L,0,...cp.B0];const mx=Math.max(...all),mn=Math.min(...all);const span=(mx-mn)||1;
-  const X=k=>P+(W-2*P)*(n<=1?0:k/(n-1)),Y=v=>P+(H-2*P)*(1-(v-mn)/span);
+  const W=640,H=190,PL=8,PR=8,PT=14,PB=10,n=L.length;
+  const all=[...L,0];const mx=Math.max(...all),mn=Math.min(...all);const span=(mx-mn)||1;
+  const X=k=>PL+(W-PL-PR)*(n<=1?0:k/(n-1)),Y=v=>PT+(H-PT-PB)*(1-(v-mn)/span);
   const line=arr=>arr.map((v,k)=>(k?'L':'M')+X(k).toFixed(1)+','+Y(v).toFixed(1)).join(' ');
-  let svg=`<svg class="flow-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="Деньги по дням">`;
-  svg+=`<line x1="${P}" x2="${W-P}" y1="${Y(0)}" y2="${Y(0)}" style="stroke:var(--red)" stroke-dasharray="4 4" stroke-width="1" opacity=".7"/>`;
+  let svg=`<div class="flow-wrap" id="flowWrap"><svg class="flow-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="Сколько денег будет по дням">`;
+  svg+=`<line x1="${PL}" x2="${W-PR}" y1="${Y(0)}" y2="${Y(0)}" style="stroke:var(--red)" stroke-dasharray="5 5" stroke-width="1.2" vector-effect="non-scaling-stroke"/>`;
   const firstNext=daysUntil(NEXT_YM+'-01');
-  if(firstNext>0&&firstNext<n)svg+=`<line x1="${X(firstNext)}" x2="${X(firstNext)}" y1="${P}" y2="${H-P}" style="stroke:var(--chart-grid)" stroke-width="1" stroke-dasharray="2 4"/>`;
-  svg+=`<path d="${line(cp.B0)}" fill="none" style="stroke:var(--chart-grid)" stroke-width="1.5" stroke-dasharray="3 3"/>`;
-  svg+=`<defs><linearGradient id="fl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--chart-line)" stop-opacity=".2"/><stop offset="1" style="stop-color:var(--chart-line)" stop-opacity="0"/></linearGradient></defs><path d="${line(L)} L${X(n-1).toFixed(1)},${H-P} L${X(0).toFixed(1)},${H-P} Z" fill="url(#fl)" stroke="none"/>`;
-  svg+=`<path d="${line(L)}" fill="none" style="stroke:var(--chart-line)" stroke-width="2.4" stroke-linejoin="round"/>`;
-  for(const e of cp.ev){const k=daysUntil(e.date);if(k<0||k>=n)continue;svg+=`<circle cx="${X(k)}" cy="${Y(L[k])}" r="3.2" style="fill:${e.amount>0?'var(--chart-in)':'var(--chart-out)'}"><title>${fmtDateShort(e.date)} ${esc(e.label)} ${e.amount>0?'+':'−'}${fmtN(Math.abs(e.amount))} ₽</title></circle>`;}
-  svg+=`<circle cx="${X(minK)}" cy="${Y(minL)}" r="5" fill="none" style="stroke:var(--chart-line)" stroke-width="2"/>`;
+  if(firstNext>0&&firstNext<n)svg+=`<line x1="${X(firstNext)}" x2="${X(firstNext)}" y1="${PT}" y2="${H-PB}" style="stroke:var(--chart-grid)" stroke-width="1" stroke-dasharray="2 4" vector-effect="non-scaling-stroke"/>`;
+  svg+=`<defs><linearGradient id="fl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--chart-line)" stop-opacity=".22"/><stop offset="1" style="stop-color:var(--chart-line)" stop-opacity="0"/></linearGradient></defs><path d="${line(L)} L${X(n-1).toFixed(1)},${H-PB} L${X(0).toFixed(1)},${H-PB} Z" fill="url(#fl)" stroke="none"/>`;
+  svg+=`<path d="${line(L)}" fill="none" style="stroke:var(--chart-line)" stroke-width="2.6" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>`;
   svg+=`</svg>`;
-  // подписи оси — обычным текстом, чтобы не мельчали на телефоне и не раздувались на большом экране
+  // точки событий и подписи — HTML поверх, чтобы не растягивались
+  const pct=(x,y)=>`left:${(x/W*100).toFixed(2)}%;top:${(y/H*100).toFixed(2)}%`;
+  for(const e of cp.ev){const k=daysUntil(e.date);if(k<0||k>=n)continue;svg+=`<span class="fdot ${e.amount>0?'in':'out'}" style="${pct(X(k),Y(L[k]))}"></span>`;}
+  svg+=`<span class="fdot min" style="${pct(X(minK),Y(minL))}"></span>`;
+  svg+=`<span class="flab" style="${pct(X(minK),Y(minL))}">≈ ${fmtN(minL)}</span>`;
+  svg+=`<span class="fzero" style="top:${(Y(0)/H*100).toFixed(2)}%">0 ₽</span>`;
+  svg+=`<div class="fcursor" id="fCursor"><div class="ftip" id="fTip"></div></div></div>`;
   svg+=`<div class="flow-axis"><span>сегодня</span>${firstNext>0&&firstNext<n?`<span style="left:${(X(firstNext)/W*100).toFixed(1)}%">${MONTHS_FULL[+NEXT_YM.split('-')[1]-1]}</span>`:''}<span>${fmtDateShort(addDaysISO(TODAY_ISO,n-1))}</span></div>`;
-  $('#flowChart').innerHTML=svg+`<div class="muted" style="font-size:12px;">Линия — деньги на карте и в наличных, если тратить по лимиту · <span class="dot" style="background:var(--green)"></span> поступления · <span class="dot" style="background:var(--chart-out)"></span> платежи · пунктир — ноль</div>`;
+  $('#flowChart').innerHTML=svg+`<div class="muted" style="font-size:12.5px;line-height:1.5;">Линия — сколько денег будет у тебя каждый день, если тратить по лимиту. <span class="dot" style="background:var(--chart-in)"></span> приходят деньги · <span class="dot" style="background:var(--chart-out)"></span> платёж. <b>Проведи пальцем по графику</b> — покажу день и сумму.</div>`;
+  FLOW={L,ev:cp.ev,n,W,X,Y,H};
   // ближайшие события
   const rowOf=e=>{const k=daysUntil(e.date);return `<tr><td>${fmtDateShort(e.date)}</td><td><span class="dot" style="background:${e.amount>0?'var(--chart-in)':'var(--chart-out)'}"></span>${esc(e.label)}</td><td class="r ${e.amount>0?'pos':'neg'}">${e.amount>0?'+':'−'}${fmtN(Math.abs(e.amount))}</td><td class="r muted">останется ≈ ${fmtN(L[Math.min(k,n-1)])}</td></tr>`;};
   const firstN=4,head=cp.ev.slice(0,firstN).map(rowOf).join(''),tail=cp.ev.slice(firstN).map(rowOf).join('');
-  $('#flowEvents').innerHTML=cp.ev.length?`<div style="color:var(--ink2);font-size:13px;margin:8px 0 4px;">Ближайшие события</div><table class="flow-ev">${head}</table>`
+  $('#flowEvents').innerHTML=cp.ev.length?`<div style="color:var(--ink);font-weight:600;font-size:14px;margin:14px 0 4px;">Что будет дальше</div><table class="flow-ev">${head}</table>`
     +(tail?`<details class="more" data-fold="flowev" ${SUB_OPEN.flowev?'open':''}><summary>Все события до конца ${gen} (${cp.ev.length})</summary><table class="flow-ev">${tail}</table></details>`:'')
     :'<div class="muted">Платежей и поступлений с датами пока нет — добавь зарплаты, кредиты и разовые траты на вкладке «Доходы и расходы».</div>';
   // запас прочности
@@ -1720,7 +1744,7 @@ function renderDash(c){
   const alerts=[];
   if(state.onboarded&&NOW.getHours()>=20){
     const todayOps=state.tx.filter(t=>t.date===TODAY_ISO&&!t.srcKey).length;
-    if(!todayOps)alerts.push(['info','Вечер — внеси траты за сегодня, пока помнишь. Если трат не было — просто пропусти. <button class="btn small primary" data-sheet="add" style="margin-left:4px;">Внести трату</button>','show']);
+    if(!todayOps&&!(state.noSpend||[]).includes(TODAY_ISO))alerts.push(['info','Вечер — внеси траты за сегодня, пока помнишь.<div class="row" style="margin-top:8px;"><button class="btn small primary" data-sheet="add">Внести трату</button><button class="btn small" data-nospend>Сегодня трат не было</button></div>','show']);
   }
   if(!state.onboarded&&state.tourDone){
     alerts.push(['info','Заполни свои цифры: <b>План → Доходы и расходы</b> — зарплаты с датами выплат, кредиты, кредитку, долги и разовые траты. Потом настрой <b>План месяца</b>. Дальше всё будет считаться само.']);
@@ -1729,7 +1753,7 @@ function renderDash(c){
   for(const cr of c.credits){
     if(!cr.active||cr.paidThisMonth)continue;
     if(cr.daysToDue!==null&&cr.daysToDue<0){
-      alerts.push(['danger',`Просрочка по кредиту «${esc(cr.name)}». Платёж ${fmt(cr.monthly)} нужно было внести до ${fmtDateShort(cr.dueISO)} — сделай это сегодня.`]);
+      alerts.push(['danger',`Платёж по кредиту «${esc(cr.name)}» ${fmt(cr.monthly)} был до ${fmtDateShort(cr.dueISO)}, а отметки нет.<div class="row" style="margin-top:8px;"><button class="btn small primary" data-paycredit="${cr.id}">Внёс сейчас (с карты)</button><button class="btn small" data-paidbefore="${cr.id}">Уже был оплачен</button></div>`]);
     }else if(cr.daysToDue!==null&&cr.daysToDue<=4){
       alerts.push(['warn',`Платёж по кредиту «${esc(cr.name)}»: ${fmt(cr.monthly)} до ${fmtDateShort(cr.dueISO)} — осталось ${cr.daysToDue<=0?'меньше дня':cr.daysToDue+' дн.'}. Внеси и нажми «Внёс» ниже.`]);
     }
@@ -1740,8 +1764,11 @@ function renderDash(c){
   if(c.cash<0||c.card<0){
     alerts.push(['warn',`Баланс ушёл в минус (${c.cash<0?'наличные '+fmt(c.cash):'карта '+fmt(c.card)}) — так не бывает: видимо, трата была с другого кошелька. Поправь баланс или у записи способ оплаты.`]);
   }
-  if(cashFree<0){
-    alerts.push(['danger',`На руках ${fmt(c.cash+c.card)}${futureInc>0?' + придёт '+fmt(futureInc):''}, а зарезервировано ${fmt(reserve)}${oneThis>0?' (в т.ч. нерасплаченные разовые '+fmt(oneThis)+')':''} — <b>не хватает ${fmt(-cashFree)}</b>. Тратить нечего: сначала закрой разовые или передвинь их на другой месяц.`]);
+  const curMonGen=MONTHS_GEN[+TODAY_YM.split('-')[1]-1];
+  if(cashFree+savingsLeft<0){
+    alerts.push(['danger',`<b>До конца ${curMonGen} не хватает ${fmt(-(cashFree+savingsLeft))} на платежи.</b> Есть ${fmt(c.cash+c.card)}${futureInc>0?' и придёт '+fmt(futureInc):''}, а платежей и разовых трат до конца месяца — ${fmt(reserve-savingsLeft)}${oneThis>0?' (в т.ч. разовые '+fmt(oneThis)+')':''}. Что можно сделать: перенести разовую трату на следующий месяц или договориться о переносе платежа.`]);
+  }else if(cashFree<0){
+    alerts.push(['warn',`В этом месяце отложить на подушку получится ${fmt(Math.max(0,savingsLeft+cashFree))} из ${fmt(savingsLeft)} — на остальное не хватает денег после платежей.`]);
   }
   // советник: человек тратит меньше плана — предложить, куда направить экономию
   if(cashFree>0&&NOW.getDate()>=5&&factLife>=1000){
@@ -1772,11 +1799,11 @@ function renderDash(c){
   const upcoming=state.oneTime.filter(o=>!o.done&&(o.month===TODAY_YM||o.month===NEXT_YM));
   if(upcoming.length){
     const tot=upcoming.reduce((s,o)=>s+num(o.amount),0);
-    alerts.push(['info','Ждут траты: '+upcoming.map(o=>`${esc(o.name)} — ${fmtN(num(o.amount))} ₽${o.month===TODAY_YM?' (в этом месяце)':' ('+monthFull(o.month)+')'}`).join(', ')+`. Итого ${fmt(tot)} — уже учтены в расчётах. Когда заплатишь — отметь «Оплатил» в «Доходы и расходы» или выбери её в журнале.`]);
+    alerts.push(['info',`Скоро разовые траты (${upcoming.length}) — уже учтены в расчётах:<ol class="al-list">`+upcoming.map(o=>`<li>${esc(o.name)} — <b>${fmtN(num(o.amount))} ₽</b> <span class="muted">${o.month===TODAY_YM?'в этом месяце':'в '+monthLoc(o.month)}</span></li>`).join('')+`</ol>Итого ${fmt(tot)}. Когда заплатишь — нажми «Оплатил» в «План → Доходы и расходы».`]);
   }
   const freeLife=freeForLife(TODAY_YM);
-  if(freeLife<0){
-    alerts.push(['danger',`Обязательства этого месяца больше доходов на ${fmt(-freeLife)}. ${c.availCC>0?`Если нужно что-то купить — можешь оплатить кредиткой и вернуть без % в течение ${state.cc.grace} дн. (до ~${fmtDateRu(addDaysISO(TODAY_ISO,state.cc.grace))}), но помни про текущий долг ${fmt(c.debt)}.`:'Подумай, что перенести на следующий месяц.'}`]);
+  if(freeLife<0&&cashFree>=0){
+    alerts.push(['info',`Платежи ${monthLoc(TODAY_YM)} больше зарплат этого месяца на ${fmt(-freeLife)} — разница покроется деньгами, что уже есть. ${c.availCC>0?`Если нужно что-то купить — можешь оплатить кредиткой и вернуть без % в течение ${state.cc.grace} дн. (до ~${fmtDateRu(addDaysISO(TODAY_ISO,state.cc.grace))}), но помни про текущий долг ${fmt(c.debt)}.`:'Подумай, что перенести на следующий месяц.'}`]);
   }
   const monthExp=state.tx.filter(t=>t.type==='exp'&&!t.creditId&&!t.oneId&&t.date<=TODAY_ISO&&t.date.slice(0,7)===TODAY_YM);
   if(monthExp.length){
@@ -1800,9 +1827,9 @@ function renderDash(c){
   }
   if(cp.low<0&&cashFree>=0){
     const day=addDaysISO(TODAY_ISO,cp.lowAt);
-    const outs=cp.ev.filter(e=>e.amount<0&&e.date<=day).sort((a,b)=>a.amount-b.amount).slice(0,3).map(e=>esc(e.label.replace(/ \(.*\)$/,''))+' '+fmtN(-e.amount)+' ('+fmtDateShort(e.date)+')');
+    const outs=cp.ev.filter(e=>e.amount<0&&e.date<=day).sort((a,b)=>a.amount-b.amount).slice(0,3).map(e=>'<li>'+esc(e.label.replace(/ \(.*\)$/,''))+' — <b>'+fmtN(-e.amount)+' ₽</b> <span class="muted">'+fmtDateShort(e.date)+'</span></li>');
     const nextIn=cp.ev.find(e=>e.amount>0&&e.date>day);
-    alerts.unshift(['danger',`<b>Кассовый разрыв ${fmtDateShort(day)}:</b> в сумме денег хватает, но не в нужный день — будет ${fmt(cp.low)}. Платежи: ${outs.join(', ')}${nextIn?`, а следующее поступление только ${fmtDateShort(nextIn.date)}`:''}. Подробнее — в блоке «Деньги по дням».`]);
+    alerts.unshift(['danger',`<b>Кассовый разрыв ${fmtDateShort(day)}:</b> в сумме денег хватает, но не в нужный день — будет ${fmt(cp.low)}. Платежи до этого дня:<ol class="al-list">${outs.join('')}</ol>${nextIn?`Следующее поступление только ${fmtDateShort(nextIn.date)}. `:''}Подробнее — в блоке «Деньги по дням».`]);
   }
   {
     const urgent=alerts.filter(a=>a[0]==='danger'||a[2]==='show').slice(0,3),rest=alerts.filter(a=>!urgent.includes(a));
@@ -1832,7 +1859,10 @@ function renderDash(c){
   const manualNext=c.debtsNoDl.length?state.plan.debtsPay:0;
   const longReserve=reserve+ccNextDue+credDueNext+debtsAutoNext+manualNext+nearOneSum+state.plan.savings+(sinkNext-sinkThis);
   const longFree=c.cash+c.card+futureInc+incomeFor(NEXT_YM)+c.plannedInc-c.plannedExp-longReserve;
-  const planLife2=planLife-factLife+planLife;  // план жизни: остаток этого месяца + следующий
+  // план жизни: остаток этого месяца + следующий. Если начал вести учёт в середине месяца — план этого месяца только на оставшиеся дни
+  const firstDayM=(state.created&&state.created.slice(0,7)===TODAY_YM)?+state.created.slice(8):1;
+  const planLifeThis=planLife*(daysInMonth(TODAY_YM)-firstDayM+1)/daysInMonth(TODAY_YM);
+  const planLife2=Math.max(0,planLifeThis-factLife)+planLife;
   const follow=state.plan.follow!==false;      // «соблюдаю план»
   const followEff=follow&&planLife>0;          // план реально задан (иначе лимит был бы 0 ₽)
   const curMonthGen=MONTHS_GEN[+NEXT_YM.split('-')[1]-1];
@@ -1872,10 +1902,10 @@ function renderDash(c){
   cands.push({k:'money',v:moneyPerDay,n:daysLong,until:`до конца ${curMonthGen}`});
   cands.push({k:'gap',v:Math.max(0,cp.safe),n:cp.safeAt+1,until:`до ${fmtDateShort(gapDay)}`});
   const bind=cands.reduce((a,b)=>b.v<a.v-0.5?b:a);
-  let gapWhy;{
+  let gapWhy,gapOut=0,gapNextIn=null;{
     const win=cp.ev.filter(e=>e.date<=gapDay),outs=win.filter(e=>e.amount<0),ins=win.filter(e=>e.amount>0);
     const outSum=-outs.reduce((s,e)=>s+e.amount,0),inSum=ins.reduce((s,e)=>s+e.amount,0);
-    const nextIn=cp.ev.find(e=>e.amount>0&&e.date>gapDay);
+    const nextIn=cp.ev.find(e=>e.amount>0&&e.date>gapDay);gapOut=outSum;gapNextIn=nextIn;
     gapWhy=outSum>0
       ?`Смотрю на даты: до ${fmtDateShort(gapDay)} нужно заплатить ${fmt(outSum)} (${outs.slice(0,3).map(e=>esc(e.label.replace(/ \(.*\)$/,''))+' '+fmtDateShort(e.date)).join(', ')})${inSum>0?`, а придёт только ${fmt(inSum)}`:', а поступлений до этого дня нет'}. Чтобы хватило, лимит сейчас ниже обычного${nextIn?` — после ${fmtDateShort(nextIn.date)} станет свободнее`:''}`
       :`до ${nextIn?'поступления '+fmtDateShort(nextIn.date):fmtDateShort(gapDay)} есть только то, что на руках: ${fmt(cp.wallet)} на ${cp.safeAt+1} дн.${num(state.plan.payDelay)?' (с подстраховкой на задержку зарплаты)':''}`;
@@ -1892,11 +1922,12 @@ function renderDash(c){
   if(longFree<0){
     lastDaily=0;lastRemain=0;headDaily=0;ds.textContent=fmt(0);ds.classList.add('red-txt');$('#heroCard').classList.add('danger');
     $('#dailyCap').textContent='Можно потратить сегодня';
-    dsSub.innerHTML=foldSub('daily',`не хватает ${fmt(-longFree)} на платежи до конца ${curMonthGen}`,`На предстоящие платежи и траты до конца ${curMonthGen} не хватает ${fmt(-longFree)}. Нажми «Деньги сейчас» — там видно, куда уходят деньги.`);
+    const svBoth=savingsLeft+state.plan.savings;
+    dsSub.innerHTML=foldSub('daily',`до конца ${curMonthGen} не хватает ${fmt(-longFree)}${svBoth>0?' (с подушкой)':''}`,`На платежи и разовые траты до конца ${curMonthGen}${svBoth>0?` и подушку (${fmt(svBoth)})`:''} не хватает ${fmt(-longFree)}. Нажми «Деньги сейчас» — там видно, куда уходят деньги.${svBoth>0&&longFree+svBoth>=0?' Если в этот раз не откладывать на подушку — денег на платежи хватит.':''}`);
     if($('#todayBar'))$('#todayBar').style.transform='scaleX(0)';
   }else{
     headDaily=bind.v;$('#heroCard').classList.toggle('danger',bind.v<=0);
-    const SHORT={plan:`по твоему плану, ${untilTxt}`,money:`чтобы хватило до конца ${curMonthGen}`,gap:cp.safeAt>=cp.days-1?`чтобы хватило до конца ${curMonthGen}`:`меньше обычного: впереди платежи, ${bind.until}`};
+    const SHORT={plan:`по твоему плану, ${untilTxt}`,money:`чтобы хватило до конца ${curMonthGen}`,gap:cp.safeAt>=cp.days-1?`чтобы хватило до конца ${curMonthGen}`:gapOut>0?`меньше обычного: впереди платежи, ${bind.until}`:`чтобы хватило до ${gapNextIn?'зарплаты '+fmtDateShort(gapNextIn.date):fmtDateShort(gapDay)}`};
     showToday(bind.v,whyTxt[bind.k]+how,bind.n,bind.until,SHORT[bind.k]);
   }
   // деньги: сейчас физически + что станет к концу ноября
@@ -1912,15 +1943,22 @@ function renderDash(c){
   if(c.pendingPays.length)payParts.push(`до конца ${MONTHS_GEN[+TODAY_YM.split('-')[1]-1]}: ${c.pendingPays.map(p=>dm(p.date)+' — '+fmtN(p.amount)).join(', ')}`);
   if(nextPays.length)payParts.push(`${monName(NEXT_YM)}: ${nextPays.map(p=>dm(p.date)+' — '+fmtN(p.amount)).join(', ')}`);
   const payments=longReserve-nearOneSum-oneThis-savingsLeft-state.plan.savings-sinkNext;
-  $('#leftLifeSub').innerHTML=foldSub('left',`на жизнь до конца ${curMonthGen}: <b>${fmt(longFree)}</b>`,`${fmtN(onHands)} сейчас (наличные + карта)`
-    +`<br>+ <b>${fmtN(futureInc+inNext)}</b> зарплаты, которые ещё придут`+(payParts.length?` (${payParts.join('; ')})`:' — выплат нет, добавь их на вкладке «Доходы и расходы»')
+  const thisMonName=MONTHS_FULL[+TODAY_YM.split('-')[1]-1].toLowerCase(),nextMonName=monName(NEXT_YM).toLowerCase();
+  $('#leftLifeSub').innerHTML=`<div class="sub-short">нал. ${fmtN(c.cash)} · карта ${fmtN(c.card)}</div>`;
+  WHY.left=`<div class="mline"><span>Наличные</span><b>${fmt(c.cash)}</b></div><div class="mline"><span>На карте</span><b>${fmt(c.card)}</b></div><div class="mline total"><span>Сейчас всего</span><b>${fmt(onHands)}</b></div>`
+    +`<div class="why-note" style="border:0;padding-top:4px;"><b>На жизнь до конца ${curMonthGen}: ${fmt(longFree)}</b></div>`
+    +`<div class="mcalc">${fmtN(onHands)} сейчас`
+    +(futureInc>0?`<br>+ ${fmtN(futureInc)} ещё придёт в ${monthLoc(TODAY_YM)} (${c.pendingPays.map(p=>dm(p.date)+' — '+fmtN(p.amount)).join(', ')})`:'')
+    +(inNext>0?`<br>+ ${fmtN(inNext)} придёт в ${monthLoc(NEXT_YM)} (${nextPays.map(p=>dm(p.date)+' — '+fmtN(p.amount)).join(', ')})`:'')
+    +(!futureInc&&!inNext?'<br>+ 0 — зарплаты не добавлены («План → Доходы и расходы»)':'')
     +(c.plannedInc>0?`<br>+ ${fmtN(c.plannedInc)} запланированные поступления (записи с будущей датой)`:'')
     +(payments>0?`<br>− ${fmtN(payments)} платежи (кредиты, кредитка, долги)`:'')
     +(c.plannedExp>0?`<br>− ${fmtN(c.plannedExp)} запланированные траты (записи с будущей датой)`:'')
     +(nearOneSum+oneThis>0?`<br>− ${fmtN(nearOneSum+oneThis)} разовые траты`:'')
     +(sinkNext>0?`<br>− ${fmtN(sinkNext)} копим заранее на будущие траты (${sinks.map(x=>esc(x.o.name)+' — в '+monthLoc(x.o.month)+', по '+fmtN(x.per)+'/мес').join('; ')})`:'')
     +(savingsLeft+state.plan.savings>0?`<br>− ${fmtN(savingsLeft+state.plan.savings)} подушка: ${savingsLeft<state.plan.savings?'остаток за этот месяц':'этот месяц'} + следующий (отложишь в копилку)`:'')
-    +`<br>= <b>${fmtN(Math.round(longFree))}</b> на жизнь до конца ${curMonthGen}`);
+    +`<br>= <b>${fmtN(Math.round(longFree))}</b> на жизнь до конца ${curMonthGen}</div>`
+    +`<div class="muted" style="margin-top:8px;font-size:13px;">Почему до конца ${curMonthGen}: так видно и этот месяц, и следующий — чтобы платежи в начале следующего месяца не стали сюрпризом.</div>`;
   // удастся отложить
   const fs=$('#forecastSave');
   $('#forecastCap').textContent='Накопится к концу '+curMonthGen;
@@ -1931,7 +1969,7 @@ function renderDash(c){
   let endSave,saveSub;
   if(follow&&planLife>0){
     endSave=endSave2;
-    saveSub=`если жить по плану ${fmt(planLife)}/мес: после всех платежей и разовых расходов можно накопить ${endSave>=0?fmt(endSave):'не хватит '+fmt(-endSave)}${svBack>0?' (вместе с подушкой и копилками '+fmtN(svBack)+')':''}`;
+    saveSub=`если жить по плану ${fmt(planLife)}/мес: после всех платежей, разовых трат и трат на жизнь (до конца ${MONTHS_GEN[+TODAY_YM.split('-')[1]-1]} — ${fmt(Math.max(0,planLifeThis-factLife))}, в ${monthLoc(NEXT_YM)} — ${fmt(planLife)}) останется ${endSave>=0?fmt(endSave):'минус '+fmt(-endSave)}${svBack>0?' — сюда входят подушка и копилки ('+fmtN(svBack)+')':''}`;
   }else if(factLife>1000&&NOW.getDate()>=5){
     endSave=longFree+svBack-avgDayFact*daysLong;
     saveSub=`при твоих фактических тратах (~${fmt(avgDayFact)}/день): можно накопить ${endSave>=0?fmt(endSave):'не хватит '+fmt(-endSave)}`;
@@ -1977,10 +2015,10 @@ function renderDash(c){
     dl.push(`<div class="card stat ${paid?'g':(soon||overdue?'r':'y')}">
       <div class="lbl">${esc(cr.name)} · платёж ${fmtN(cr.monthly)} ₽/мес</div>
       ${paid
-        ?`<div class="paid-mark" style="font-size:17px;">внесён ${fmtDateShort(cr.paidDate||cr.lastPaid)}</div>`
+        ?`<div class="paid-mark" style="font-size:17px;">${cr.paidDate||cr.lastPaid?'внесён '+fmtDateShort(cr.paidDate||cr.lastPaid):'в этом месяце уже оплачен'}</div><div class="hint">следующий — до ${fmtDateShort(payDateFor(NEXT_YM,cr.dueDay))}</div>`
         :`<div class="big ${overdue?'num-red':''}">до ${fmtDateShort(cr.dueISO)}</div>
           <div class="hint">${overdue?'<b style="color:var(--red)">просрочен — внеси сегодня</b>':(soon?'<b style="color:var(--red)">скоро платёж</b>':'осталось '+cr.daysToDue+' дн.')}</div>`}
-      <div class="hint">осталось платежей: ${cr.paysLeft} (последний — ${monthShort(cr.last)})</div>
+      <div class="hint">${isOngoing(cr)?'каждый месяц · срок не указан':`осталось платежей: ${cr.paysLeft} (последний — ${monthShort(cr.last)})`}</div>
       ${paid?`<button class="btn small undo" style="margin-top:8px;" data-unpaycredit="${cr.id}">↩ Не вносил — отменить отметку</button>`
         :`<button class="btn small ok-btn" style="margin-top:8px;" data-paycredit="${cr.id}">Внёс (с карты)</button>`}
     </div>`);
@@ -2026,6 +2064,14 @@ function renderDash(c){
   flashOnChange('save',fs.textContent,fs.closest('.metric'));
   flashOnChange('net',nw.textContent,$('#netWorthCard'));
 }
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-paidbefore]');if(!b)return;
+  const cr=state.credits.find(x=>x.id===+b.dataset.paidbefore);if(!cr)return;
+  cr.paidYM=TODAY_YM;delete cr.unpaidYM;save();renderComputed(true);
+  showToast(`Отметил: платёж по «${esc(cr.name)}» в этом месяце уже был. Деньги с карты не списываю — они ушли до того, как ты внёс баланс.`);
+});
+document.addEventListener('click',e=>{const b=e.target.closest('#dashAlerts [data-paycredit]');if(!b)return;
+  const btn=document.querySelector('#deadlines [data-paycredit="'+b.dataset.paycredit+'"]');if(btn)btn.click();});
 document.getElementById('deadlines').addEventListener('click',e=>{
   const u=e.target.closest('[data-unpaycredit]');
   if(u){ // отмена ошибочной отметки «Внёс»
@@ -2034,6 +2080,8 @@ document.getElementById('deadlines').addEventListener('click',e=>{
     const mine=state.tx.filter(t=>t.creditId===cr.id&&t.date.slice(0,7)===TODAY_YM);
     const sum=mine.reduce((a,t)=>a+t.amount,0);
     if(mine.length&&!confirm(`Снять отметку «внесён» и удалить запись о платеже ${fmt(sum)}? Деньги вернутся на карту.`))return;
+    if(cr.paidYM===TODAY_YM)delete cr.paidYM;
+    cr.unpaidYM=TODAY_YM;
     state.tx=state.tx.filter(t=>!mine.includes(t));
     const prev=state.tx.filter(t=>t.creditId===cr.id).map(t=>t.date).sort().pop();
     cr.lastPaid=prev||'';
@@ -2077,36 +2125,40 @@ function renderGoal(){
   const g=state.goal||0;
   setSum('goalCard',g>0?'цель '+fmt(g):'не задана');
   const el=$('#goalResult');
-  if(!g||g<=0){el.innerHTML='';return;}
+  if(!g||g<=0){el.innerHTML='';$('#goalAmount').value='';return;}
+  if(document.activeElement!==$('#goalAmount'))$('#goalAmount').value=g;
   const {free,life}=goalMonthlyFree();
   if(free<=0){
-    el.innerHTML=`<div class="banner danger" style="margin-top:8px;">При текущих тратах на жизнь (${fmt(life)}/мес) откладывать нечего — сначала освободи ${fmt(-free+1000)}: урежь жизнь или пересмотри платежи.</div>`;
+    el.innerHTML=`<div class="banner danger" style="margin-top:8px;">При текущих тратах на жизнь (${fmt(life)}/мес) откладывать нечего — сначала освободи ${fmt(-free+1000)}: урежь жизнь или пересмотри платежи.</div><button class="btn small" id="btnGoalClear" style="margin-top:8px;">Убрать цель</button>`;
     return;
   }
   const months=Math.ceil(g/free);
   const date=new Date(NOW.getFullYear(),NOW.getMonth()+months,1);
-  const dateStr=MONTHS_FULL[date.getMonth()]+' '+date.getFullYear();
-  let h=`<div class="banner ok" style="margin-top:8px;">${fmt(g)} при темпе ${fmt(free)}/мес накопишь к <b>${dateStr}</b> (≈ ${months} мес.).<br>Это при жизни ${fmt(life)}/мес.`;
+  const ymOfD=d=>d.getFullYear()+'-'+pad(d.getMonth()+1);
+  const dateStr=monthDat(ymOfD(date));
+  let h=`<div class="banner ok" style="margin-top:8px;">${fmt(g)} накопишь к <b>${dateStr}</b> (≈ ${months} мес.), если каждый месяц откладывать ${fmt(free)} — столько остаётся после платежей, жизни (${fmt(life)}/мес)${state.plan.savings>0?' и подушки ('+fmt(state.plan.savings)+'/мес)':''}.`;
   if(state.plan.follow===false)h+=` План выключен — считаю по твоим фактическим тратам.`;
   h+=`</div>`;
   // вариант «ужаться на 15%» — не жёстко, по best practice
   const life2=Math.max(3000,Math.round(life*0.85/500)*500);
-  if(life2<life){
+  const m2x=life2<life?Math.ceil(g/(free+(life-life2))):months;
+  if(life2<life&&m2x<months){
     const free2=free+(life-life2);
     const m2=Math.ceil(g/free2);
     const d2=new Date(NOW.getFullYear(),NOW.getMonth()+m2,1);
     h+=`<div class="row" style="margin-top:8px;gap:10px;align-items:center;">
-      <span>Если ужать жизнь до ${fmt(life2)} (−15%, не в ноль) — цель к <b>${MONTHS_FULL[d2.getMonth()]} ${d2.getFullYear()}</b> (${m2} мес., на ${months-m2} быстрее).</span>
+      <span>Если ужать жизнь до ${fmt(life2)} (−15%) — цель к <b>${monthDat(ymOfD(d2))}</b>, на ${months-m2} мес. быстрее.</span>
       <button class="btn small primary" id="btnGoalPlan">Построить такой план</button>
     </div>`;
   }
-  el.innerHTML=h;
+  el.innerHTML=h+'<button class="btn small" id="btnGoalClear" style="margin-top:8px;">Убрать цель</button>';
 }
 $('#btnGoal').addEventListener('click',()=>{
   const v=Math.round(num($('#goalAmount').value));
   if(v<=0){showToast('Введи сумму цели — например 50000','warn');return;}
   state.goal=v;save();renderGoal();
 });
+document.addEventListener('click',e=>{if(e.target.id!=='btnGoalClear')return;state.goal=0;$('#goalAmount').value='';save();renderGoal();showToast('Цель убрана.');});
 document.getElementById('goalCard').addEventListener('click',e=>{
   if(e.target.id!=='btnGoalPlan')return;
   const {life}=goalMonthlyFree();
@@ -2135,12 +2187,16 @@ function renderPlan(){
   if(cc>0)calc+=`<div class="calc-line"><span class="name">Взнос на кредитку (к ${fmtDateRu(state.cc.deadline)})</span><span>−${fmt(cc)}</span></div>`;
   if(debtsAuto>0)calc+=`<div class="calc-line"><span class="name">Долги с дедлайном (авто)</span><span>−${fmt(debtsAuto)}</span></div>`;
   if(manual>0)calc+=`<div class="calc-line"><span class="name">Долги без дедлайна (ползунок)</span><span>−${fmt(manual)}</span></div>`;
-  calc+=`<div class="calc-line"><span class="name">Разовые траты ${oneOpen.length?'<div class="muted" style="font-size:12px;">'+oneOpen.map(o=>esc(o.name)+' — '+fmtN(num(o.amount))+' ₽').join('; ')+'</div>':''}</span><span>−${fmt(one)}</span></div>
+  calc+=`${one>0?`<div class="calc-line"><span class="name">Разовые траты <div class="muted" style="font-size:12px;">${oneOpen.map(o=>esc(o.name)+' — '+fmtN(num(o.amount))+' ₽').join('; ')}</div></span><span>−${fmt(one)}</span></div>`:''}
     ${sinkM>0?`<div class="calc-line"><span class="name">Копим заранее на будущие траты<div class="muted" style="font-size:12px;">${sinkL.map(x=>esc(x.o.name)+' (в '+monthLoc(x.o.month)+') — по '+fmtN(x.per)+' ₽/мес').join('; ')}</div></span><span>−${fmt(sinkM)}</span></div>`:''}
     <div class="calc-line"><span class="name">Траты на жизнь (ползунок)</span><span>−${fmt(state.plan.spending)}</span></div>
     <div class="calc-line"><span class="name">Подушка (ползунок)</span><span>−${fmt(state.plan.savings)}</span></div>
     <div class="calc-line total"><span>Итог месяца</span><span class="${free>=0?'pos':'neg'}">${free>=0?'+':''}${fmt(free)}</span></div>`;
   $('#planCalc').innerHTML=calc;
+  // ползунки растягиваются под доход: при зарплате 120 000 нельзя упираться в 30 000
+  {const inc=Math.max(incomeFor(TODAY_YM),incomeFor(NEXT_YM));const up=v=>Math.ceil(v/5000)*5000;
+   $('#slSpend').max=Math.max(30000,up(inc),up(state.plan.spending));$('#slSave').max=Math.max(20000,up(inc*0.5),up(state.plan.savings));
+   $('#slDebts').max=$('#slDebts2').max=Math.max(40000,up(inc),up(state.plan.debtsPay));}
   $('#slSpend').value=state.plan.spending;$('#slSpendVal').textContent=fmt(state.plan.spending);
   $('#slSave').value=state.plan.savings;$('#slSaveVal').textContent=fmt(state.plan.savings);
   $('#slDebts').value=state.plan.debtsPay;$('#slDebtsVal').textContent=fmt(state.plan.debtsPay);
@@ -2202,6 +2258,16 @@ function syncSliders(){
   $('#slDebts2Val').textContent=fmt(state.plan.debtsPay);
   $('#slDebts').value=state.plan.debtsPay;$('#slDebts2').value=state.plan.debtsPay;
 }
+/* нажми на сумму у ползунка — можно вписать точное число */
+document.addEventListener('click',e=>{
+  const v=e.target.closest('.slider-row .val');if(!v)return;
+  const inp=v.closest('.slider-row').querySelector('input[type=range]');if(!inp)return;
+  const cur=num(inp.value);const r=prompt('Впиши сумму, ₽ в месяц',String(cur));if(r===null)return;
+  const n=Math.max(0,Math.round(num(String(r).replace(/\s/g,''))));
+  if(n>num(inp.max))inp.max=Math.ceil(n/5000)*5000;
+  const key={slSpend:'spending',slSave:'savings',slDebts:'debtsPay',slDebts2:'debtsPay'}[inp.id];if(!key)return;
+  trackChange();state.plan[key]=n;inp.value=n;save();syncSliders();renderPlan();renderForecast();renderDash(compute());
+});
 function bindSlider(id,key){
   $(id).addEventListener('input',e=>{
     trackChange();state.plan[key]=num(e.target.value);save();syncSliders();renderPlan();renderForecast();renderDash(compute());
@@ -2228,7 +2294,7 @@ $('#btnPreset5030').addEventListener('click',()=>{
   const c=compute();
   const dlYm=state.cc.deadline?state.cc.deadline.slice(0,7):'';
   const ccDue=ccDueFor(c,state.plan.month);
-  const cred=c.credits.filter(cr=>cr.active&&monthNum(state.plan.month)<=monthNum(cr.last)).reduce((s,cr)=>s+cr.monthly,0);
+  const cred=c.credits.filter(cr=>cr.active&&monthNum(state.plan.month)<=monthNum(cr.last)&&!(state.plan.month===TODAY_YM&&cr.paidThisMonth)).reduce((s,cr)=>s+cr.monthly,0);
   const auto=debtsAutoFor(c,state.plan.month);
   const one=oneTimeOpenFor(state.plan.month);
   const hard=cred+ccDue+auto+one;
@@ -2245,11 +2311,11 @@ $('#btnPresetDebts').addEventListener('click',()=>{
   const c=compute();
   const dlYm=state.cc.deadline?state.cc.deadline.slice(0,7):'';
   const ccDue=ccDueFor(c,state.plan.month);
-  const cred=c.credits.filter(cr=>cr.active&&monthNum(state.plan.month)<=monthNum(cr.last)).reduce((s,cr)=>s+cr.monthly,0);
+  const cred=c.credits.filter(cr=>cr.active&&monthNum(state.plan.month)<=monthNum(cr.last)&&!(state.plan.month===TODAY_YM&&cr.paidThisMonth)).reduce((s,cr)=>s+cr.monthly,0);
   const auto=debtsAutoFor(c,state.plan.month);
   const one=oneTimeOpenFor(state.plan.month);
   const hard=cred+ccDue+auto+one;
-  const life=Math.round(Math.max(3000,Math.min(8000,inc*0.25))/500)*500;
+  const life=Math.round(Math.max(5000,Math.min(state.plan.spending||Infinity,inc*0.3))/500)*500;
   const rest=Math.max(0,inc-hard-life);
   state.plan.spending=life;state.plan.savings=0;
   if(c.debtsNoDl.length)state.plan.debtsPay=Math.round(rest/500)*500;
@@ -2265,9 +2331,7 @@ $('#btnPlanReady').addEventListener('click',()=>{state.onboarded=true;save();swi
 function strategyOrder(){
   const list=compute().debts.filter(d=>d.enabled&&!d.deadline&&d.amount>0)
     .map(d=>({id:d.id,name:d.name,amount:d.amount,rate:num(d.rate)}));
-  return list.sort((a,b)=>state.debtStrategy==='avalanche'
-    ?(num(b.rate)-num(a.rate))||(a.amount-b.amount)
-    :(a.amount-b.amount)||(num(b.rate)-num(a.rate)));
+  return list.sort((a,b)=>a.amount-b.amount);
 }
 function simulate(){
   const c=compute();
@@ -2278,6 +2342,11 @@ function simulate(){
   const freedDone={};
   let deficit=false;
   const rows=[];let allClosedYM=null;const closedYM={};
+  // этот месяц: что ещё по плану отдать по долгам без срока + взносы по долгам, срок которых уже наступил
+  {let cur=manualFor(c,TODAY_YM);
+   for(const od of order){if(cur<=0)break;const d=debts.find(x=>x.id===od.id);if(!d||d.left<=0)continue;
+     const pay=Math.min(d.left,cur);d.left-=pay;cur-=pay;if(d.left<=0&&!closedYM[od.id])closedYM[od.id]=TODAY_YM;}
+   for(const d of debts){if(d.enabled&&d.deadline&&d.left>0&&monthNum(d.deadline.slice(0,7))<=monthNum(TODAY_YM)){d.left=Math.max(0,d.left-d.monthly);if(d.left<=0)closedYM[d.id]=TODAY_YM;}}}
   for(let i=0;i<36;i++){
     const m=addMonths(start,i);
     const income=incomeFor(m);
@@ -2322,16 +2391,11 @@ function renderForecast(){
   const c=compute();
   const {rows,allClosedYM,deficit,order,closedYM}=simulate();
   // стратегия погашения
-  let strat=`<div class="row" style="gap:18px;flex-wrap:wrap;">
-    <label style="display:flex;gap:6px;align-items:center;cursor:pointer;">
-      <input type="radio" name="strat" value="snowball" ${state.debtStrategy!=='avalanche'?'checked':''}> Снежный ком — сначала маленькие (быстрые победы)</label>
-    <label style="display:flex;gap:6px;align-items:center;cursor:pointer;">
-      <input type="radio" name="strat" value="avalanche" ${state.debtStrategy==='avalanche'?'checked':''}> Лавина — сначала с высоким % (меньше переплат)</label>
-  </div>`;
+  let strat=`<div class="muted">Сначала закрываю самый маленький долг, потом следующий — так быстрее видно результат.</div>`;
   if(order.length){
     strat+='<ol style="margin:10px 0 0;padding-left:22px;">'+order.map((d,i)=>
-      `<li style="margin-bottom:4px;"><b>${esc(d.name)}</b> — ${fmt(d.amount)}${d.rate>0?' · '+d.rate+'% год.':''} — ${closedYM[d.id]?'закроешь к <b>'+monthDat(closedYM[d.id])+'</b>':'при текущем темпе не закроешь — подвинь ползунок вправо'}</li>`).join('')+'</ol>';
-    strat+='<div class="footer-note">Все свободные деньги идут первому долгу из списка, после его закрытия — следующему. Когда закрывается кредит, его платёж автоматически перекатывается в долги. Проценты по ставке пока не начисляются — ставка влияет только на порядок «лавины».</div>';
+      `<li style="margin-bottom:4px;"><b>${esc(d.name)}</b> — ${fmt(d.amount)} — ${closedYM[d.id]?'закроешь к <b>'+monthDat(closedYM[d.id])+'</b>':'при текущем темпе не закроешь — подвинь ползунок вправо'}</li>`).join('')+'</ol>';
+    strat+='<div class="footer-note">Все свободные деньги идут первому долгу из списка, после его закрытия — следующему. Когда закрывается кредит, его платёж автоматически перекатывается в долги.</div>';
   }
   let list='<h3>Стратегия погашения</h3>'+strat+'<h3 style="margin-top:14px;">Все долги</h3>';
   for(const d of c.debts){
@@ -2339,7 +2403,7 @@ function renderForecast(){
       list+=`<div class="calc-line"><span class="name">${esc(d.name)} — до ${fmtDateRu(d.deadline)}${d.note?' <span class="muted">('+esc(d.note)+')</span>':''}</span>
         <span class="neg">${fmt(d.amount)} <span class="muted">(${fmt(d.monthly)}/мес)</span></span></div>`;
     }else{
-      list+=`<div class="calc-line"><span class="name">${esc(d.name)}${d.note?' <span class="muted">('+esc(d.note)+')</span>':''}${d.rate>0?' <span class="muted">· '+d.rate+'%</span>':''}</span>
+      list+=`<div class="calc-line"><span class="name">${esc(d.name)}${d.note?' <span class="muted">('+esc(d.note)+')</span>':''}</span>
         <span class="neg">${fmt(d.amount)} <span class="muted">(${closedYM[d.id]?'закроется к '+monthDat(closedYM[d.id]):'темп слишком низкий'})</span></span></div>`;
     }
   }
@@ -2512,17 +2576,21 @@ let DUPS=new Set();
 const dupKey=t=>[t.date,t.type,t.amount,t.category,t.method,t.note||''].join('|');
 function txRow(t){
   const sign=t.type==='move'?'⇄ ':(t.type==='inc'||t.type==='unsave')?'+':'−';
-  const pill=t.type==='move'?`<span class="pill p-repay">перевод</span> ${t.method==='cash'?'→ ':'→ '}`
-    :(t.type==='save'||t.type==='unsave')?`<span class="pill p-repay">${t.type==='save'?'в копилку':'из копилки'}</span> `+METHOD_PILL[t.method]
-    :t.type==='debtpay'?'<span class="pill p-repay">долг</span> '+METHOD_PILL[t.method]
-    :t.type==='repay'?'<span class="pill p-repay">↩︎ взнос</span> '+METHOD_PILL[t.method]
-    :t.type==='inc'?`<span class="pill p-inc">${t.creditId?'':(t.srcKey?'начисление':'доход')}</span> `+METHOD_PILL[t.method]
-    :METHOD_PILL[t.method];
-  const fut=t.date>TODAY_ISO?' <span class="pill p-fut" title="Будущая дата: на деньги не влияет, пока этот день не наступил">запланировано</span>':'';
+  const MN={cash:'наличные',card:'карта',credit:'кредитка'};
+  const kind=t.type==='move'?'перевод '+(t.method==='cash'?'нал. → карта':'карта → нал.')
+    :(t.type==='save'||t.type==='unsave')?(t.type==='save'?'в копилку':'из копилки')+' · '+MN[t.method]
+    :t.type==='debtpay'?'возврат долга · '+MN[t.method]
+    :t.type==='repay'?'взнос на кредитку · '+MN[t.method]
+    :t.type==='inc'?(t.srcKey?'зарплата (авто)':'доход')+' · '+MN[t.method]
+    :MN[t.method];
+  const fut=t.date>TODAY_ISO?' <span class="pill p-fut" title="Будущая дата: на деньги не влияет, пока этот день не наступил">план</span>':'';
   const dup=DUPS.has(dupKey(t))&&!t.srcKey&&!t.creditId?' <span class="pill p-dup" title="Есть такая же запись: та же дата, сумма, категория и способ">дубль?</span>':'';
-  return `<tr><td>${fmtDateRu(t.date)}</td><td class="${(t.type==='move'||t.type==='save'||t.type==='unsave')?'':(sign==='+'?'pos':'neg')}"><b>${sign}${fmtN(t.amount)}</b></td><td>${esc(t.category)}</td><td>${pill}${dup}${fut}</td><td class="muted">${esc(t.note)}</td><td><button class="del" data-del="${t.id}" title="удалить">✕</button></td></tr>`;
+  const cls=(t.type==='move'||t.type==='save'||t.type==='unsave')?'':(sign==='+'?'pos':'neg');
+  return `<div class="txr"><div class="txm"><div class="txc">${esc(t.category)}${fut}${dup}</div><div class="txs">${fmtDateShort(t.date)} · ${kind}${t.note&&!(t.srcKey)?' · '+esc(t.note):''}</div></div><div class="txa ${cls}">${sign}${fmtN(t.amount)}</div><button class="del" data-del="${t.id}" aria-label="Удалить запись">✕</button></div>`;
 }
 function renderTx(){
+  {const ops=state.tx.filter(t=>t.date===TODAY_ISO&&!t.srcKey).length,ns=(state.noSpend||[]).includes(TODAY_ISO);
+   $('#noSpendRow').innerHTML=ops?'':(ns?'<div class="muted" style="text-align:center;">Сегодня отмечен как день без трат</div>':'<button class="btn block" type="button" data-nospend style="min-height:44px;font-size:15px;">Сегодня трат не было</button>');}
   rebuildCats();rebuildMethods();rebuildDebtSelect();rebuildOneSelect();
   const monthTx=state.tx.filter(t=>t.date<=TODAY_ISO&&t.date.slice(0,7)===TODAY_YM);
   const byCat={},byMet={};let total=0,incTotal=0,repayTotal=0,potTotal=0,moveTotal=0;
@@ -2565,8 +2633,8 @@ function renderTx(){
     const open=openBefore.size?openBefore.has(ym):ym===TODAY_YM;
     const eager=open||idx<2;   // старые месяцы рисуем только когда их раскрыли — журнал не тормозит
     h+=`<details class="month" data-ym="${ym}" ${open?'open':''}>
-      <summary><span>${ym===TODAY_YM?'':''}${monthFull(ym)}</span><span class="m-sum">траты ${fmtN(e)} ₽ · доходы ${fmtN(i)} ₽ · ${list.length} зап.</span></summary>
-      <div class="m-body table-wrap" ${eager?'':'data-lazy="1"'}>${eager?`<table>${list.map(txRow).join('')}</table>`:''}</div></details>`;
+      <summary><span>${monthFull(ym)}</span><span class="m-sum">${[e?`<span class="neg">−${fmtN(e)}</span>`:'',i?`<span class="pos">+${fmtN(i)}</span>`:''].filter(Boolean).join(' · ')||'—'}</span></summary>
+      <div class="m-body" ${eager?'':'data-lazy="1"'}>${eager?list.map(txRow).join(''):''}</div></details>`;
   });
   $('#txHistory').innerHTML=h;
 }
@@ -2574,34 +2642,28 @@ document.getElementById('txHistory').addEventListener('toggle',e=>{
   const d=e.target;if(!d.open||!d.dataset||!d.dataset.ym)return;
   const body=d.querySelector('[data-lazy]');if(!body)return;
   const list=state.tx.filter(t=>t.date.slice(0,7)===d.dataset.ym).sort((a,b)=>b.date.localeCompare(a.date)||b.id-a.id);
-  body.innerHTML=`<table>${list.map(txRow).join('')}</table>`;body.removeAttribute('data-lazy');
+  body.innerHTML=list.map(txRow).join('');body.removeAttribute('data-lazy');
 },true);
 
 /* ================= история ================= */
 function renderHistory(){
   // последние 6 месяцев
-  const months=[];
-  for(let i=5;i>=0;i--)months.push(addMonths(TODAY_YM,-i));
+  const months=[];const firstYM=(state.tx.map(t=>t.date).filter(d=>d<=TODAY_ISO).sort()[0]||TODAY_ISO).slice(0,7);
+  for(let i=5;i>=0;i--){const m=addMonths(TODAY_YM,-i);if(monthNum(m)>=monthNum(firstYM))months.push(m);}
   const stats=months.map(ym=>{
     const inc=state.tx.filter(t=>t.type==='inc'&&t.date<=TODAY_ISO&&t.date.slice(0,7)===ym).reduce((s,t)=>s+t.amount,0);
     const exp=state.tx.filter(t=>t.type==='exp'&&t.date<=TODAY_ISO&&t.date.slice(0,7)===ym).reduce((s,t)=>s+t.amount,0);
     return {ym,inc,exp};
   });
   const maxV=Math.max(1,...stats.map(s=>Math.max(s.inc,s.exp)));
-  let h='<div class="hchart">';
-  for(const s of stats){
-    const inH=Math.round(s.inc/maxV*110),outH=Math.round(s.exp/maxV*110);
-    h+=`<div class="hcol">
-      <div class="hbars">
-        <div class="hbar in" style="height:${Math.max(3,inH)}px" title="доходы ${fmtN(s.inc)}"></div>
-        <div class="hbar out" style="height:${Math.max(3,outH)}px" title="траты ${fmtN(s.exp)}"></div>
-      </div>
-      <div class="nums"><span class="pos">+${fmtN(s.inc)}</span> / <span class="neg">−${fmtN(s.exp)}</span><br>
-      <b class="${s.inc-s.exp>=0?'pos':'neg'}">${s.inc-s.exp>=0?'+':''}${fmtN(s.inc-s.exp)}</b></div>
-      <div class="cap">${monthShort(s.ym)}${s.ym===TODAY_YM?' ·сейчас':''}</div>
-    </div>`;
+  let h='';
+  for(const s of stats.slice().reverse()){
+    const bal=s.inc-s.exp;
+    h+=`<div class="hm"><div class="hm-h"><span>${monthFull(s.ym)}${s.ym===TODAY_YM?' <span class="muted">· сейчас</span>':''}</span><b class="${bal>=0?'pos':'neg'}">${bal>=0?'+':''}${fmtN(bal)}</b></div>
+      <div class="hm-r"><span class="muted">пришло</span><div class="hm-t"><div class="in" style="width:${(s.inc/maxV*100).toFixed(1)}%"></div></div><span class="pos">${fmtN(s.inc)}</span></div>
+      <div class="hm-r"><span class="muted">ушло</span><div class="hm-t"><div class="out" style="width:${(s.exp/maxV*100).toFixed(1)}%"></div></div><span class="neg">${fmtN(s.exp)}</span></div></div>`;
   }
-  h+='</div><div class="footer-note">доходы · траты · цифры под столбцами: «+пришло / −ушло» и остаток месяца.</div>';
+  h+='<div class="footer-note">Справа вверху — сколько осталось от месяца: пришло минус ушло.</div>';
   $('#histMonths').innerHTML=h;
   // категории: топ-6 текущего месяца против прошлого
   const prevYM=addMonths(TODAY_YM,-1);
@@ -2634,75 +2696,88 @@ function renderHistory(){
 }
 
 /* ================= настройки ================= */
+const ONGOING='2099-12';                       // кредит без известного срока (ипотека и т.п.)
+const isOngoing=cr=>monthNum(cr.last)>=monthNum('2099-01');
+function creditBase(cr,c){const x=(c||compute()).credits.find(k=>k.id===cr.id);return x&&x.paidThisMonth?NEXT_YM:TODAY_YM;}
+function creditLeftN(cr,c){if(isOngoing(cr))return '';return Math.max(0,monthsIncl(creditBase(cr,c),cr.last));}
+function creditInfo(cr,c){
+  if(isOngoing(cr))return 'срок не указан — считаю, что платёж будет каждый месяц';
+  const n=creditLeftN(cr,c);
+  if(n<=0)return 'выплачен — можно удалить';
+  return `последний платёж — ${monthFull(cr.last)} · осталось выплатить ≈ ${fmt(num(cr.payment)*n)}`;
+}
 function renderSetup(){
+  const c=compute();
   let h='';
-  for(const inc of state.incomes){
-    h+=`<div data-inc="${inc.id}" style="border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:10px;">
-      <div class="row">
-        <input type="text" class="inc-name" value="${esc(inc.name)}" style="flex:1;min-width:180px;" placeholder="название">
-        <span class="muted">действует с</span> <input type="date" class="inc-from" value="${inc.from}">
-        <button class="del" data-delinc="${inc.id}">✕</button>
-      </div>
-      <div class="muted" style="font-size:12px;margin:6px 0 4px;">Выплаты в месяц (аванс + зарплата):</div>`;
-    for(let pi=0;pi<inc.pays.length;pi++){
-      const p=inc.pays[pi];
-      h+=`<div class="row" data-pay-row>
-        <span class="muted">число:</span> <input type="number" class="pay-day" value="${p.day}" min="1" max="31" style="width:70px;">
-        <input type="number" class="pay-amt" value="${num(p.amount)}" style="width:110px;" inputmode="numeric"> ₽
-        <select class="pay-method"><option value="card" ${p.method==='card'?'selected':''}>на карту</option><option value="cash" ${p.method==='cash'?'selected':''}>наличными</option></select>
-        <button class="del" data-delpay="${pi}">✕</button>
+  state.incomes.forEach((inc,k)=>{
+    const later=inc.from>TODAY_ISO;
+    h+=`<div class="item" data-inc="${inc.id}">
+      <div class="item-h"><span class="nb">${k+1}</span><input type="text" class="inc-name" value="${esc(inc.name)}" placeholder="например, Работа"><button class="del" data-delinc="${inc.id}" aria-label="Удалить доход">✕</button></div>`;
+    inc.pays.forEach((p,pi)=>{
+      h+=`<div class="pay-grid g-pay" data-pay-row>
+        <label class="field"><span>${inc.pays.length>1?(pi+1)+'-я, ':''}число</span><input type="number" class="pay-day" value="${p.day}" min="1" max="31" inputmode="numeric"></label>
+        <label class="field"><span>Сумма, ₽</span><input type="number" class="pay-amt" value="${num(p.amount)||''}" inputmode="numeric" placeholder="0"></label>
+        <label class="field"><span>Куда</span><select class="pay-method"><option value="card" ${p.method==='card'?'selected':''}>на карту</option><option value="cash" ${p.method==='cash'?'selected':''}>наличными</option></select></label>
+        ${inc.pays.length>1?`<button class="del" data-delpay="${pi}" aria-label="Удалить выплату">✕</button>`:''}
       </div>`;
-    }
-    h+=`<button class="btn small" data-addpay>+ выплату</button></div>`;
-  }
-  $('#incomesForm').innerHTML=h;
+    });
+    h+=`<div class="item-foot"><button class="btn small" data-addpay>+ ещё выплата (аванс)</button>
+      ${later?`<label class="field inline"><span>начнётся с</span><input type="date" class="inc-from" value="${inc.from}"></label>`
+        :`<button class="linkish" data-incfrom>Начнётся позже?</button>`}</div></div>`;
+  });
+  $('#incomesForm').innerHTML=h||'<div class="muted">Доходов нет — добавь зарплату: число месяца и сумму каждой выплаты.</div>';
   h='';
-  for(const cr of state.credits){
-    h+=`<div class="row" data-credit="${cr.id}">
-      <input type="text" class="cr-name" value="${esc(cr.name)}" style="min-width:140px;flex:1;" placeholder="название">
-      <input type="number" class="cr-pay" value="${num(cr.payment)}" style="width:110px;" inputmode="numeric"> ₽/мес
-      <span class="muted">внести до</span> <input type="number" class="cr-due" value="${cr.dueDay}" min="1" max="31" style="width:70px;"> числа
-      <input type="number" class="cr-rate" value="${num(cr.rate)}" style="width:70px;" inputmode="numeric" placeholder="0"> % год.
-      <span class="muted">последний платёж</span> <select class="cr-last">${monthOptions(cr.last,TODAY_YM,'2029-06')}</select>
-      <button class="del" data-delcredit="${cr.id}">✕</button></div>`;
-  }
+  state.credits.forEach((cr,k)=>{
+    h+=`<div class="item" data-credit="${cr.id}">
+      <div class="item-h"><span class="nb">${k+1}</span><input type="text" class="cr-name" value="${esc(cr.name)}" placeholder="например, Ипотека"><button class="del" data-delcredit="${cr.id}" aria-label="Удалить кредит">✕</button></div>
+      <div class="pay-grid g-cr">
+        <label class="field"><span>Платёж в месяц, ₽</span><input type="number" class="cr-pay" value="${num(cr.payment)||''}" inputmode="numeric" placeholder="0"></label>
+        <label class="field"><span>До числа</span><input type="number" class="cr-due" value="${cr.dueDay}" min="1" max="31" inputmode="numeric"></label>
+        <label class="field"><span>Осталось платежей</span><input type="number" class="cr-left" value="${creditLeftN(cr,c)}" min="0" inputmode="numeric" placeholder="не знаю"></label>
+      </div>
+      <div class="muted cr-info">${creditInfo(cr,c)}</div></div>`;
+  });
   $('#creditsForm').innerHTML=h||'<div class="muted">Кредитов нет — добавь, если есть (каждый со своим платежом и датой).</div>';
   h='';
-  for(const d of state.debts){
-    h+=`<div class="row" data-debt="${d.id}" style="${d.enabled?'':'opacity:.55;'}">
-      <input type="text" class="debt-name" value="${esc(d.name)}" style="min-width:120px;flex:1;" placeholder="кому / за что">
-      <input type="number" class="debt-amt" value="${num(d.amount)}" style="width:120px;" inputmode="numeric"> ₽
-      <input type="number" class="debt-rate" value="${num(d.rate)}" style="width:70px;" inputmode="numeric" placeholder="0"> % год.
-      <span class="muted">отдать до</span> <input type="date" class="debt-dl" value="${d.deadline||''}">
-      <input type="text" class="debt-note" value="${esc(d.note||'')}" style="min-width:120px;flex:1;" placeholder="примечание">
-      <label class="muted" style="display:flex;gap:4px;align-items:center;"><input type="checkbox" class="debt-en" ${d.enabled?'checked':''}> учитывать</label>
-      <button class="del" data-deldebt="${d.id}">✕</button></div>`;
-  }
+  state.debts.forEach((d,k)=>{
+    h+=`<div class="item ${d.enabled?'':'off'}" data-debt="${d.id}">
+      <div class="item-h"><span class="nb">${k+1}</span><input type="text" class="debt-name" value="${esc(d.name)}" placeholder="кому, например Брату"><button class="del" data-deldebt="${d.id}" aria-label="Удалить долг">✕</button></div>
+      <div class="pay-grid">
+        <label class="field"><span>Сколько должен, ₽</span><input type="number" class="debt-amt" value="${num(d.amount)||''}" inputmode="numeric" placeholder="0"></label>
+        <label class="field"><span>Отдать до (если есть срок)</span><input type="date" class="debt-dl" value="${d.deadline||''}"></label>
+      </div>
+      <div class="pay-grid">
+        <label class="field" style="grid-column:1/-1;"><span>Примечание</span><input type="text" class="debt-note" value="${esc(d.note||'')}" placeholder="необязательно"></label>
+      </div>
+      <label class="muted check-row"><input type="checkbox" class="debt-en" ${d.enabled?'checked':''}> учитывать в расчётах</label></div>`;
+  });
   $('#debtsForm').innerHTML=h;
   h='';
   const sinkMap={};for(const x of sinkList())sinkMap[x.o.id]=x;
-  for(const o of state.oneTime){
+  state.oneTime.forEach((o,k)=>{
     const sk=sinkMap[o.id];
-    h+=`<div class="row ${o.done?'done-item':''}" data-one="${o.id}">
-      <input type="text" class="one-name" value="${esc(o.name)}" style="flex:1;min-width:180px;">
-      <input type="number" class="one-amt" value="${num(o.amount)}" style="width:110px;" inputmode="numeric"> ₽
-      <select class="one-month">${monthOptions(o.month,TODAY_YM,OPT_TO)}</select>
-      <span class="muted one-sink" style="font-size:12.5px;">${sinkHint(sk)}</span>
-      ${o.done
-        ?'<span class="pill p-inc">закрыто</span><button class="btn small" data-reopen="'+o.id+'">вернуть</button>'
-        :'<button class="btn small ok-btn" data-payone="'+o.id+'" data-how="card" title="Запишет трату в журнал: с карты">Оплатил</button><button class="btn small" data-payone="'+o.id+'" data-how="cash" title="Запишет трату в журнал: наличными">Наличными</button><button class="btn small" data-closeone="'+o.id+'" title="Убрать из планов без записи в журнал — деньги в кошельке не изменятся">Закрыть без записи</button>'}
-      <button class="del" data-delone="${o.id}">✕</button></div>`;
-  }
+    h+=`<div class="item ${o.done?'done-item':''}" data-one="${o.id}">
+      <div class="item-h"><span class="nb">${k+1}</span><input type="text" class="one-name" value="${esc(o.name)}" placeholder="например, Подарок маме"><button class="del" data-delone="${o.id}" aria-label="Удалить">✕</button></div>
+      <div class="pay-grid">
+        <label class="field"><span>Сумма, ₽</span><input type="number" class="one-amt" value="${num(o.amount)||''}" inputmode="numeric" placeholder="0"></label>
+        <label class="field"><span>Когда</span><select class="one-month">${monthOptions(o.month,TODAY_YM,OPT_TO)}</select></label>
+      </div>
+      <div class="muted one-sink" style="font-size:12.5px;">${sinkHint(sk)}</div>
+      <div class="item-foot">${o.done
+        ?'<span class="pill p-inc">оплачено</span><button class="btn small" data-reopen="'+o.id+'">вернуть</button>'
+        :'<button class="btn small ok-btn" data-payone="'+o.id+'" data-how="card" title="Запишет трату в журнал: с карты">Оплатил картой</button><button class="btn small" data-payone="'+o.id+'" data-how="cash" title="Запишет трату в журнал: наличными">Наличными</button><button class="btn small" data-closeone="'+o.id+'" title="Убрать из планов без записи в журнал — деньги в кошельке не изменятся">Отменилась</button>'}</div></div>`;
+  });
   $('#oneTimeForm').innerHTML=h;
   $('#ccLimit').value=state.cc.limit;
   $('#ccDeadline').value=state.cc.deadline;
   $('#ccGrace').value=state.cc.grace;
   $('#ccRate').value=state.cc.rate;
 }
-$('#addIncome').addEventListener('click',()=>{state.incomes.push({id:uid(),name:'Новый доход',from:TODAY_ISO,pays:[{day:5,amount:0,method:'card'}]});renderSetup();setupChanged();});
-$('#addCredit').addEventListener('click',()=>{state.credits.push({id:uid(),name:'Новый кредит',payment:0,dueDay:15,last:'2027-12',lastPaid:''});renderSetup();setupChanged();});
-$('#addDebt').addEventListener('click',()=>{state.debts.push({id:uid(),name:'Новый долг',note:'',amount:0,deadline:'',enabled:true});renderSetup();setupChanged();});
-  $('#addOneTime').addEventListener('click',()=>{state.oneTime.push({id:uid(),name:'Новая трата',amount:0,month:NEXT_YM,done:false,start:TODAY_YM});renderSetup();setupChanged();});
+const focusNew=sel=>setTimeout(()=>{const el=document.querySelector(sel);if(el){el.focus();el.select&&el.select();}},30);
+$('#addIncome').addEventListener('click',()=>{state.incomes.push({id:uid(),name:'Работа',from:TODAY_ISO,pays:[{day:10,amount:0,method:'card'}]});renderSetup();setupChanged();focusNew('#incomesForm .item:last-child .pay-amt');});
+$('#addCredit').addEventListener('click',()=>{state.credits.push({id:uid(),name:'Кредит',payment:0,dueDay:15,last:ONGOING,lastPaid:'',added:TODAY_ISO});renderSetup();setupChanged();focusNew('#creditsForm .item:last-child .cr-name');});
+$('#addDebt').addEventListener('click',()=>{state.debts.push({id:uid(),name:'',note:'',amount:0,deadline:'',enabled:true});renderSetup();setupChanged();focusNew('#debtsForm .item:last-child .debt-name');});
+  $('#addOneTime').addEventListener('click',()=>{state.oneTime.push({id:uid(),name:'',amount:0,month:NEXT_YM,done:false,start:TODAY_YM});renderSetup();setupChanged();focusNew('#oneTimeForm .item:last-child .one-name');});
 $('#btnOnboarded').addEventListener('click',()=>{save();switchTab('plan');renderPlan();showToast('Настрой план: сколько тратить на жизнь и откладывать. Потом жми «План готов».');});
 /* изменение настроек: сохраняем, пересчитываем и коротко говорим, что поменялось на панели */
 let chgBase=null,chgTimer=null;
@@ -2731,7 +2806,7 @@ document.getElementById('incomesForm').addEventListener('input',e=>{
   const box=e.target.closest('[data-inc]');if(!box)return;
   const inc=state.incomes.find(i=>i.id===+box.dataset.inc);if(!inc)return;
   if(e.target.classList.contains('inc-name'))inc.name=e.target.value;
-  if(e.target.classList.contains('inc-from'))inc.from=e.target.value;
+  if(e.target.classList.contains('inc-from'))inc.from=e.target.value||TODAY_ISO;
   const pr=e.target.closest('[data-pay-row]');
   if(pr){
     const pi=[...box.querySelectorAll('[data-pay-row]')].indexOf(pr);
@@ -2755,7 +2830,8 @@ document.getElementById('incomesForm').addEventListener('click',e=>{
   const inc=state.incomes.find(i=>i.id===+box.dataset.inc);if(!inc)return;
   const dp=e.target.closest('[data-delpay]');
   if(dp){const pi=+dp.dataset.delpay;inc.pays.splice(pi,1);renderSetup();setupChanged();return;}
-  if(e.target.closest('[data-addpay]')){inc.pays.push({day:20,amount:0,method:'card'});renderSetup();setupChanged();return;}
+  if(e.target.closest('[data-addpay]')){inc.pays.push({day:25,amount:0,method:'card'});renderSetup();setupChanged();return;}
+  if(e.target.closest('[data-incfrom]')){inc.from=addDaysISO(TODAY_ISO,1);renderSetup();setupChanged();return;}
   const di=e.target.closest('[data-delinc]');
   if(di){state.incomes=state.incomes.filter(i=>i.id!==+di.dataset.delinc);renderSetup();setupChanged();}
 });
@@ -2766,7 +2842,11 @@ document.getElementById('creditsForm').addEventListener('input',e=>{
   if(e.target.classList.contains('cr-name'))cr.name=e.target.value;
   if(e.target.classList.contains('cr-pay'))cr.payment=num(e.target.value);
   if(e.target.classList.contains('cr-due'))cr.dueDay=Math.min(31,Math.max(1,Math.round(num(e.target.value)||1)));
-  if(e.target.classList.contains('cr-rate'))cr.rate=num(e.target.value);
+  if(e.target.classList.contains('cr-left')){
+    const n=Math.round(num(e.target.value));
+    cr.last=n>0?addMonths(creditBase(cr),n-1):ONGOING;
+  }
+  const info=row.querySelector('.cr-info');if(info)info.textContent=creditInfo(cr);
   setupChanged();
 });
 document.getElementById('creditsForm').addEventListener('change',e=>{
@@ -2784,7 +2864,6 @@ document.getElementById('debtsForm').addEventListener('input',e=>{
   const d=state.debts.find(x=>x.id===+row.dataset.debt);if(!d)return;
   if(e.target.classList.contains('debt-name'))d.name=e.target.value;
   if(e.target.classList.contains('debt-amt'))d.amount=num(e.target.value);
-  if(e.target.classList.contains('debt-rate'))d.rate=num(e.target.value);
   if(e.target.classList.contains('debt-dl'))d.deadline=e.target.value;
   if(e.target.classList.contains('debt-note'))d.note=e.target.value;
   setupChanged();
@@ -2852,6 +2931,9 @@ $('#ccGrace').addEventListener('input',e=>{state.cc.grace=Math.max(0,Math.round(
 $('#ccRate').addEventListener('input',e=>{state.cc.rate=Math.max(0,num(e.target.value));setupChanged();});
 
 /* ================= бэкап / сброс ================= */
+document.addEventListener('click',e=>{if(!e.target.closest('[data-nospend]'))return;
+  state.noSpend=(state.noSpend||[]).filter(d=>d>=addDaysISO(TODAY_ISO,-60));state.noSpend.push(TODAY_ISO);save();renderComputed(true);
+  showToast('Отметил: сегодня без трат. Лимит на завтра станет чуть больше — неистраченное переходит дальше.');});
 document.addEventListener('click',e=>{if(e.target.closest('[data-backup]'))$('#btnExport').click();const g=e.target.closest('[data-goto]');if(g)switchTab(g.dataset.goto);});
 $('#btnExport').addEventListener('click',async()=>{
   const text=LOAD_FAILED?(localStorage.getItem(LS)||''):JSON.stringify(state,null,2);
@@ -2910,13 +2992,13 @@ function init(){
 function fitNav(){}
 /* ===== пошаговое обучение при первом запуске: переключает вкладки и ждёт, пока человек заполнит ===== */
 const TOUR=[
-  {title:'Привет! Настроим за 3 минуты',text:'Пройдём 5 коротких шагов: доходы → платежи → деньги сейчас → план трат → журнал. Дальше приложение само будет считать, сколько можно тратить в день, чтобы хватило до зарплаты.',next:'Начать'},
-  {tab:'setup',target:'#setIncCard',title:'Доходы',text:'Нажми «+ Добавить источник дохода». Впиши название (например «Работа»), число месяца и сумму каждой выплаты. Аванс и зарплата — две строки («+ выплату»).',done:()=>state.incomes.some(i=>i.pays.some(p=>num(p.amount)>0)),need:'Добавь хотя бы одну выплату с суммой'},
-  {tab:'setup',target:'#setCredCard',title:'Кредиты, кредитка, долги',text:'Если есть кредит, кредитка или долг — добавь здесь и в блоках ниже (листай вниз). Приложение будет заранее откладывать на платежи. Если ничего нет — просто «Дальше».'},
-  {tab:'dash',sheet:'money',target:'.cards4',title:'Сколько денег сейчас',text:'Впиши, сколько у тебя сейчас наличных и сколько на карте. Если есть долг по кредитке — тоже. Потом это окно открывается нажатием на «Деньги сейчас».',done:()=>{const c=compute();return c.cash+c.card>0;},need:'Впиши наличные или сумму на карте'},
-  {tab:'plan',target:'#slSpend',title:'План трат',text:'Передвинь «Траты на жизнь» — сколько в месяц уходит на еду, проезд, мелочи. Можно примерно, потом поправишь. Ниже — сколько хочешь откладывать.',done:()=>state.plan.spending>0,need:'Передвинь ползунок «Траты на жизнь»'},
-  {tab:'dash',sheet:'add',target:'#txForm',title:'Каждый день — запись',text:'Круглая кнопка «+» внизу открывает это окно: сумма, категория, наличные или карта → «Добавить». Зарплата появится сама в день выплаты. Все записи — в разделе «Журнал».'},
-  {tab:'dash',target:'#heroCard',title:'Готово',text:'Большая цифра на зелёной плашке — сколько можно потратить сегодня, чтобы хватило на всё до зарплаты. Нажми на неё — покажу, как посчитано. Хочешь напоминание каждый вечер в 21:00 внести траты?',remind:true,next:'Начать пользоваться'},
+  {title:'Привет! Настроим за 3 минуты',text:'5 коротких шагов: зарплата → платежи → сколько денег сейчас → план трат → как вносить траты. Потом приложение каждый день будет показывать, сколько можно потратить, чтобы хватило до зарплаты.',next:'Начать'},
+  {tab:'setup',target:'#setIncCard',title:'1. Зарплата',text:'Нажми «+ Добавить источник дохода» и впиши число месяца и сумму. Если платят дважды (аванс и зарплата) — «+ ещё выплата».',done:()=>state.incomes.some(i=>i.pays.some(p=>num(p.amount)>0)),need:'Впиши хотя бы одну выплату с суммой'},
+  {tab:'setup',target:'#setCredCard',title:'2. Платежи',text:'Есть кредит, ипотека, кредитка или долг — добавь (ниже на этой странице). Не знаешь, сколько платежей осталось, — оставь пустым. Нет ничего — жми «Дальше».'},
+  {tab:'dash',sheet:'money',target:'.cards4',title:'3. Сколько денег сейчас',text:'Впиши, сколько сейчас наличных и на карте. Это окно потом открывается нажатием на «Деньги сейчас».',done:()=>{const c=compute();return c.cash+c.card>0;},need:'Впиши наличные или сумму на карте'},
+  {tab:'plan',target:'#slSpend',title:'4. План трат',text:'Сколько в месяц уходит на жизнь: еда, проезд, мелочи. Можно примерно. Нажми на сумму справа — впишешь точно.',done:()=>state.plan.spending>0,need:'Задай «Траты на жизнь»'},
+  {tab:'dash',sheet:'add',target:'#txForm',title:'5. Каждый день',text:'Потратил — нажми «+» внизу: сумма, категория, наличные или карта. Зарплата запишется сама. Не было трат — ничего не вноси.'},
+  {tab:'dash',target:'#heroCard',title:'Готово',text:'Большая цифра — сколько можно потратить сегодня. Нажми на неё — покажу, как посчитано. Напомнить каждый вечер в 21:00 внести траты?',remind:true,next:'Начать пользоваться'},
 ];
 let tourTimer=null;
 function tourActive(){return !state.tourDone;}
