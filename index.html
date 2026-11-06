@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#0a1430">
+<meta name="theme-color" content="#F4F1EB" id="metaTheme">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -11,28 +11,55 @@
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<meta name="color-scheme" content="dark">
+<meta name="color-scheme" content="light dark">
 <title>Мои финансы</title>
+<script>
+/* тема до отрисовки, чтобы не мигало: auto (как в телефоне) / light / dark */
+(function(){var t='auto';try{t=localStorage.getItem('fin-theme')||'auto';}catch(e){}
+  var dark=t==='dark'||(t==='auto'&&window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches);
+  document.documentElement.setAttribute('data-theme',dark?'dark':'light');
+  document.documentElement.setAttribute('data-theme-pref',t);})();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&display=swap">
 <style>
-  /* Оформление по методу unslop — Damir Sokolovsky (@heydamir), github.com/heydamir/unslop, CC BY 4.0.
-     Направление: спокойный, точный, немного тёплый · мир: конверт с деньгами и кассовая книга ·
-     яркие места: лимит на сегодня и график денег по дням · фирменная деталь: точка-статус */
+  /* v4: зелёная палитра — алебастр #F4F1EB · тёмно-зелёный #0D4C3C · сланцевый #2D5A4A · мох #7BA05B.
+     Зелёный — «главное и всё в порядке», янтарный — «скоро платёж», красный — только тревоги.
+     Имена переменных старые (gold, orange…), чтобы не трогать разметку расчётов. */
   :root{
-    /* палитра: тёмно-синий #0A1430 · electric blue #0297DE · оранжевый #FC734D · зелёный — там, где деньги прибавляются */
-    --side:#081026; --bg:#0a1430; --card:#0e1a3b; --card2:#0e1a3b; --raised:#15244b; --deep:#08112a;
-    --ink:#eef1f8; --ink2:#a9b3cb; --muted:#7d88a6;
-    --line:rgba(214,226,255,.08); --border:rgba(214,226,255,.08); --line2:rgba(214,226,255,.15);
-    --gold:#0297de; --gold2:#0277b5; --gold-soft:rgba(2,151,222,.14);
-    --orange:#fc734d; --orange-dk:rgba(252,115,77,.12);
-    --green:#3ccf8e; --green-dk:rgba(60,207,142,.12); --red:#f0506e; --red-dk:rgba(240,80,110,.12);
-    --blue:#0297de; --blue-dk:rgba(2,151,222,.12); --amber:#f5b546; --amber-dk:rgba(245,181,70,.12);
-    --radius:14px; --ease:cubic-bezier(0.22,1,0.36,1);
+    --side:#F4F1EB; --bg:#F4F1EB; --card:#FFFFFF; --card2:#FFFFFF; --raised:#ECE8DF; --deep:#F8F6F1;
+    --ink:#12201B; --ink2:#3F4D47; --muted:#5F6C66;
+    --line:rgba(18,32,27,.08); --border:rgba(18,32,27,.08); --line2:rgba(18,32,27,.15);
+    --gold:#2D5A4A; --gold2:#0D4C3C; --gold-soft:rgba(45,90,74,.12);
+    --orange:#A8551F; --orange-dk:rgba(168,85,31,.10);
+    --green:#3D7A2C; --green-dk:rgba(61,122,44,.10); --red:#B4432E; --red-dk:rgba(180,67,46,.10);
+    --blue:#2D5A4A; --blue-dk:rgba(45,90,74,.10); --amber:#96600F; --amber-dk:rgba(150,96,15,.10);
+    --primary:#0D4C3C; --on-primary:#F4F1EB; --primary-hover:#11604C;
+    --moss:#7BA05B; --hero:#0D4C3C; --hero-ink:#F4F1EB; --hero-sub:#C9D8D0; --hero-cap:#B7D39A; --hero-track:rgba(244,241,235,.16);
+    --glass:rgba(244,241,235,.86); --sheet:#FBFAF7; --scrim:rgba(18,32,27,.32);
+    --shadow:0 1px 2px rgba(18,32,27,.04),0 6px 20px rgba(18,32,27,.06);
+    --chart-line:#2D5A4A; --chart-in:#3D7A2C; --chart-out:#C9762E; --chart-grid:rgba(18,32,27,.18);
+    --radius:20px; --ease:cubic-bezier(0.22,1,0.36,1); --spring:cubic-bezier(0.32,0.72,0,1);
     --sans:"Instrument Sans",-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
     --serif:"Instrument Serif",Georgia,"Times New Roman",serif;
     --mono:var(--sans);
   }
+  :root[data-theme="dark"]{
+    --side:#0B1713; --bg:#0B1713; --card:#13241E; --card2:#13241E; --raised:#1B2F28; --deep:#0F1E19;
+    --ink:#ECEFE8; --ink2:#B9C4BE; --muted:#8E9C96;
+    --line:rgba(236,239,232,.07); --border:rgba(236,239,232,.07); --line2:rgba(236,239,232,.14);
+    --gold:#9CC27A; --gold2:#B7D39A; --gold-soft:rgba(156,194,122,.14);
+    --orange:#E59A5C; --orange-dk:rgba(229,154,92,.12);
+    --green:#9CC27A; --green-dk:rgba(156,194,122,.12); --red:#E8806A; --red-dk:rgba(232,128,106,.12);
+    --blue:#8FC1AE; --blue-dk:rgba(143,193,174,.12); --amber:#E0A54A; --amber-dk:rgba(224,165,74,.12);
+    --primary:#9CC27A; --on-primary:#0B1713; --primary-hover:#AFD08F;
+    --moss:#9CC27A; --hero:#0D4C3C; --hero-ink:#F4F1EB; --hero-sub:#C9D8D0; --hero-cap:#B7D39A; --hero-track:rgba(11,23,19,.45);
+    --glass:rgba(11,23,19,.84); --sheet:#13241E; --scrim:rgba(0,0,0,.5);
+    --shadow:0 1px 2px rgba(0,0,0,.2),0 8px 24px rgba(0,0,0,.25);
+    --chart-line:#9CC27A; --chart-in:#9CC27A; --chart-out:#E59A5C; --chart-grid:rgba(236,239,232,.2);
+    color-scheme:dark;
+  }
+  :root[data-theme="light"]{color-scheme:light;}
 
   *{box-sizing:border-box;}
   html{-webkit-text-size-adjust:100%;text-size-adjust:100%;}
@@ -120,10 +147,10 @@
   input:focus,select:focus{outline:1px solid var(--gold);border-color:var(--gold);}
   .btn{font:inherit;border:1px solid var(--line2);background:var(--raised);border-radius:8px;padding:8px 16px;font-size:14px;cursor:pointer;color:var(--ink);
     box-shadow:inset 0 1px 0 rgba(255,255,255,.05);transition:background-color .15s var(--ease),border-color .15s var(--ease),transform .12s var(--ease);}
-  .btn:hover{background:#1c2d5a;}
+  .btn:hover{background:var(--line2);}
   .btn:active{transform:scale(.98);}
-  .btn.primary{background:var(--orange);color:#0a1430;border-color:var(--orange);font-weight:600;}
-  .btn.primary:hover{background:#ff8a68;}
+  .btn.primary{background:var(--primary);color:var(--on-primary);border-color:var(--primary);font-weight:600;}
+  .btn.primary:hover{background:var(--primary-hover);}
   .btn.small{padding:4px 10px;font-size:13px;border-radius:6px;}
   a.btn{text-decoration:none;display:inline-flex;align-items:center;justify-content:center;}
   .btn.danger-text{color:var(--red);}
@@ -164,7 +191,7 @@
   .done-item{opacity:.5;}
   .toast-wrap{position:fixed;top:16px;right:16px;z-index:60;display:flex;flex-direction:column;gap:8px;max-width:360px;}
   .toast{position:relative;border-radius:10px;padding:12px 16px 12px 36px;font-size:14px;background:var(--raised);border:1px solid var(--line2);color:var(--ink);
-    box-shadow:0 8px 24px rgba(0,0,0,.4);animation:slidein .3s var(--ease);pointer-events:none;}
+    box-shadow:var(--shadow);animation:slidein .3s var(--ease);pointer-events:none;}
   .toast::before{content:'';position:absolute;left:16px;top:19px;width:8px;height:8px;border-radius:50%;background:var(--green);}
   .toast.warn::before{background:var(--amber);}
   @keyframes flashbox{0%{box-shadow:0 0 0 1px var(--gold);}100%{box-shadow:0 0 0 1px rgba(212,170,90,0);}}
@@ -271,11 +298,11 @@
   }
   /* обучение */
   #tour{position:fixed;z-index:70;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));max-width:440px;margin-left:auto;
-    background:var(--raised);border:1px solid var(--line2);border-radius:14px;padding:16px;box-shadow:0 12px 32px rgba(0,0,0,.5);animation:enter .3s var(--ease);}
+    background:var(--raised);border:1px solid var(--line2);border-radius:14px;padding:16px;box-shadow:var(--shadow);animation:enter .3s var(--ease);}
   #tour .t-top{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
   #tour .t-dots{display:flex;gap:4px;flex:1;}
   #tour .t-dots i{width:18px;height:4px;border-radius:2px;background:var(--line2);}
-  #tour .t-dots i.on{background:var(--orange);}
+  #tour .t-dots i.on{background:var(--moss);}
   #tour .t-x{border:0;background:none;color:var(--muted);font-size:13px;cursor:pointer;padding:6px;}
   #tour h3{font-size:16px;color:var(--ink);margin:0 0 6px;font-weight:600;}
   #tour .t-text{font-size:14px;color:var(--ink2);line-height:1.5;}
@@ -284,9 +311,176 @@
   #tour .t-btns{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
   #tour .t-btns .grow{flex:1;}
   #tour .btn[disabled]{opacity:.45;cursor:not-allowed;}
-  .tour-focus{outline:2px solid var(--orange) !important;outline-offset:4px;border-radius:12px;scroll-margin-top:96px;}
+  .tour-focus{outline:2px solid var(--moss) !important;outline-offset:4px;border-radius:12px;scroll-margin-top:96px;}
   body.touring main{padding-bottom:300px;}
   .catbar-row .prev{position:absolute;top:0;bottom:0;border-left:2px solid var(--muted);}
+
+  /* ======================= v4: оформление ======================= */
+  html{background:var(--bg);}
+  html.theme-anim body,html.theme-anim .card,html.theme-anim .chip,html.theme-anim nav.tabs,html.theme-anim .banner{transition:background-color .35s var(--ease),color .35s var(--ease);}
+  body{font-size:15px;}
+  h2{font-size:17px;font-weight:600;letter-spacing:-.01em;}
+  .brand{font-size:19px;letter-spacing:-.02em;}
+  .brand .mark{width:12px;height:12px;border-radius:4px;background:var(--moss);}
+  .side-head{gap:4px 10px;}
+  .side-head .muted{margin-right:auto;}
+  .icon-btn{width:40px;height:40px;border-radius:12px;border:0;background:var(--raised);color:var(--ink);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex:none;
+    transition:background-color .15s var(--ease),transform .15s var(--ease);}
+  .icon-btn:active{transform:scale(.94);}
+  .icon-btn svg,.list-row svg,.li-ic svg,.fab svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+  .card{border:0;border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;margin-bottom:12px;}
+  .card.foldable>h2{margin-bottom:14px;}
+  .card.foldable>h2 .chev{order:3;margin-left:6px;}
+  .card.foldable>h2 .h2-sum{font-size:13px;color:var(--muted);}
+  input[type=text],input[type=number],input[type=date],select,.big-input{border-radius:12px;border:1px solid var(--line2);background:var(--deep);}
+  input:focus,select:focus,.big-input:focus{outline:2px solid var(--gold);outline-offset:0;border-color:transparent;}
+  .btn{border-radius:12px;border:0;background:var(--raised);box-shadow:none;font-weight:500;}
+  .btn.small{border-radius:10px;}
+  .btn.primary{box-shadow:0 4px 14px var(--gold-soft);}
+  .btn.block{display:flex;width:100%;min-height:52px;font-size:16px;align-items:center;justify-content:center;margin-bottom:12px;}
+  input[type=range]{accent-color:var(--primary);}
+  .sec-h{font-size:13px;font-weight:500;color:var(--muted);margin:20px 4px 8px;}
+
+  /* главная плашка */
+  .hero{position:relative;background:var(--hero);color:var(--hero-ink);border-radius:28px;padding:22px 22px 18px;margin-bottom:10px;cursor:pointer;overflow:hidden;
+    background-image:radial-gradient(120% 90% at 100% 0%,rgba(123,160,91,.28),transparent 55%),linear-gradient(180deg,rgba(255,255,255,.05),transparent 40%);
+    box-shadow:0 1px 0 rgba(255,255,255,.08) inset,0 12px 32px rgba(13,76,60,.28);
+    transition:transform .18s var(--ease),box-shadow .18s var(--ease);-webkit-tap-highlight-color:transparent;}
+  :root[data-theme="dark"] .hero{box-shadow:0 1px 0 rgba(255,255,255,.08) inset,0 12px 32px rgba(0,0,0,.35);}
+  .hero:active,.chip:active{transform:scale(.985);}
+  .hero .cap{font-size:14px;color:var(--hero-cap);font-weight:500;}
+  .hero .v{font-size:48px;font-weight:600;letter-spacing:-.035em;line-height:1.05;margin:6px 0 6px;color:var(--hero-ink);}
+  .hero .v.red-txt{color:#F6B9A8;}
+  .hero .sub,.hero .sub-short{font-size:13.5px;color:var(--hero-sub);line-height:1.45;}
+  .hero .sub b{color:var(--hero-ink);font-weight:600;}
+  .hero-bar{height:6px;border-radius:3px;background:var(--hero-track);margin:14px 0 12px;overflow:hidden;}
+  .hero-bar>div{height:100%;width:0;border-radius:3px;background:var(--moss);transition:width .6s var(--ease);}
+  .hero-bar>div.over{background:#E8A06A;}
+  .hero-foot{display:flex;justify-content:space-between;gap:12px;font-size:12.5px;color:var(--hero-sub);}
+  .hero-more{white-space:nowrap;color:var(--hero-cap);}
+  .hero-more::after{content:' ›';}
+  .hero .why-link,.chip .why-link{display:none;}
+  /* две плашки под главной */
+  .chips{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:4px;}
+  .chip{background:var(--card);border-radius:22px;padding:14px 16px;box-shadow:var(--shadow);cursor:pointer;min-width:0;
+    transition:transform .18s var(--ease);-webkit-tap-highlight-color:transparent;}
+  .chip .cap{font-size:12.5px;color:var(--muted);margin-bottom:4px;}
+  .chip .v{font-size:22px;font-weight:600;letter-spacing:-.02em;line-height:1.15;white-space:nowrap;}
+  .chip .v.green-txt{color:var(--green);} .chip .v.red-txt{color:var(--red);}
+  .chip .sub,.chip .sub-short{font-size:12px;color:var(--muted);line-height:1.4;margin-top:4px;}
+  .chip .sub b{color:var(--ink2);font-weight:500;}
+  .why-link{border:0;background:none;padding:6px 0 0;font:inherit;font-size:13px;color:var(--gold);cursor:pointer;}
+  .why-link::after{content:' ›';}
+  /* «что сделать» */
+  .banner{border:0;border-radius:18px;background:var(--card);box-shadow:var(--shadow);padding:14px 16px 14px 38px;line-height:1.45;}
+  .banner::before{left:17px;top:21px;}
+  .banner.danger{background:var(--red-dk);box-shadow:none;}
+  .banner.warn{background:var(--amber-dk);box-shadow:none;}
+  .banner .btn{margin-top:6px;}
+  details.alerts{border:0;border-radius:18px;background:var(--card);box-shadow:var(--shadow);}
+  details.alerts .banner{box-shadow:none;background:var(--deep);}
+  .flash{animation:flashbox 1.2s var(--ease);}
+  @keyframes flashbox{0%{box-shadow:0 0 0 2px var(--moss);}100%{box-shadow:0 0 0 2px transparent;}}
+  #deadlines .card.stat{box-shadow:none;background:var(--deep);border-radius:16px;margin:0;}
+  .stat::before{top:23px;}
+
+  /* переключатели сегментами */
+  .seg{display:flex;gap:2px;padding:3px;background:var(--raised);border-radius:14px;margin:0 0 14px;}
+  .seg button{flex:1;border:0;background:transparent;font:inherit;font-size:14px;color:var(--ink2);padding:9px 8px;border-radius:11px;cursor:pointer;white-space:nowrap;
+    transition:background-color .2s var(--ease),color .2s var(--ease);}
+  .seg button.on{background:var(--card);color:var(--ink);font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.08);}
+  .switch-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:4px 0 16px;margin-bottom:16px;border-bottom:1px solid var(--line);cursor:pointer;}
+  .switch-row>span{display:flex;flex-direction:column;gap:2px;font-size:14.5px;}
+  .switch-row b{font-weight:500;}
+  .switch{appearance:none;-webkit-appearance:none;width:50px;height:30px;border-radius:15px;background:var(--line2);position:relative;flex:none;cursor:pointer;transition:background-color .2s var(--ease);margin:0;}
+  .switch::after{content:'';position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .25s var(--spring);}
+  .switch:checked{background:var(--primary);}
+  .switch:checked::after{transform:translateX(20px);}
+  .switch:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+  /* «Ещё» */
+  .list-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:12px;overflow:hidden;}
+  .list-card:empty{display:none;}
+  .list-row{display:flex;align-items:center;gap:12px;width:100%;border:0;background:none;font:inherit;color:var(--ink);text-align:left;padding:14px 16px;cursor:pointer;min-height:54px;}
+  .list-row+.list-row{border-top:1px solid var(--line);}
+  .list-row:active{background:var(--raised);}
+  .li-ic{width:34px;height:34px;border-radius:10px;background:var(--gold-soft);color:var(--gold);display:inline-flex;align-items:center;justify-content:center;flex:none;}
+  .li-ic svg{width:18px;height:18px;}
+  .li-t{flex:1;font-size:15px;}
+  .li-v{color:var(--muted);font-size:14px;}
+  .list-row>svg{width:16px;height:16px;color:var(--muted);}
+
+  /* шторки снизу */
+  .scrim{position:fixed;inset:0;background:var(--scrim);opacity:0;pointer-events:none;z-index:80;transition:opacity .3s var(--ease);}
+  .scrim.open{opacity:1;pointer-events:auto;}
+  .sheet{position:fixed;left:0;right:0;bottom:0;z-index:81;max-height:88vh;max-height:88dvh;overflow-y:auto;overscroll-behavior:contain;
+    background:var(--sheet);-webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);
+    border-radius:28px 28px 0 0;box-shadow:0 -8px 40px rgba(0,0,0,.18);padding:0 18px calc(20px + env(safe-area-inset-bottom));
+    transform:translateY(105%);visibility:hidden;transition:transform .45s var(--spring),visibility 0s linear .45s;}
+  .sheet.open{transform:translateY(0);visibility:visible;transition:transform .45s var(--spring),visibility 0s;}
+  .sheet.dragging{transition:none;}
+  .sheet-grab{width:40px;height:5px;border-radius:3px;background:var(--line2);margin:8px auto 4px;}
+  .sheet-head{position:sticky;top:0;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0 12px;background:inherit;z-index:1;touch-action:none;}
+  .sheet-head h2{margin:0;font-size:19px;}
+  .sheet-x{border:0;background:var(--raised);color:var(--ink);font:inherit;font-size:14px;font-weight:500;border-radius:12px;padding:8px 14px;cursor:pointer;min-height:36px;}
+  .why-body{font-size:14.5px;line-height:1.6;color:var(--ink2);}
+  .why-body b{color:var(--ink);}
+  .why-body .how{margin-top:12px;padding:12px 14px;border:0;border-radius:14px;background:var(--deep);}
+  .why-body .how .pick{color:var(--gold);font-weight:600;}
+  .why-note{margin-top:12px;padding-top:12px;border-top:1px solid var(--line);font-size:13.5px;}
+  .sheet .cards4{grid-template-columns:1fr;gap:8px;}
+  .sheet .card.stat{box-shadow:none;background:var(--deep);margin:0;padding:14px 16px;}
+  .sheet .card.stat .lbl{margin-bottom:6px;}
+  .sheet .big-input{max-width:none;background:var(--card);}
+  .sheet #txForm{margin-bottom:4px;}
+  .sheet #txAmount{font-size:22px !important;font-weight:600;}
+  .sheet .footer-note{margin-top:12px;}
+  body.sheet-open{overflow:hidden;}
+  .card.folded #flowRange{display:none;}
+  #tour.top{top:calc(12px + env(safe-area-inset-top));bottom:auto;z-index:90;}
+
+  /* телефон и планшет: шапка сверху, разделы — стеклянная панель снизу */
+  @media(max-width:899.98px){
+    .side-head{padding:calc(14px + env(safe-area-inset-top)) 16px 10px;flex-wrap:nowrap;}
+    .side-head .muted{font-size:13px;font-family:var(--sans);}
+    nav.tabs{position:fixed;left:0;right:0;bottom:0;top:auto;z-index:50;margin:0;display:grid;grid-template-columns:repeat(5,1fr);align-items:end;gap:0;
+      padding:6px 8px calc(6px + env(safe-area-inset-bottom));overflow:visible;
+      background:var(--glass);-webkit-backdrop-filter:blur(22px) saturate(170%);backdrop-filter:blur(22px) saturate(170%);
+      border-top:1px solid var(--line);border-bottom:0;}
+    nav.tabs .tab{flex-direction:column;gap:3px;padding:6px 0 2px;font-size:11px;border:0;background:none;box-shadow:none;color:var(--muted);border-radius:12px;position:relative;}
+    nav.tabs .tab svg{width:24px;height:24px;color:currentColor;stroke-width:1.6;}
+    nav.tabs .tab.active{background:none;color:var(--gold2);font-weight:600;}
+    :root[data-theme="light"] nav.tabs .tab.active{color:var(--primary);}
+    nav.tabs .tab:hover{background:none;}
+    nav.tabs .tab .lbl-t{flex:none;}
+    nav.tabs .tab .cnt{position:absolute;top:2px;left:calc(50% + 8px);margin:0;min-width:16px;height:16px;border-radius:8px;background:var(--primary);color:var(--on-primary);font-size:10px;line-height:16px;padding:0 4px;}
+    .fab{justify-self:center;width:58px;height:58px;border-radius:50%;border:0;background:var(--primary);color:var(--on-primary);display:flex;align-items:center;justify-content:center;cursor:pointer;
+      margin-bottom:6px;box-shadow:0 6px 18px var(--gold-soft),0 2px 6px rgba(0,0,0,.15);transition:transform .2s var(--spring);-webkit-tap-highlight-color:transparent;}
+    .fab:active{transform:scale(.92);}
+    .fab svg{width:28px;height:28px;stroke-width:2;}
+    .fab-t{display:none;}
+    main{padding:4px 16px calc(110px + env(safe-area-inset-bottom));}
+    .toast-wrap{top:calc(12px + env(safe-area-inset-top));}
+    #tour{bottom:calc(92px + env(safe-area-inset-bottom));}
+    body.touring main{padding-bottom:360px;}
+  }
+  @media(max-width:360px){ .hero .v{font-size:40px;} .chip .v{font-size:19px;} nav.tabs .tab{font-size:10px;} }
+  /* компьютер: боковая панель */
+  @media(min-width:900px){
+    body{padding-left:256px;}
+    main{max-width:820px;margin:0 auto;padding:28px 32px 64px;}
+    .side-head{display:flex;flex-wrap:wrap;}
+    .side-head .brand{flex:1;margin:0;}
+    .side-head .muted{order:3;width:100%;}
+    .fab{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:44px;border:0;border-radius:12px;background:var(--primary);color:var(--on-primary);font:inherit;font-weight:600;cursor:pointer;margin:0 0 10px;order:-1;}
+    .fab svg{width:18px;height:18px;}
+    nav.tabs{display:flex;}
+    .tab.active{background:var(--raised);border-color:transparent;box-shadow:none;}
+    .tab.active svg{color:var(--gold);}
+    .sheet{left:256px;max-width:600px;margin:0 auto;right:0;}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important;}
+  }
 </style>
 </head>
 <body>
@@ -295,12 +489,7 @@
   <div class="side-head">
     <div class="brand"><span class="mark"></span>Мои финансы</div>
     <span class="muted" id="todayLbl"></span>
-  </div>
-  <div class="top-actions">
-    <button class="btn small" id="btnExport">Бэкап</button>
-    <label class="btn small" for="importFile">Импорт</label>
-    <input type="file" id="importFile" accept=".json,application/json" hidden>
-    <button class="btn small danger-text" id="btnReset">Сброс</button>
+    <button class="icon-btn" id="themeBtn" type="button" aria-label="Светлая или тёмная тема"></button>
   </div>
   <div class="side-label">Разделы</div>
   <nav class="tabs" id="tabs"></nav>
@@ -309,6 +498,7 @@
 </aside>
 
 <main>
+<div class="subnav seg" id="subnav"></div>
 
 <!-- ===================== ПАНЕЛЬ ===================== -->
 <section class="tabpane active" id="tab-dash">
@@ -317,60 +507,33 @@
     <div class="sub-short" id="installSteps"></div>
     <div class="row" style="margin-top:12px;"><button class="btn small" id="installOk">Понятно, скрыть</button></div>
   </div>
+  <div class="hero metric" id="heroCard" role="button" tabindex="0" data-why="daily" aria-label="Почему такой лимит">
+    <div class="cap" id="dailyCap">Можно потратить сегодня</div>
+    <div class="v" id="dailySpend"></div>
+    <div class="sub" id="dailySpendSub">обновляется после каждой траты</div>
+    <div class="hero-bar" aria-hidden="true"><div id="todayBar"></div></div>
+    <div class="hero-foot"><span id="paydayInfo"></span><span class="hero-more">Как посчитано</span></div>
+  </div>
+
+  <div class="chips">
+    <div class="chip metric" role="button" tabindex="0" data-sheet="money">
+      <div class="cap">Деньги сейчас</div>
+      <div class="v" id="leftLife"></div>
+      <div class="sub" id="leftLifeSub"></div>
+    </div>
+    <div class="chip metric" role="button" tabindex="0" data-why="save">
+      <div class="cap" id="forecastCap">Накопится</div>
+      <div class="v" id="forecastSave"></div>
+      <div class="sub" id="forecastSaveSub"></div>
+    </div>
+  </div>
+
+  <div class="sec-h">Что сделать</div>
   <div id="dashAlerts"></div>
 
-  <div class="spend-hero">
-    <div class="grid">
-      <div class="metric">
-        <div class="cap" id="dailyCap">Можно потратить сегодня</div>
-        <div class="v" id="dailySpend"></div>
-        <div class="sub" id="dailySpendSub">обновляется после каждой траты</div>
-      </div>
-      <div class="metric">
-        <div class="cap">Деньги: сейчас</div>
-        <div class="v mid" id="leftLife"></div>
-        <div class="sub" id="leftLifeSub"></div>
-      </div>
-      <div class="metric">
-        <div class="cap" id="forecastCap">Ориентировочно накопится</div>
-        <div class="v mid" id="forecastSave"></div>
-        <div class="sub" id="forecastSaveSub"></div>
-      </div>
-    </div>
-    <div class="payday">
-      <label style="display:flex;gap:6px;align-items:center;cursor:pointer;">
-        <input type="checkbox" id="followPlan" style="accent-color:var(--gold);">
-        <span>Соблюдаю план месяца</span>
-      </label>
-      <span id="paydayInfo"></span>
-    </div>
-  </div>
-
-  <div class="cards4">
-    <div class="card stat g">
-      <div class="lbl">Наличные (физически)</div>
-      <input class="big-input" id="inCash" inputmode="numeric">
-      <div class="hint" id="cashHint">вбей сколько сейчас в кошельке</div>
-    </div>
-    <div class="card stat b">
-      <div class="lbl">Деньги на карте</div>
-      <input class="big-input" id="inCard" inputmode="numeric">
-      <div class="hint" id="cardHint">дебетовая карта</div>
-    </div>
-    <div class="card stat r" id="dashCcStat">
-      <div class="lbl">Долг по кредитке</div>
-      <input class="big-input num-red" id="inDebt" inputmode="numeric">
-      <div class="hint" id="debtHint"></div>
-    </div>
-    <div class="card stat" id="netWorthCard">
-      <div class="lbl">Чистый капитал</div>
-      <div class="big" id="netWorth"></div>
-      <div class="hint">деньги − кредитка − кредиты − долги</div>
-    </div>
-  </div>
 
   <div class="card" id="dueCard">
-    <h2>Обязательства</h2>
+    <h2>Платежи и долги</h2>
     <div id="deadlines"></div>
   </div>
 
@@ -386,44 +549,8 @@
     <div id="runway" style="margin-top:10px;"></div>
   </div>
 
-  <div class="card" id="goalCard">
-    <h2>Цель</h2>
-    <div class="row">
-      <input type="number" id="goalAmount" inputmode="numeric" style="width:150px;" placeholder="например 50000"> ₽
-      <button class="btn primary small" id="btnGoal">Посчитать, к какому сроку</button>
-      <span class="muted" id="goalHint">на подушку, технику, отпуск — что угодно</span>
-    </div>
-    <div id="goalResult"></div>
-  </div>
 
-  <div class="card" id="potsCard">
-    <h2>Копилки</h2>
-    <div id="potsMonth" class="muted" style="margin-bottom:4px;"></div>
-    <div id="potsList"></div>
-    <div class="row" style="margin-top:10px;">
-      <input type="text" id="potName" placeholder="на что копим: подушка, отпуск…" style="flex:1;min-width:170px;">
-      <input type="number" id="potTarget" inputmode="numeric" placeholder="цель, ₽ (можно пусто)" style="width:170px;">
-      <button class="btn small primary" id="potAdd">+ Копилка</button>
-    </div>
-    <div class="footer-note">Копилка — деньги, которые ты убрал отдельно (накопительный счёт, вклад, конверт). «Отложить» переносит сумму с карты или из наличных в копилку: на жизнь она больше не считается, но остаётся твоей (входит в чистый капитал и запас прочности). Откладывание по ползунку «подушка» лимит не меняет — эти деньги уже были зарезервированы.</div>
-  </div>
 
-  <div class="card" id="howCard">
-    <h2>Как пользоваться</h2>
-    <ol class="howto">
-      <li><b>Доходы − расходы</b> — один раз: зарплаты (числа и суммы), кредиты, кредитка, долги, крупные разовые траты.</li>
-      <li><b>Панель</b> — впиши, сколько сейчас наличных и на карте.</li>
-      <li><b>План месяца</b> — сколько в месяц уходит на жизнь и сколько откладывать.</li>
-      <li><b>Журнал</b> — каждый день вноси траты. Зарплата появится сама. Положил наличные на карту — тип «Перевод».</li>
-      <li>Оранжевая цифра — сколько можно потратить сегодня, чтобы хватило на всё. «Подробнее» — откуда она.</li>
-      <li>Раз в две недели нажми «Сохранить копию» — на случай потери телефона.</li>
-    </ol>
-    <div class="row" style="margin-top:12px;">
-      <button class="btn small" id="tourRestart">Пройти обучение заново</button>
-      <a class="btn small" href="reminder.ics" target="_blank" rel="noopener" id="remindLink">Напоминание в 21:00</a>
-    </div>
-    <div class="footer-note">Напоминание добавится в календарь телефона и будет каждый вечер в 21:00. Если не открылось: «Напоминания» → новое «Внести траты» → время 21:00 → повтор «Ежедневно».</div>
-  </div>
 </section>
 
 <!-- ===================== ПЛАН МЕСЯЦА ===================== -->
@@ -440,6 +567,10 @@
 
   <div class="card">
     <h2>Мои решения на месяц</h2>
+    <label class="switch-row">
+      <span><b>Соблюдаю план месяца</b><span class="muted">лимит дня учитывает траты на жизнь из плана</span></span>
+      <input type="checkbox" id="followPlan" class="switch">
+    </label>
     <div class="slider-row">
       <div class="top-row"><span>Траты на жизнь</span><span class="val" id="slSpendVal"></span></div>
       <div class="explain">Сколько планируешь тратить на повседневное: еда, проезд, быт, мелочи. Это твой прогноз для самого себя.</div>
@@ -447,7 +578,7 @@
     </div>
     <div class="slider-row">
       <div class="top-row"><span>Отложить (подушка)</span><span class="val" id="slSaveVal"></span></div>
-      <div class="explain">Сколько хочешь откладывать каждый месяц. Система покажет на панели, получится ли — при твоих тратах.</div>
+      <div class="explain">Сколько хочешь откладывать каждый месяц. Система покажет на главной, получится ли — при твоих тратах.</div>
       <input type="range" id="slSave" min="0" max="20000" step="500">
     </div>
     <div class="slider-row" id="slDebtsRow">
@@ -461,7 +592,7 @@
       <button class="btn small" id="btnPresetDebts">Максимум в долги</button>
     </div>
     <div style="text-align:center;margin-top:14px;">
-      <button class="btn primary" id="btnPlanReady" style="font-size:15px;padding:10px 22px;">План готов — к панели</button>
+      <button class="btn primary" id="btnPlanReady" style="font-size:15px;padding:10px 22px;">План готов — на главную</button>
     </div>
   </div>
 
@@ -479,37 +610,7 @@
 
 <!-- ===================== ЖУРНАЛ ===================== -->
 <section class="tabpane" id="tab-tx">
-  <div class="card">
-    <h2>Новая запись</h2>
-    <div class="row" id="txForm">
-      <div class="field" id="fDate"><label>Дата</label><input type="date" id="txDate"></div>
-      <div class="field" id="fAmt"><label>Сумма, ₽</label><input type="number" id="txAmount" inputmode="numeric" style="width:120px;" min="1" step="50"></div>
-      <div class="field" id="fType"><label>Тип</label>
-        <select id="txType">
-          <option value="exp">Трата</option>
-          <option value="inc">Доход / вернули долг</option>
-          <option value="repay">↩ Взнос на кредитку</option>
-          <option value="debtpay">Возврат долга</option>
-          <option value="move">Перевод: наличные ↔ карта</option>
-        </select>
-      </div>
-      <div class="field" id="txCatField"><label>Категория</label>
-        <select id="txCat"></select>
-      </div>
-      <div class="field" id="txDebtField" style="display:none;"><label>Какой долг</label><select id="txDebt"></select></div>
-      <div class="field" id="txOneField" style="display:none;"><label>Это разовая трата из плана?</label><select id="txOne"></select></div>
-      <div class="field" id="fMethod"><label id="txMethodLbl">Кошелёк</label>
-        <select id="txMethod">
-          <option value="cash">Наличные</option>
-          <option value="card">Карта</option>
-          <option value="credit" id="txMethodCredit">Кредитка</option>
-        </select>
-      </div>
-      <div class="field" id="fNote" style="flex:1;min-width:160px;"><label>Примечание</label><input type="text" id="txNote" placeholder="необязательно"></div>
-      <div class="field" id="fAdd"><label>&nbsp;</label><button class="btn primary" id="txAdd">Добавить</button></div>
-    </div>
-    <div class="footer-note">Начисления зарплаты попадают сюда автоматически в день выплаты. Платежи по кредитам отмечаются кнопкой «Внёс» на панели.</div>
-  </div>
+  <button class="btn primary block" type="button" data-sheet="add" id="txOpen">+ Новая запись</button>
 
   <div class="card">
     <h2>Итоги текущего месяца</h2>
@@ -571,7 +672,7 @@
     <h2>Кредиты</h2>
     <div id="creditsForm"></div>
     <button class="btn small" id="addCredit">+ Добавить кредит</button>
-    <div class="footer-note">У каждого кредита — платёж в месяц и день, до которого нужно внести деньги (иначе просрочка). За 4 дня до даты платежа напомню на панели, а после внесения — отмечу «внесён».</div>
+    <div class="footer-note">У каждого кредита — платёж в месяц и день, до которого нужно внести деньги (иначе просрочка). За 4 дня до даты платежа напомню на главной, а после внесения — отмечу «внесён».</div>
   </div>
   <div class="card" id="setCcCard">
     <h2>Кредитка</h2>
@@ -581,7 +682,7 @@
       <div class="field"><label>Беспроцентный период, дней</label><input type="number" id="ccGrace" style="width:100px;"></div>
       <div class="field"><label>Ставка после льготного, % год.</label><input type="number" id="ccRate" style="width:100px;" placeholder="0"></div>
     </div>
-    <div class="hint">Долг правится на Панели. Дата — до какого числа банк просит внести деньги, чтобы не было процентов.</div>
+    <div class="hint">Долг правится на главной: «Деньги сейчас». Дата — до какого числа банк просит внести деньги, чтобы не было процентов.</div>
   </div>
   <div class="card" id="setDebtCard">
     <h2>Долги</h2>
@@ -600,9 +701,144 @@
   </div>
 </section>
 
+
+<!-- ===================== ЕЩЁ ===================== -->
+<section class="tabpane" id="tab-more">
+  <div class="list-card" id="moreLinks"></div>
+  <div class="card" id="goalCard">
+    <h2>Цель</h2>
+    <div class="row">
+      <input type="number" id="goalAmount" inputmode="numeric" style="width:150px;" placeholder="например 50000"> ₽
+      <button class="btn primary small" id="btnGoal">Посчитать, к какому сроку</button>
+      <span class="muted" id="goalHint">на подушку, технику, отпуск — что угодно</span>
+    </div>
+    <div id="goalResult"></div>
+  </div>
+  <div class="card" id="potsCard">
+    <h2>Копилки</h2>
+    <div id="potsMonth" class="muted" style="margin-bottom:4px;"></div>
+    <div id="potsList"></div>
+    <div class="row" style="margin-top:10px;">
+      <input type="text" id="potName" placeholder="на что копим: подушка, отпуск…" style="flex:1;min-width:170px;">
+      <input type="number" id="potTarget" inputmode="numeric" placeholder="цель, ₽ (можно пусто)" style="width:170px;">
+      <button class="btn small primary" id="potAdd">+ Копилка</button>
+    </div>
+    <div class="footer-note">Копилка — деньги, которые ты убрал отдельно (накопительный счёт, вклад, конверт). «Отложить» переносит сумму с карты или из наличных в копилку: на жизнь она больше не считается, но остаётся твоей (входит в чистый капитал и запас прочности). Откладывание по ползунку «подушка» лимит не меняет — эти деньги уже были зарезервированы.</div>
+  </div>
+  <div class="card" id="themeCard" data-nofold>
+    <h2>Оформление</h2>
+    <div class="seg" id="themeSeg" role="radiogroup" aria-label="Тема">
+      <button type="button" data-theme-set="auto">Как в телефоне</button>
+      <button type="button" data-theme-set="light">Светлая</button>
+      <button type="button" data-theme-set="dark">Тёмная</button>
+    </div>
+  </div>
+  <div class="card" id="dataCard" data-nofold>
+    <h2>Данные</h2>
+    <div class="row">
+      <button class="btn small" id="btnExport">Сохранить копию</button>
+      <label class="btn small" for="importFile">Восстановить из копии</label>
+      <input type="file" id="importFile" accept=".json,application/json" hidden>
+      <button class="btn small danger-text" id="btnReset">Сбросить всё</button>
+    </div>
+    <div class="footer-note">Записи хранятся только на этом телефоне. Раз в две недели сохраняй копию в «Файлы» или iCloud — если телефон потеряется, из неё всё вернётся.</div>
+  </div>
+  <div class="card" id="howCard">
+    <h2>Как пользоваться</h2>
+    <ol class="howto">
+      <li><b>План → Доходы и расходы</b> — один раз: зарплаты (числа и суммы), кредиты, кредитка, долги, крупные разовые траты.</li>
+      <li><b>Главная → «Деньги сейчас»</b> — впиши, сколько сейчас наличных и на карте.</li>
+      <li><b>План → План месяца</b> — сколько в месяц уходит на жизнь и сколько откладывать.</li>
+      <li><b>Кнопка «+»</b> — каждый день вноси траты. Зарплата появится сама. Положил наличные на карту — тип «Перевод».</li>
+      <li>Большая цифра на зелёной плашке — сколько можно потратить сегодня, чтобы хватило на всё. Нажми на неё — увидишь, откуда она.</li>
+      <li>Раз в две недели: «Ещё» → «Сохранить копию» — на случай потери телефона.</li>
+    </ol>
+    <div class="row" style="margin-top:12px;">
+      <button class="btn small" id="tourRestart">Пройти обучение заново</button>
+      <a class="btn small" href="reminder.ics" target="_blank" rel="noopener" id="remindLink">Напоминание в 21:00</a>
+    </div>
+    <div class="footer-note">Напоминание добавится в календарь телефона и будет каждый вечер в 21:00. Если не открылось: «Напоминания» → новое «Внести траты» → время 21:00 → повтор «Ежедневно».</div>
+  </div>
+</section>
+
 </main>
 
 <div class="toast-wrap" id="toasts"></div>
+
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="sheet-add" role="dialog" aria-modal="true" aria-label="Новая запись" aria-hidden="true">
+  <div class="sheet-grab"></div>
+  <div class="sheet-head"><h2>Новая запись</h2><button class="sheet-x" type="button" data-close>Закрыть</button></div>
+  <div class="sheet-body">
+  <div class="add-form">
+    <div class="row" id="txForm">
+      <div class="field" id="fDate"><label>Дата</label><input type="date" id="txDate"></div>
+      <div class="field" id="fAmt"><label>Сумма, ₽</label><input type="number" id="txAmount" inputmode="numeric" style="width:120px;" min="1" step="50"></div>
+      <div class="field" id="fType"><label>Тип</label>
+        <select id="txType">
+          <option value="exp">Трата</option>
+          <option value="inc">Доход / вернули долг</option>
+          <option value="repay">↩ Взнос на кредитку</option>
+          <option value="debtpay">Возврат долга</option>
+          <option value="move">Перевод: наличные ↔ карта</option>
+        </select>
+      </div>
+      <div class="field" id="txCatField"><label>Категория</label>
+        <select id="txCat"></select>
+      </div>
+      <div class="field" id="txDebtField" style="display:none;"><label>Какой долг</label><select id="txDebt"></select></div>
+      <div class="field" id="txOneField" style="display:none;"><label>Это разовая трата из плана?</label><select id="txOne"></select></div>
+      <div class="field" id="fMethod"><label id="txMethodLbl">Кошелёк</label>
+        <select id="txMethod">
+          <option value="cash">Наличные</option>
+          <option value="card">Карта</option>
+          <option value="credit" id="txMethodCredit">Кредитка</option>
+        </select>
+      </div>
+      <div class="field" id="fNote" style="flex:1;min-width:160px;"><label>Примечание</label><input type="text" id="txNote" placeholder="необязательно"></div>
+      <div class="field" id="fAdd"><label>&nbsp;</label><button class="btn primary" id="txAdd">Добавить</button></div>
+    </div>
+    <div class="footer-note">Начисления зарплаты попадают сюда автоматически в день выплаты. Платежи по кредитам отмечаются кнопкой «Внёс» на главной.</div>
+  </div>
+  </div>
+</div>
+<div class="sheet" id="sheet-money" role="dialog" aria-modal="true" aria-label="Деньги сейчас" aria-hidden="true">
+  <div class="sheet-grab"></div>
+  <div class="sheet-head"><h2>Деньги сейчас</h2><button class="sheet-x" type="button" data-close>Готово</button></div>
+  <div class="sheet-body">
+    <div class="why-body" id="moneyWhy"></div>
+    <div class="sec-h">Сверить с реальностью</div>
+    <div class="muted" style="margin:-4px 0 10px;">Если в кошельке или на карте на самом деле другая сумма — впиши её, всё пересчитается.</div>
+  <div class="cards4">
+    <div class="card stat g">
+      <div class="lbl">Наличные (физически)</div>
+      <input class="big-input" id="inCash" inputmode="numeric">
+      <div class="hint" id="cashHint">вбей сколько сейчас в кошельке</div>
+    </div>
+    <div class="card stat b">
+      <div class="lbl">Деньги на карте</div>
+      <input class="big-input" id="inCard" inputmode="numeric">
+      <div class="hint" id="cardHint">дебетовая карта</div>
+    </div>
+    <div class="card stat r" id="dashCcStat">
+      <div class="lbl">Долг по кредитке</div>
+      <input class="big-input num-red" id="inDebt" inputmode="numeric">
+      <div class="hint" id="debtHint"></div>
+    </div>
+    <div class="card stat" id="netWorthCard">
+      <div class="lbl">Чистый капитал</div>
+      <div class="big" id="netWorth"></div>
+      <div class="hint">деньги − кредитка − кредиты − долги</div>
+    </div>
+  </div>
+  </div>
+</div>
+<div class="sheet" id="sheet-why" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="sheet-grab"></div>
+  <div class="sheet-head"><h2 id="whyTitle">Почему так</h2><button class="sheet-x" type="button" data-close>Понятно</button></div>
+  <div class="sheet-body"><div class="why-body" id="whyBody"></div></div>
+</div>
+
 
 <script>
 "use strict";
@@ -629,7 +865,7 @@ function monthDat(ym){const[y,m]=ym.split('-').map(Number);return MONTHS_DAT[m-1
 function monthShort(ym){const[y,m]=ym.split('-').map(Number);return MONTHS_SHORT[m-1]+' '+String(y).slice(2);}
 function daysInMonth(ym){const[y,m]=ym.split('-').map(Number);return new Date(y,m,0).getDate();}
 function daysUntil(iso){const t=new Date(iso+'T00:00:00');const n=new Date(NOW.getFullYear(),NOW.getMonth(),NOW.getDate());return Math.round((t-n)/86400000);}
-function fmt(n){const r=Math.round(n);return (r===0?0:r).toLocaleString('ru-RU')+' ₽';}
+function fmt(n){const r=Math.round(n);return (r===0?0:r).toLocaleString('ru-RU')+'\u00a0₽';}
 function fmtN(n){const r=Math.round(n);return (r===0?0:r).toLocaleString('ru-RU');}
 function fmtDateRu(iso){if(!iso)return'—';const[y,m,d]=iso.split('-').map(Number);return d+' '+MONTHS_GEN[m-1]+' '+y;}
 function fmtDateShort(iso){if(!iso)return'—';const[y,m,d]=iso.split('-').map(Number);return d+' '+MONTHS_SHORT[m-1];}
@@ -975,38 +1211,130 @@ const ICONS={
   debts:'<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/>',
   setup:'<path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/>',
 };
+Object.assign(ICONS,{
+  home:'<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/>',
+  cal:'<rect x="3" y="4.5" width="18" height="16.5" rx="3"/><path d="M3 9.5h18"/><path d="M8 2.5v4"/><path d="M16 2.5v4"/>',
+  list:'<path d="M9 6h11"/><path d="M9 12h11"/><path d="M9 18h11"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/>',
+  more:'<circle cx="5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="19" cy="12" r="1.4"/>',
+  plus:'<path d="M12 5v14"/><path d="M5 12h14"/>',
+  sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.9 4.9 1.4 1.4"/><path d="m17.7 17.7 1.4 1.4"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.3 17.7-1.4 1.4"/><path d="m19.1 4.9-1.4 1.4"/>',
+  moon:'<path d="M20.5 14.5A8.5 8.5 0 1 1 9.5 3.5a7 7 0 0 0 11 11Z"/>',
+  chev:'<path d="m9 6 6 6-6 6"/>',
+  target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>',
+  pig:'<path d="M19 9.5c1 .4 2 1.4 2 2.5h-2"/><path d="M5 11a7 6 0 0 1 12-2.5h1.5L18 11a6 6 0 0 1-1.5 4l.5 3h-3l-.5-1.5h-4L9 18H6l.5-3.2A6 6 0 0 1 5 11Z"/><path d="M12 6.5V5"/>',
+});
 const icon=k=>`<svg viewBox="0 0 24 24" aria-hidden="true">${ICONS[k]}</svg>`;
+/* вкладки-экраны (как раньше) и 4 раздела нижней панели, в которые они собраны */
 const TABS=[
-  {id:'dash',label:'Панель'},
+  {id:'dash',label:'Главная'},
   {id:'plan',label:'План месяца'},
-  {id:'tx',label:'Журнал'},
-  {id:'history',label:'История'},
-  {id:'debts',label:'Долги',cond:()=>state.debts.length>0},
-  {id:'setup',label:'Доходы − расходы'},
+  {id:'setup',label:'Доходы и расходы'},
+  {id:'tx',label:'Записи'},
+  {id:'history',label:'По месяцам'},
+  {id:'more',label:'Ещё'},
+  {id:'debts',label:'Долги'},
 ];
+const GROUPS=[
+  {id:'dash',label:'Главная',icon:'home',tabs:['dash']},
+  {id:'plan',label:'План',icon:'cal',tabs:['plan','setup']},
+  {id:'tx',label:'Журнал',icon:'list',tabs:['tx','history']},
+  {id:'more',label:'Ещё',icon:'more',tabs:['more','debts']},
+];
+const SUBNAV={plan:['plan','setup'],tx:['tx','history']}; // переключатель вверху раздела
+let CUR_TAB='dash';const LAST_IN={};
+const groupOf=t=>GROUPS.find(g=>g.tabs.includes(t))||GROUPS[0];
 function navCount(id){
   if(typeof state==='undefined')return '';
   let n=0;
   if(id==='tx')n=state.tx.filter(t=>t.date===TODAY_ISO&&!t.srcKey).length;          // записей за сегодня
-  if(id==='debts')n=state.debts.filter(d=>d.enabled&&num(d.amount)>0).length;     // активных долгов
-  if(id==='setup')n=state.oneTime.filter(o=>!o.done).length;                       // ждущих разовых трат
-  return n?`<span class="cnt" title="${id==='tx'?'записей сегодня':id==='debts'?'активных долгов':'разовых трат ждут оплаты'}">${n}</span>`:'';
+  return n?`<span class="cnt" title="записей сегодня">${n}</span>`:'';
 }
 function renderNav(active){
-  $('#tabs').innerHTML=TABS.filter(t=>!t.cond||t.cond()).map(t=>
-    `<button class="tab ${t.id===active?'active':''}" data-tab="${t.id}">${icon(t.id)}<span class="lbl-t">${t.label}</span>${navCount(t.id)}</button>`).join('');
+  if(active&&TABS.some(t=>t.id===active))CUR_TAB=active;
+  const g=groupOf(CUR_TAB);
+  const btn=x=>`<button class="tab ${x.id===g.id?'active':''}" data-group="${x.id}" ${x.id===g.id?'aria-current="page"':''}>${icon(x.icon)}<span class="lbl-t">${x.label}</span>${navCount(x.id)}</button>`;
+  $('#tabs').innerHTML=btn(GROUPS[0])+btn(GROUPS[1])
+    +`<button class="fab" type="button" data-sheet="add" aria-label="Новая запись">${icon('plus')}<span class="fab-t">Новая запись</span></button>`
+    +btn(GROUPS[2])+btn(GROUPS[3]);
+  const sub=SUBNAV[g.id];
+  const sn=$('#subnav');
+  sn.innerHTML=sub?sub.map(id=>`<button type="button" data-tab="${id}" class="${id===CUR_TAB?'on':''}">${TABS.find(t=>t.id===id).label}</button>`).join(''):'';
+  sn.style.display=sub?'':'none';
 }
 function switchTab(name){
+  if(!TABS.some(t=>t.id===name))name='dash';
   if(document.activeElement&&document.activeElement.blur)document.activeElement.blur(); // чтобы поле баланса не «залипало» в режиме ввода
+  const changed=name!==CUR_TAB;
+  CUR_TAB=name;LAST_IN[groupOf(name).id]=name;
+  if(typeof closeSheet==='function')closeSheet();
   renderNav(name);
   document.querySelectorAll('.tabpane').forEach(p=>p.classList.toggle('active',p.id==='tab-'+name));
+  if(changed&&!document.body.classList.contains('touring'))window.scrollTo({top:0});
   if(typeof renderComputed==='function'&&typeof state!=='undefined')renderComputed(name==='tx');
   if(name==='dash'){pendingFlash.forEach(b=>{b.classList.remove('flash');void b.offsetWidth;b.classList.add('flash');});pendingFlash=[];}
 }
 document.getElementById('tabs').addEventListener('click',e=>{
-  const b=e.target.closest('.tab');if(!b)return;
-  switchTab(b.dataset.tab);
+  const b=e.target.closest('[data-group]');if(!b)return;
+  const g=GROUPS.find(x=>x.id===b.dataset.group);
+  // повторное нажатие на раздел — к его первому экрану; иначе — туда, где был
+  const target=groupOf(CUR_TAB).id===g.id?g.tabs[0]:(LAST_IN[g.id]||g.tabs[0]);
+  switchTab(target);
 });
+document.getElementById('subnav').addEventListener('click',e=>{const b=e.target.closest('[data-tab]');if(b)switchTab(b.dataset.tab);});
+
+/* ================= шторки снизу ================= */
+let OPEN_SHEET=null;
+function openSheet(id){
+  const sh=document.getElementById('sheet-'+id);if(!sh)return;
+  if(OPEN_SHEET&&OPEN_SHEET!==sh)closeSheet(true);
+  if(id==='money'&&typeof WHY!=='undefined')$('#moneyWhy').innerHTML=WHY.left||'';
+  if(id==='add'&&!$('#txDate').value)$('#txDate').value=TODAY_ISO;
+  OPEN_SHEET=sh;sh.style.transform='';
+  sh.classList.add('open');sh.setAttribute('aria-hidden','false');
+  $('#scrim').classList.add('open');document.body.classList.add('sheet-open');
+  if(id==='add'&&!document.body.classList.contains('touring'))setTimeout(()=>{try{$('#txAmount').focus({preventScroll:true});}catch(e){}},280);
+}
+function closeSheet(instant){
+  if(!OPEN_SHEET)return;
+  const sh=OPEN_SHEET;OPEN_SHEET=null;
+  if(document.activeElement&&sh.contains(document.activeElement))document.activeElement.blur();
+  sh.style.transform='';sh.classList.remove('open');sh.setAttribute('aria-hidden','true');
+  $('#scrim').classList.remove('open');document.body.classList.remove('sheet-open');
+}
+document.addEventListener('click',e=>{
+  const o=e.target.closest('[data-sheet]');if(o){e.preventDefault();openSheet(o.dataset.sheet);return;}
+  const w=e.target.closest('[data-why]');if(w){e.preventDefault();openWhy(w.dataset.why);return;}
+  if(e.target.closest('[data-close]')||e.target.id==='scrim')closeSheet();
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape')closeSheet();
+  if((e.key==='Enter'||e.key===' ')&&e.target.matches&&e.target.matches('[role=button][data-why],[role=button][data-sheet]')){e.preventDefault();e.target.click();}
+});
+/* закрыть свайпом вниз за «ручку» или заголовок */
+(function(){
+  let y0=null,sh=null,dy=0;
+  document.addEventListener('touchstart',e=>{const h=e.target.closest('.sheet-grab,.sheet-head');if(!h||e.target.closest('button'))return;sh=h.closest('.sheet');y0=e.touches[0].clientY;dy=0;sh.classList.add('dragging');},{passive:true});
+  document.addEventListener('touchmove',e=>{if(y0===null)return;dy=Math.max(0,e.touches[0].clientY-y0);sh.style.transform=`translateY(${dy}px)`;},{passive:true});
+  document.addEventListener('touchend',()=>{if(y0===null)return;sh.classList.remove('dragging');if(dy>90)closeSheet();else sh.style.transform='';y0=null;sh=null;});
+})();
+
+/* ================= тема ================= */
+function themePref(){try{return localStorage.getItem('fin-theme')||'auto';}catch(e){return 'auto';}}
+function applyTheme(){
+  const t=themePref();
+  const dark=t==='dark'||(t==='auto'&&window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches);
+  document.documentElement.setAttribute('data-theme',dark?'dark':'light');
+  document.documentElement.setAttribute('data-theme-pref',t);
+  const m=document.getElementById('metaTheme');if(m)m.setAttribute('content',dark?'#0B1713':'#F4F1EB');
+  const b=document.getElementById('themeBtn');if(b){b.innerHTML=icon(dark?'sun':'moon');b.setAttribute('aria-label',dark?'Включить светлую тему':'Включить тёмную тему');}
+  document.querySelectorAll('[data-theme-set]').forEach(x=>{x.classList.toggle('on',x.dataset.themeSet===t);x.setAttribute('aria-checked',x.dataset.themeSet===t);x.setAttribute('role','radio');});
+}
+function setTheme(t){try{localStorage.setItem('fin-theme',t);}catch(e){}
+  document.documentElement.classList.add('theme-anim');applyTheme();setTimeout(()=>document.documentElement.classList.remove('theme-anim'),400);}
+document.getElementById('themeBtn').addEventListener('click',()=>setTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark'));
+document.addEventListener('click',e=>{const b=e.target.closest('[data-theme-set]');if(b)setTheme(b.dataset.themeSet);});
+try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{if(themePref()==='auto')applyTheme();});}catch(e){}
+applyTheme();
 
 /* ================= toast ================= */
 function showToast(html,type='ok',ms=5000){
@@ -1148,24 +1476,24 @@ function renderFlow(c,cp,daily,todayLeft){
   const X=k=>P+(W-2*P)*(n<=1?0:k/(n-1)),Y=v=>P+(H-2*P)*(1-(v-mn)/span);
   const line=arr=>arr.map((v,k)=>(k?'L':'M')+X(k).toFixed(1)+','+Y(v).toFixed(1)).join(' ');
   let svg=`<svg class="flow-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="Деньги по дням">`;
-  svg+=`<line x1="${P}" x2="${W-P}" y1="${Y(0)}" y2="${Y(0)}" stroke="#f0506e" stroke-dasharray="4 4" stroke-width="1" opacity=".7"/>`;
+  svg+=`<line x1="${P}" x2="${W-P}" y1="${Y(0)}" y2="${Y(0)}" style="stroke:var(--red)" stroke-dasharray="4 4" stroke-width="1" opacity=".7"/>`;
   const firstNext=daysUntil(NEXT_YM+'-01');
-  if(firstNext>0&&firstNext<n)svg+=`<line x1="${X(firstNext)}" x2="${X(firstNext)}" y1="${P}" y2="${H-P}" stroke="#3a4a74" stroke-width="1" stroke-dasharray="2 4"/>`;
-  svg+=`<path d="${line(cp.B0)}" fill="none" stroke="#3a4a74" stroke-width="1.5" stroke-dasharray="3 3"/>`;
-  svg+=`<defs><linearGradient id="fl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0297de" stop-opacity=".22"/><stop offset="1" stop-color="#0297de" stop-opacity="0"/></linearGradient></defs><path d="${line(L)} L${X(n-1).toFixed(1)},${H-P} L${X(0).toFixed(1)},${H-P} Z" fill="url(#fl)" stroke="none"/>`;
-  svg+=`<path d="${line(L)}" fill="none" stroke="#0297de" stroke-width="2.4" stroke-linejoin="round"/>`;
-  for(const e of cp.ev){const k=daysUntil(e.date);if(k<0||k>=n)continue;svg+=`<circle cx="${X(k)}" cy="${Y(L[k])}" r="3.2" fill="${e.amount>0?'#3ccf8e':'#fc734d'}"><title>${fmtDateShort(e.date)} ${esc(e.label)} ${e.amount>0?'+':'−'}${fmtN(Math.abs(e.amount))} ₽</title></circle>`;}
-  svg+=`<circle cx="${X(minK)}" cy="${Y(minL)}" r="5" fill="none" stroke="#0297de" stroke-width="2"/>`;
+  if(firstNext>0&&firstNext<n)svg+=`<line x1="${X(firstNext)}" x2="${X(firstNext)}" y1="${P}" y2="${H-P}" style="stroke:var(--chart-grid)" stroke-width="1" stroke-dasharray="2 4"/>`;
+  svg+=`<path d="${line(cp.B0)}" fill="none" style="stroke:var(--chart-grid)" stroke-width="1.5" stroke-dasharray="3 3"/>`;
+  svg+=`<defs><linearGradient id="fl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--chart-line)" stop-opacity=".2"/><stop offset="1" style="stop-color:var(--chart-line)" stop-opacity="0"/></linearGradient></defs><path d="${line(L)} L${X(n-1).toFixed(1)},${H-P} L${X(0).toFixed(1)},${H-P} Z" fill="url(#fl)" stroke="none"/>`;
+  svg+=`<path d="${line(L)}" fill="none" style="stroke:var(--chart-line)" stroke-width="2.4" stroke-linejoin="round"/>`;
+  for(const e of cp.ev){const k=daysUntil(e.date);if(k<0||k>=n)continue;svg+=`<circle cx="${X(k)}" cy="${Y(L[k])}" r="3.2" style="fill:${e.amount>0?'var(--chart-in)':'var(--chart-out)'}"><title>${fmtDateShort(e.date)} ${esc(e.label)} ${e.amount>0?'+':'−'}${fmtN(Math.abs(e.amount))} ₽</title></circle>`;}
+  svg+=`<circle cx="${X(minK)}" cy="${Y(minL)}" r="5" fill="none" style="stroke:var(--chart-line)" stroke-width="2"/>`;
   svg+=`</svg>`;
   // подписи оси — обычным текстом, чтобы не мельчали на телефоне и не раздувались на большом экране
   svg+=`<div class="flow-axis"><span>сегодня</span>${firstNext>0&&firstNext<n?`<span style="left:${(X(firstNext)/W*100).toFixed(1)}%">${MONTHS_FULL[+NEXT_YM.split('-')[1]-1]}</span>`:''}<span>${fmtDateShort(addDaysISO(TODAY_ISO,n-1))}</span></div>`;
-  $('#flowChart').innerHTML=svg+`<div class="muted" style="font-size:12px;">Линия — деньги на карте и в наличных, если тратить по лимиту · <span class="dot" style="background:var(--green)"></span> поступления · <span class="dot" style="background:var(--orange)"></span> платежи · пунктир — ноль</div>`;
+  $('#flowChart').innerHTML=svg+`<div class="muted" style="font-size:12px;">Линия — деньги на карте и в наличных, если тратить по лимиту · <span class="dot" style="background:var(--green)"></span> поступления · <span class="dot" style="background:var(--chart-out)"></span> платежи · пунктир — ноль</div>`;
   // ближайшие события
-  const rowOf=e=>{const k=daysUntil(e.date);return `<tr><td>${fmtDateShort(e.date)}</td><td><span class="dot" style="background:${e.amount>0?'var(--green)':'var(--orange)'}"></span>${esc(e.label)}</td><td class="r ${e.amount>0?'pos':'neg'}">${e.amount>0?'+':'−'}${fmtN(Math.abs(e.amount))}</td><td class="r muted">останется ≈ ${fmtN(L[Math.min(k,n-1)])}</td></tr>`;};
+  const rowOf=e=>{const k=daysUntil(e.date);return `<tr><td>${fmtDateShort(e.date)}</td><td><span class="dot" style="background:${e.amount>0?'var(--chart-in)':'var(--chart-out)'}"></span>${esc(e.label)}</td><td class="r ${e.amount>0?'pos':'neg'}">${e.amount>0?'+':'−'}${fmtN(Math.abs(e.amount))}</td><td class="r muted">останется ≈ ${fmtN(L[Math.min(k,n-1)])}</td></tr>`;};
   const firstN=4,head=cp.ev.slice(0,firstN).map(rowOf).join(''),tail=cp.ev.slice(firstN).map(rowOf).join('');
   $('#flowEvents').innerHTML=cp.ev.length?`<div style="color:var(--ink2);font-size:13px;margin:8px 0 4px;">Ближайшие события</div><table class="flow-ev">${head}</table>`
     +(tail?`<details class="more" data-fold="flowev" ${SUB_OPEN.flowev?'open':''}><summary>Все события до конца ${gen} (${cp.ev.length})</summary><table class="flow-ev">${tail}</table></details>`:'')
-    :'<div class="muted">Платежей и поступлений с датами пока нет — добавь зарплаты, кредиты и разовые траты на вкладке «Доходы − расходы».</div>';
+    :'<div class="muted">Платежей и поступлений с датами пока нет — добавь зарплаты, кредиты и разовые траты на вкладке «Доходы и расходы».</div>';
   // запас прочности
   const rw=runway(c);
   if(!rw){$('#runway').innerHTML='';return;}
@@ -1239,9 +1567,9 @@ let lastDaily=0;  // сколько можно тратить в день дал
 let LASTM={};      // главные цифры панели после последнего расчёта (для подсказок «что изменилось»)
 let lastRemain=0; // сколько осталось по норме на сегодня — для предупреждения о перерасходе
 function renderDash(c){
-  $('#todayLbl').textContent='сегодня: '+NOW.getDate()+' '+MONTHS_GEN[NOW.getMonth()]+' '+NOW.getFullYear()+' · v3.5';
+  $('#todayLbl').textContent=NOW.getDate()+' '+MONTHS_GEN[NOW.getMonth()];
   // поля балансов: не трогаем то, которое сейчас редактируется
-  const setVal=(sel,v)=>{const el=$(sel);const editing=document.activeElement===el&&el.closest('.tabpane').classList.contains('active');if(!editing)el.value=Math.round(v);};
+  const setVal=(sel,v)=>{const el=$(sel);const editing=document.activeElement===el;if(!editing)el.value=Math.round(v);};
   setVal('#inCash',c.cash);setVal('#inCard',c.card);setVal('#inDebt',c.debt);
   const lastTxt=(k,fallback)=>{const o=lastOpFor(k);return o?('последнее: '+o):fallback;};
   $('#cashHint').textContent=lastTxt('cash','вбей сколько сейчас в кошельке');
@@ -1276,10 +1604,10 @@ function renderDash(c){
   const alerts=[];
   if(state.onboarded&&NOW.getHours()>=20){
     const todayOps=state.tx.filter(t=>t.date===TODAY_ISO&&!t.srcKey).length;
-    if(!todayOps)alerts.push(['info','Вечер — внеси траты за сегодня, пока помнишь. Если трат не было — просто пропусти. <button class="btn small primary" data-goto="tx" style="margin-left:4px;">Открыть журнал</button>','show']);
+    if(!todayOps)alerts.push(['info','Вечер — внеси траты за сегодня, пока помнишь. Если трат не было — просто пропусти. <button class="btn small primary" data-sheet="add" style="margin-left:4px;">Внести трату</button>','show']);
   }
   if(!state.onboarded&&state.tourDone){
-    alerts.push(['info','Заполни свои цифры на вкладке <b>Доходы − расходы</b> — зарплаты с датами выплат, кредиты, кредитку, долги и разовые траты. Потом настрой <b>План месяца</b>. Дальше всё будет считаться само.']);
+    alerts.push(['info','Заполни свои цифры: <b>План → Доходы и расходы</b> — зарплаты с датами выплат, кредиты, кредитку, долги и разовые траты. Потом настрой <b>План месяца</b>. Дальше всё будет считаться само.']);
   }
   // кредиты: напоминание за 4 дня / просрочка
   for(const cr of c.credits){
@@ -1291,7 +1619,7 @@ function renderDash(c){
     }
   }
   if(c.debt>0&&!c.hasCcDl){
-    alerts.push(['warn',`По кредитке долг ${fmt(c.debt)}, а срок не задан — взнос не резервируется, и эти деньги кажутся свободными. Укажи срок на вкладке «Доходы − расходы».`]);
+    alerts.push(['warn',`По кредитке долг ${fmt(c.debt)}, а срок не задан — взнос не резервируется, и эти деньги кажутся свободными. Укажи срок на вкладке «Доходы и расходы».`]);
   }
   if(c.cash<0||c.card<0){
     alerts.push(['warn',`Баланс ушёл в минус (${c.cash<0?'наличные '+fmt(c.cash):'карта '+fmt(c.card)}) — так не бывает: видимо, трата была с другого кошелька. Поправь баланс или у записи способ оплаты.`]);
@@ -1328,7 +1656,7 @@ function renderDash(c){
   const upcoming=state.oneTime.filter(o=>!o.done&&(o.month===TODAY_YM||o.month===NEXT_YM));
   if(upcoming.length){
     const tot=upcoming.reduce((s,o)=>s+num(o.amount),0);
-    alerts.push(['info','Ждут траты: '+upcoming.map(o=>`${esc(o.name)} — ${fmtN(num(o.amount))} ₽${o.month===TODAY_YM?' (в этом месяце)':' ('+monthFull(o.month)+')'}`).join(', ')+`. Итого ${fmt(tot)} — уже учтены в расчётах. Когда заплатишь — отметь «Оплатил» в «Доходы − расходы» или выбери её в журнале.`]);
+    alerts.push(['info','Ждут траты: '+upcoming.map(o=>`${esc(o.name)} — ${fmtN(num(o.amount))} ₽${o.month===TODAY_YM?' (в этом месяце)':' ('+monthFull(o.month)+')'}`).join(', ')+`. Итого ${fmt(tot)} — уже учтены в расчётах. Когда заплатишь — отметь «Оплатил» в «Доходы и расходы» или выбери её в журнале.`]);
   }
   const freeLife=freeForLife(TODAY_YM);
   if(freeLife<0){
@@ -1399,13 +1727,17 @@ function renderDash(c){
     lastDaily=daily;lastRemain=remain;
     // главное число — сколько можно тратить в день ДАЛЬШЕ: перерасход уже вычтен и растянут
     ds.textContent=fmt(daily);ds.classList.toggle('red-txt',daily<=0);
-    $('#dailyCap').textContent=spentToday>0?'Можно тратить в день (с учётом сегодняшних трат)':'Можно потратить сегодня';
+    $('#dailyCap').textContent=spentToday>0?'Можно тратить в день':'Можно потратить сегодня';
     let t;
     if(spentToday<=0)t='сегодня ещё ничего не потрачено';
     else if(remain>=0)t=`сегодня потрачено <b>${fmt(spentToday)}</b> · от нормы дня (${fmt(allowance)}) ещё можно <b>${fmt(remain)}</b>`;
     else t=`сегодня потрачено <b>${fmt(spentToday)}</b> при норме ${fmt(allowance)} · <span style="color:var(--amber)">перерасход ${fmt(-remain)} уже учтён</span>: он разложен на ${spreadN} дн. ${spreadTxt}, поэтому в день теперь ≈ ${fmt(daily)} (было ${fmt(allowance)})`;
     const short=spentToday<=0?shortWhy:(remain>=0?`потрачено ${fmt(spentToday)} · сегодня можно ещё <b>${fmt(remain)}</b>`:`перерасход ${fmt(-remain)} учтён · разложен ${spreadTxt}`);
     dsSub.innerHTML=foldSub('daily',short,t+'<br>'+why);
+    const bar=$('#todayBar');
+    if(bar){const pct=allowance>0?Math.min(100,spentToday/allowance*100):(spentToday>0?100:0);
+      bar.style.width=pct.toFixed(1)+'%';bar.classList.toggle('over',remain<0);
+      bar.parentElement.setAttribute('title',`потрачено ${fmt(spentToday)} из ${fmt(allowance)}`);}
   };
   // три способа посчитать лимит — берём меньший, чтобы хватило на всё
   const pp=payPeriod();
@@ -1439,7 +1771,8 @@ function renderDash(c){
   if(longFree<0){
     lastDaily=0;lastRemain=0;headDaily=0;ds.textContent=fmt(0);ds.classList.add('red-txt');
     $('#dailyCap').textContent='Можно потратить сегодня';
-    dsSub.innerHTML=`на предстоящие платежи и траты до конца ${curMonthGen} не хватает ${fmt(-longFree)}. Посмотри «Деньги: сейчас» — там видно, куда уходят деньги.`;
+    dsSub.innerHTML=foldSub('daily',`не хватает ${fmt(-longFree)} на платежи до конца ${curMonthGen}`,`На предстоящие платежи и траты до конца ${curMonthGen} не хватает ${fmt(-longFree)}. Нажми «Деньги сейчас» — там видно, куда уходят деньги.`);
+    if($('#todayBar'))$('#todayBar').style.width='0%';
   }else{
     headDaily=bind.v;
     const SHORT={plan:`по плану · ${untilTxt}`,money:`по деньгам · до конца ${curMonthGen}`,gap:cp.safeAt>=cp.days-1?`по деньгам · до конца ${curMonthGen}`:`ниже обычного: впереди платежи · ${bind.until}`};
@@ -1459,7 +1792,7 @@ function renderDash(c){
   if(nextPays.length)payParts.push(`${monName(NEXT_YM)}: ${nextPays.map(p=>dm(p.date)+' — '+fmtN(p.amount)).join(', ')}`);
   const payments=longReserve-nearOneSum-oneThis-savingsLeft-state.plan.savings-sinkNext;
   $('#leftLifeSub').innerHTML=foldSub('left',`на жизнь до конца ${curMonthGen}: <b>${fmt(longFree)}</b>`,`${fmtN(onHands)} сейчас (наличные + карта)`
-    +`<br>+ <b>${fmtN(futureInc+inNext)}</b> зарплаты, которые ещё придут`+(payParts.length?` (${payParts.join('; ')})`:' — выплат нет, добавь их на вкладке «Доходы − расходы»')
+    +`<br>+ <b>${fmtN(futureInc+inNext)}</b> зарплаты, которые ещё придут`+(payParts.length?` (${payParts.join('; ')})`:' — выплат нет, добавь их на вкладке «Доходы и расходы»')
     +(c.plannedInc>0?`<br>+ ${fmtN(c.plannedInc)} запланированные поступления (записи с будущей датой)`:'')
     +(payments>0?`<br>− ${fmtN(payments)} платежи (кредиты, кредитка, долги)`:'')
     +(c.plannedExp>0?`<br>− ${fmtN(c.plannedExp)} запланированные траты (записи с будущей датой)`:'')
@@ -1511,7 +1844,8 @@ function renderDash(c){
   const normPerDay=followEff?planLife/daysInMonth(TODAY_YM):moneyPerDay;
   const savedNow=Math.round(normPerDay*daysTracked-factLife);
   if(savedNow>300&&daysTracked>=3)ph.push(`За ${daysTracked} дн. потратил на ${fmt(savedNow)} меньше возможного — их можно отложить или потратить сегодня сверх лимита`);
-  $('#paydayInfo').innerHTML=ph.join(' · ')||'Добавь зарплаты с датами выплат на вкладке «Доходы − расходы»';
+  $('#paydayInfo').innerHTML=c.nextPay?`${esc(c.nextPay.name)} +${fmtN(c.nextPay.amount)} · ${daysUntil(c.nextPay.date)>0?'через '+daysUntil(c.nextPay.date)+' дн.':'сегодня'}`:'Зарплаты не добавлены';
+  if(ph.length&&WHY.daily)WHY.daily+=`<div class="why-note">${ph.join('<br>')}</div>`;
   /* обязательства */
   const dl=[];
   for(const cr of c.credits){
@@ -1548,17 +1882,18 @@ function renderDash(c){
   {const nx=c.credits.filter(cr=>cr.active&&!cr.paidThisMonth&&cr.dueISO).sort((a,b)=>a.dueISO.localeCompare(b.dueISO))[0];
    setSum('dueCard',nx?`ближайший: ${esc(nx.name)} ${fmt(nx.monthly)} · ${fmtDateShort(nx.dueISO)}`:(dl.length?`${dl.length} шт.`:'нет'));}
   $('#deadlines').innerHTML=dl.length?`<div class="cards3" style="margin-bottom:0;">${dl.join('')}</div>`
-    :'<div class="banner ok">Обязательств нет. Если появятся кредиты или долги — добавь их на вкладке «Доходы − расходы».</div>';
+    :'<div class="banner ok">Обязательств нет. Если появятся кредиты или долги — добавь их на вкладке «Доходы и расходы».</div>';
   LASTM={daily:lastDaily,remain:lastRemain,longFree,endSave,cashFree,net:c.netWorth,cash:c.cash,card:c.card,debt:c.debt,
     bound:(longFree<0)?'money':bind.k,planLife};
   try{renderFlow(c,cp,headDaily,lastRemain);}catch(err){console.error(err);}
   try{
-    const W=[['#fc734d','Можно в день',fmtN(headDaily)+' ₽','hi'],['#3ccf8e','Наличные',fmtN(c.cash)+' ₽'],['#0297de','Карта',fmtN(c.card)+' ₽']];
-    if(c.hasCC)W.push(['#f0506e','Кредитка (долг)',fmtN(c.debt)+' ₽']);
-    if(state.pots.length)W.push(['#5fd4c4','Копилки',fmtN(c.potsTotal)+' ₽']);
-    W.push(['#7d88a6','Капитал',fmtN(c.netWorth)+' ₽']);
+    const W=[['var(--moss)','Можно в день',fmtN(headDaily)+' ₽','hi'],['var(--green)','Наличные',fmtN(c.cash)+' ₽'],['var(--blue)','Карта',fmtN(c.card)+' ₽']];
+    if(c.hasCC)W.push(['var(--red)','Кредитка (долг)',fmtN(c.debt)+' ₽']);
+    if(state.pots.length)W.push(['var(--gold)','Копилки',fmtN(c.potsTotal)+' ₽']);
+    W.push(['var(--muted)','Капитал',fmtN(c.netWorth)+' ₽']);
     $('#sideWallets').innerHTML=W.map(([col,nm,vl,cl])=>`<div class="sw ${cl||''}"><span class="dot" style="background:${col}"></span><span class="nm">${nm}</span><span class="vl">${vl}</span></div>`).join('');
-    const cur=document.querySelector('#tabs .tab.active');renderNav(cur?cur.dataset.tab:'dash');
+    renderNav(CUR_TAB);renderMoreLinks(c);
+    if(OPEN_SHEET&&OPEN_SHEET.id==='sheet-money')$('#moneyWhy').innerHTML=WHY.left||'';
   }catch(err){console.error(err);}
   try{renderPots(c);}catch(err){console.error(err);}
   flashOnChange('cash',Math.round(c.cash),$('#inCash').closest('.card'));
@@ -1802,7 +2137,7 @@ $('#btnPresetDebts').addEventListener('click',()=>{
     ?`Режим «долги вперёд»: жизнь ${fmt(life)}, всё остальное (${fmt(rest)}) — в долги. Плотно, зато свобода ближе.`
     :`Долгов нет — всё свободное (${fmt(rest)}) направил в подушку.`);
 });
-$('#btnPlanReady').addEventListener('click',()=>{state.onboarded=true;save();switchTab('dash');renderComputed(false);showToast('План принят. Смотри панель — там все твои возможности на сегодня.');});
+$('#btnPlanReady').addEventListener('click',()=>{state.onboarded=true;save();switchTab('dash');renderComputed(false);showToast('План принят. Смотри главную — там все твои возможности на сегодня.');});
 
 /* ================= прогноз долгов ================= */
 function strategyOrder(){
@@ -1886,7 +2221,7 @@ function renderForecast(){
         <span class="neg">${fmt(d.amount)} <span class="muted">(${closedYM[d.id]?'закроется к '+monthDat(closedYM[d.id]):'темп слишком низкий'})</span></span></div>`;
     }
   }
-  $('#debtsList').innerHTML=list||'<div class="muted">Долгов нет. Добавить можно на вкладке «Доходы − расходы».</div>';
+  $('#debtsList').innerHTML=list||'<div class="muted">Долгов нет. Добавить можно на вкладке «Доходы и расходы».</div>';
   let head='';
   if(deficit)head+=`<div class="banner danger">При таких настройках в каком-то месяце расходы больше доходов. Уменьши «траты на жизнь», «подушку» или взносы по долгам.</div>`;
   if(allClosedYM){
@@ -1958,13 +2293,13 @@ $('#txAdd').addEventListener('click',()=>{
   let debtRef=null;
   if(type==='debtpay'){
     debtRef=state.debts.find(x=>x.id===+$('#txDebt').value);
-    if(!debtRef){alert('Выбери долг (добавь его на вкладке «Доходы − расходы»)');return;}
+    if(!debtRef){alert('Выбери долг (добавь его на вкладке «Доходы и расходы»)');return;}
     if(($('#txDate').value||TODAY_ISO)>TODAY_ISO){alert('Возврат долга нельзя записать будущей датой: сумма долга уменьшается сразу. Поставь сегодняшнюю дату или прошедшую.');return;}
   }
   if(type==='move'){
     if(($('#txDate').value||TODAY_ISO)>TODAY_ISO){alert('Перевод записывается сегодняшней или прошедшей датой.');return;}
     const from=$('#txMethod').value==='cash'?before.cash:before.card;
-    if(amount>from+0.5){alert(`${$('#txMethod').value==='cash'?'Наличных':'На карте'} по приложению только ${fmt(from)}. Проверь направление перевода или сначала поправь баланс на панели.`);return;}
+    if(amount>from+0.5){alert(`${$('#txMethod').value==='cash'?'Наличных':'На карте'} по приложению только ${fmt(from)}. Проверь направление перевода или сначала поправь баланс на главной («Деньги сейчас»).`);return;}
   }
   const t={id:uid(),date:$('#txDate').value||TODAY_ISO,type,
     amount,category:type==='move'?($('#txMethod').value==='cash'?'Перевод: наличные → карта':'Перевод: карта → наличные'):type==='repay'?'Погашение кредитки':(type==='debtpay'?'Возврат долга: '+debtRef.name:$('#txCat').value),
@@ -2015,7 +2350,7 @@ $('#txAdd').addEventListener('click',()=>{
       const gen=MONTHS_GEN[+NEXT_YM.split('-')[1]-1];
       const inHorizon=t.date<=NEXT_YM+'-'+pad(daysInMonth(NEXT_YM));
       msg=`<b>Запись на ${fmtDateRu(t.date)} сохранена как план.</b><br>В кошельке её ещё нет — спишется/придёт сама, когда наступит этот день.`
-        +(inHorizon?`<br>В прогноз она уже вошла: на жизнь до конца ${gen}: ${fmtN(mBefore.longFree)} → <b>${fmtN(LASTM.longFree)}</b> ₽.`:`<br>Дата позже конца ${gen}, поэтому на панели пока не видна.`)
+        +(inHorizon?`<br>В прогноз она уже вошла: на жизнь до конца ${gen}: ${fmtN(mBefore.longFree)} → <b>${fmtN(LASTM.longFree)}</b> ₽.`:`<br>Дата позже конца ${gen}, поэтому на главной пока не видна.`)
         +`<br>Сегодня ${fmtDateRu(TODAY_ISO)} — если дату выбрал случайно, удали запись в журнале и добавь заново.`;
     }
     if(oneRef)msg+=`<br>Разовая «${esc(oneRef.name)}» закрыта. В дневной лимит «жизни» эта трата не входит.`;
@@ -2023,6 +2358,7 @@ $('#txAdd').addEventListener('click',()=>{
     showToast(msg,kind,kind==='warn'?8000:5500);
   }catch(err){console.error(err);}
 });
+$('#txAdd').addEventListener('click',()=>{if($('#txAmount').value===''&&OPEN_SHEET&&OPEN_SHEET.id==='sheet-add'&&!document.body.classList.contains('touring'))closeSheet();});
 document.getElementById('txHistory').addEventListener('click',e=>{
   const b=e.target.closest('[data-del]');if(!b)return;
   const t=state.tx.find(x=>x.id===+b.dataset.del);
@@ -2263,7 +2599,7 @@ function trackChange(){
     if(diff(a.daily,b.daily))L.push(`Можно тратить в день: ${fmtN(a.daily)} → <b>${fmtN(b.daily)}</b> ₽`);
     else if(L.length&&b.bound==='plan')L.push(`В день без изменений: лимит держит твой план жизни (${fmtN(b.planLife)} ₽/мес), а не деньги`);
     else if(L.length&&b.bound==='gap')L.push(`В день без изменений: лимит держат ближайшие платежи до зарплаты (см. «Деньги по дням»)`);
-    if(!L.length){showToast('Главные цифры панели не изменились. Если это трата или платёж на месяц позже конца '+gen+' — смотри «План месяца» и «Долги».','ok',6500);return;}
+    if(!L.length){showToast('Главные цифры не изменились. Если это трата или платёж на месяц позже конца '+gen+' — смотри «План месяца» и «Долги».','ok',6500);return;}
     showToast('Пересчитано:<br>'+L.join('<br>'),'ok',8000);
   },900);
 }
@@ -2416,7 +2752,7 @@ $('#importFile').addEventListener('change',e=>{
   r.readAsText(f);
 });
 $('#btnReset').addEventListener('click',()=>{
-  if(confirm('Сбросить все данные к начальным? Записи и балансы удалятся.\n(Копия останется — её можно будет вернуть с панели.)')){snapshot();localStorage.removeItem(LS);localStorage.removeItem(LS_OLD2);localStorage.removeItem(LS_OLD1);location.reload();}
+  if(confirm('Сбросить все данные к начальным? Записи и балансы удалятся.\n(Копия останется — её можно будет вернуть с главной.)')){snapshot();localStorage.removeItem(LS);localStorage.removeItem(LS_OLD2);localStorage.removeItem(LS_OLD1);location.reload();}
 });
 
 /* ================= общий рендер ================= */
@@ -2444,8 +2780,9 @@ function init(){
   $('#planMonth').innerHTML=monthOptions(state.plan.month,TODAY_YM,addMonths(TODAY_YM,12));
   renderSetup();
   renderComputed(true);
-  renderNav(state.onboarded?'dash':'setup');
-  document.querySelectorAll('.tabpane').forEach(p=>p.classList.toggle('active',p.id===(state.onboarded?'tab-dash':'tab-setup')));
+  CUR_TAB=state.onboarded?'dash':'setup';LAST_IN[groupOf(CUR_TAB).id]=CUR_TAB;
+  renderNav(CUR_TAB);
+  document.querySelectorAll('.tabpane').forEach(p=>p.classList.toggle('active',p.id==='tab-'+CUR_TAB));
   if(tourActive())setTimeout(tourShow,300);
 }
 function fitNav(){}
@@ -2454,25 +2791,26 @@ const TOUR=[
   {title:'Привет! Настроим за 3 минуты',text:'Пройдём 5 коротких шагов: доходы → платежи → деньги сейчас → план трат → журнал. Дальше приложение само будет считать, сколько можно тратить в день, чтобы хватило до зарплаты.',next:'Начать'},
   {tab:'setup',target:'#setIncCard',title:'Доходы',text:'Нажми «+ Добавить источник дохода». Впиши название (например «Работа»), число месяца и сумму каждой выплаты. Аванс и зарплата — две строки («+ выплату»).',done:()=>state.incomes.some(i=>i.pays.some(p=>num(p.amount)>0)),need:'Добавь хотя бы одну выплату с суммой'},
   {tab:'setup',target:'#setCredCard',title:'Кредиты, кредитка, долги',text:'Если есть кредит, кредитка или долг — добавь здесь и в блоках ниже (листай вниз). Приложение будет заранее откладывать на платежи. Если ничего нет — просто «Дальше».'},
-  {tab:'dash',target:'.cards4',title:'Сколько денег сейчас',text:'Впиши, сколько у тебя сейчас наличных и сколько на карте. Если есть долг по кредитке — тоже.',done:()=>{const c=compute();return c.cash+c.card>0;},need:'Впиши наличные или сумму на карте'},
+  {tab:'dash',sheet:'money',target:'.cards4',title:'Сколько денег сейчас',text:'Впиши, сколько у тебя сейчас наличных и сколько на карте. Если есть долг по кредитке — тоже. Потом это окно открывается нажатием на «Деньги сейчас».',done:()=>{const c=compute();return c.cash+c.card>0;},need:'Впиши наличные или сумму на карте'},
   {tab:'plan',target:'#slSpend',title:'План трат',text:'Передвинь «Траты на жизнь» — сколько в месяц уходит на еду, проезд, мелочи. Можно примерно, потом поправишь. Ниже — сколько хочешь откладывать.',done:()=>state.plan.spending>0,need:'Передвинь ползунок «Траты на жизнь»'},
-  {tab:'tx',target:'#tab-tx .card',title:'Каждый день — журнал',text:'Сюда вноси траты: сумма, категория, наличные или карта → «Добавить». Зарплата появится сама в день выплаты. Ошибся — удали запись крестиком.'},
-  {tab:'dash',target:'.spend-hero',title:'Готово',text:'Оранжевая цифра — сколько можно потратить сегодня, чтобы хватило на всё до зарплаты. «Подробнее» — как посчитано. Хочешь напоминание каждый вечер в 21:00 внести траты?',remind:true,next:'Начать пользоваться'},
+  {tab:'dash',sheet:'add',target:'#txForm',title:'Каждый день — запись',text:'Круглая кнопка «+» внизу открывает это окно: сумма, категория, наличные или карта → «Добавить». Зарплата появится сама в день выплаты. Все записи — в разделе «Журнал».'},
+  {tab:'dash',target:'#heroCard',title:'Готово',text:'Большая цифра на зелёной плашке — сколько можно потратить сегодня, чтобы хватило на всё до зарплаты. Нажми на неё — покажу, как посчитано. Хочешь напоминание каждый вечер в 21:00 внести траты?',remind:true,next:'Начать пользоваться'},
 ];
 let tourTimer=null;
 function tourActive(){return !state.tourDone;}
 function tourEnd(silent){
   state.tourDone=true;state.onboarded=true;save();
-  clearInterval(tourTimer);document.getElementById('tour')?.remove();document.body.classList.remove('touring');
+  clearInterval(tourTimer);document.getElementById('tour')?.remove();document.body.classList.remove('touring');closeSheet();
   document.querySelectorAll('.tour-focus').forEach(e=>e.classList.remove('tour-focus'));
   switchTab('dash');renderComputed(true);
-  if(!silent)showToast('Обучение можно пройти заново: Панель → «Как пользоваться».');
+  if(!silent)showToast('Обучение можно пройти заново: «Ещё» → «Как пользоваться».');
 }
 function tourShow(){
   if(!tourActive())return;
   const i=Math.min(Math.max(0,state.tourStep||0),TOUR.length-1),st=TOUR[i];
   document.querySelectorAll('.tour-focus').forEach(e=>e.classList.remove('tour-focus'));
   if(st.tab&&!document.getElementById('tab-'+st.tab).classList.contains('active'))switchTab(st.tab);
+  if(st.sheet)openSheet(st.sheet);else closeSheet();
   let box=document.getElementById('tour');
   if(!box){box=document.createElement('div');box.id='tour';box.setAttribute('role','dialog');document.body.appendChild(box);}
   document.body.classList.add('touring');
@@ -2484,8 +2822,9 @@ function tourShow(){
     <div class="t-btns">${i>0?'<button class="btn small" id="tourBack">Назад</button>':''}<span class="grow"></span>
       ${st.done?'<button class="btn small" id="tourSkip">Пропустить</button>':''}
       <button class="btn small primary" id="tourNext">${st.next||'Дальше'}</button></div>`;
+  box.classList.toggle('top',!!st.sheet);
   const tgt=st.target&&document.querySelector(st.target);
-  if(tgt){const el=tgt.closest('.slider-row')||tgt;el.classList.add('tour-focus');setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'start'}),60);}
+  if(tgt&&!st.sheet){const el=tgt.closest('.slider-row')||tgt;el.classList.add('tour-focus');setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'start'}),60);}
   const go=d=>{state.tourStep=i+d;save();if(state.tourStep>=TOUR.length)tourEnd(true);else tourShow();};
   box.querySelector('#tourX').onclick=()=>tourEnd(false);
   box.querySelector('#tourNext').onclick=()=>{if(st.done&&!st.done())return;if(i===TOUR.length-1){tourEnd(true);showToast('Готово. Хорошего учёта!');return;}go(1);};
@@ -2514,15 +2853,15 @@ document.addEventListener('click',e=>{if(e.target.id==='tourRestart'){state.tour
 try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();}catch(e){}
 if('serviceWorker' in navigator&&location.protocol==='https:'){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});}
 /* сворачиваемые карточки: нажми на заголовок. Что свернул — запоминается в этом браузере */
-const FOLD_DEFAULT=['goalCard','potsCard','howCard'];
+const FOLD_DEFAULT=['goalCard','potsCard','howCard','flowCard'];
 let FOLDS=null;
 function foldKey(card){return card.id||('h:'+(card.querySelector(':scope>h2').firstChild.textContent||'').trim().slice(0,40));}
-function loadFolds(){try{const r=JSON.parse(localStorage.getItem('fin-folds-v1')||'null');if(r&&typeof r==='object')return r;}catch(e){}const d={};FOLD_DEFAULT.forEach(k=>d[k]=true);return d;}
-function saveFolds(){try{localStorage.setItem('fin-folds-v1',JSON.stringify(FOLDS));}catch(e){}}
+function loadFolds(){try{const r=JSON.parse(localStorage.getItem('fin-folds-v2')||'null');if(r&&typeof r==='object')return r;}catch(e){}const d={};FOLD_DEFAULT.forEach(k=>d[k]=true);return d;}
+function saveFolds(){try{localStorage.setItem('fin-folds-v2',JSON.stringify(FOLDS));}catch(e){}}
 function setupFolds(){
   FOLDS=loadFolds();
   document.querySelectorAll('.tabpane .card').forEach(card=>{
-    const h=card.querySelector(':scope>h2');if(!h||card.id==='installTip'||card.classList.contains('stat')||card.classList.contains('foldable'))return;
+    const h=card.querySelector(':scope>h2');if(!h||card.id==='installTip'||card.dataset.nofold!==undefined||card.classList.contains('stat')||card.classList.contains('foldable'))return;
     card.classList.add('foldable');
     h.insertAdjacentHTML('afterbegin','<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>');
     h.insertAdjacentHTML('beforeend','<span class="h2-sum"></span>');
@@ -2537,8 +2876,28 @@ function setSum(id,html){const el=document.querySelector('#'+id+'>h2 .h2-sum');i
 /* короткая строка + «Подробнее» (раскрытие запоминается до перезагрузки) */
 const SUB_OPEN={};
 document.addEventListener('toggle',e=>{const d=e.target;if(d&&d.dataset&&d.dataset.fold)SUB_OPEN[d.dataset.fold]=d.open;},true);
+const WHY={};
+const WHY_TITLE={daily:'Как посчитан лимит',left:'Деньги до конца следующего месяца',save:'Сколько получится накопить'};
 function foldSub(key,short,full){
-  return `<div class="sub-short">${short}</div>`+(full?`<details class="more" data-fold="${key}" ${SUB_OPEN[key]?'open':''}><summary>Подробнее</summary><div class="more-body">${full}</div></details>`:'');
+  WHY[key]=full||'';
+  return `<div class="sub-short">${short}</div>`+(full?`<button type="button" class="why-link" data-why="${key}">Почему так?</button>`:'');
+}
+function openWhy(key){
+  if(key==='left'){openSheet('money');return;}
+  $('#whyTitle').textContent=WHY_TITLE[key]||'Почему так';
+  $('#whyBody').innerHTML=WHY[key]||'<div class="muted">Пока нечего объяснять — добавь доходы и траты.</div>';
+  openSheet('why');
+}
+/* «Ещё»: ссылки на редкие экраны */
+function renderMoreLinks(c){
+  const el=$('#moreLinks');if(!el)return;
+  const debts=state.debts.filter(d=>d.enabled&&num(d.amount)>0);
+  const rows=[
+    debts.length?{go:'debts',ic:'list',t:'Долги',v:fmt(debts.reduce((a,d)=>a+num(d.amount),0))}:null,
+    {go:'history',ic:'cal',t:'История по месяцам',v:''},
+    {go:'setup',ic:'more',t:'Доходы, кредиты, разовые траты',v:''},
+  ].filter(Boolean);
+  el.innerHTML=rows.map(r=>`<button type="button" class="list-row" data-goto="${r.go}"><span class="li-ic">${icon(r.ic)}</span><span class="li-t">${r.t}</span><span class="li-v">${r.v}</span>${icon('chev')}</button>`).join('');
 }
 document.addEventListener('click',e=>{
   if(!e.target.closest('#restoreSafe'))return;
