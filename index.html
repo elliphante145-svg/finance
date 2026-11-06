@@ -28,7 +28,7 @@
      Имена переменных старые (gold, orange…), чтобы не трогать разметку расчётов. */
   :root{
     --side:#F4F1EB; --bg:#F4F1EB; --card:#FFFFFF; --card2:#FFFFFF; --raised:#ECE8DF; --deep:#F8F6F1;
-    --ink:#12201B; --ink2:#3F4D47; --muted:#5F6C66;
+    --ink:#12201B; --ink2:#3F4D47; --muted:#58655F;
     --line:rgba(18,32,27,.08); --border:rgba(18,32,27,.08); --line2:rgba(18,32,27,.15);
     --gold:#2D5A4A; --gold2:#0D4C3C; --gold-soft:rgba(45,90,74,.12);
     --orange:#A8551F; --orange-dk:rgba(168,85,31,.10);
@@ -111,7 +111,8 @@
   }
   .dot,.sw .dot{display:inline-block;width:8px;height:8px;border-radius:50%;flex:none;vertical-align:middle;}
   .tabpane{display:none;}
-  .tabpane.active{display:block;animation:enter .3s var(--ease);}
+  .tabpane.active{display:block;animation:fadein .16s cubic-bezier(.23,1,.32,1);}
+  @keyframes fadein{from{opacity:0;}to{opacity:1;}}
   @keyframes enter{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
   .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px;margin-bottom:16px;}
   .cards4{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:16px;}
@@ -342,19 +343,39 @@
   .sec-h{font-size:13px;font-weight:500;color:var(--muted);margin:20px 4px 8px;}
 
   /* главная плашка */
-  .hero{position:relative;background:var(--hero);color:var(--hero-ink);border-radius:28px;padding:22px 22px 18px;margin-bottom:10px;cursor:pointer;overflow:hidden;
-    background-image:radial-gradient(120% 90% at 100% 0%,rgba(123,160,91,.28),transparent 55%),linear-gradient(180deg,rgba(255,255,255,.05),transparent 40%);
-    box-shadow:0 1px 0 rgba(255,255,255,.08) inset,0 12px 32px rgba(13,76,60,.28);
-    transition:transform .18s var(--ease),box-shadow .18s var(--ease);-webkit-tap-highlight-color:transparent;}
-  :root[data-theme="dark"] .hero{box-shadow:0 1px 0 rgba(255,255,255,.08) inset,0 12px 32px rgba(0,0,0,.35);}
-  .hero:active,.chip:active{transform:scale(.985);}
+  .hero{position:relative;color:var(--hero-ink);border-radius:28px;padding:22px 22px 18px;margin-bottom:10px;cursor:pointer;overflow:hidden;isolation:isolate;
+    background:radial-gradient(90% 70% at 100% 0%,rgba(123,160,91,.22),transparent 60%),linear-gradient(165deg,#125A47 0%,#0D4C3C 45%,#0A3F32 100%);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.10),inset 0 -1px 0 rgba(0,0,0,.15),0 2px 4px rgba(13,76,60,.12),0 16px 36px -8px rgba(13,76,60,.40);
+    transform:perspective(900px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) scale(var(--press,1));
+    transition:transform .14s cubic-bezier(.23,1,.32,1);-webkit-tap-highlight-color:transparent;}
+  :root[data-theme="dark"] .hero{box-shadow:inset 0 1px 0 rgba(255,255,255,.10),inset 0 -1px 0 rgba(0,0,0,.2),0 16px 36px -8px rgba(0,0,0,.6);}
+  .hero.danger:not(.is-empty){background:radial-gradient(90% 70% at 100% 0%,rgba(232,128,106,.22),transparent 60%),linear-gradient(165deg,#6E3326 0%,#5A281E 50%,#4A2018 100%);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 16px 36px -8px rgba(90,40,30,.45);}
+  .hero.danger:not(.is-empty) .cap{color:#F6C7A6;} .hero.danger .v.red-txt{color:#FFF1EA;}
+  .hero-sheen{position:absolute;inset:0;z-index:-1;pointer-events:none;border-radius:inherit;
+    background:radial-gradient(60% 50% at var(--gx,70%) var(--gy,20%),rgba(255,255,255,.13),transparent 70%);}
+  .chip{transform:perspective(700px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) scale(var(--press,1));}
+  .hero:active,.chip:active{--press:.985;}
+  .hero.is-empty{cursor:default;}
+  .hero-empty{display:none;}
+  .hero.is-empty>:not(.hero-empty):not(.hero-sheen){display:none;}
+  .hero.is-empty .hero-empty{display:block;}
+  .he-t{font-size:19px;line-height:1.35;font-weight:500;margin:8px 0 16px;color:var(--hero-ink);letter-spacing:-.01em;}
+  .btn.he-btn{background:#F4F1EB;color:#0D4C3C;font-weight:600;min-height:46px;padding:0 20px;}
+  .btn.he-btn:hover{background:#FFFFFF;}
+  #tab-dash.is-empty>:not(#heroCard):not(#installTip){display:none;}
+  .all-good{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:18px;box-shadow:var(--shadow);padding:14px 16px;margin-bottom:8px;}
+  .all-good>span:last-child{display:flex;flex-direction:column;gap:1px;font-size:14.5px;}
+  .all-good b{font-weight:600;}
+  .ag-ic{width:34px;height:34px;border-radius:50%;background:var(--green-dk);color:var(--green);display:inline-flex;align-items:center;justify-content:center;flex:none;}
+  .ag-ic svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;}
   .hero .cap{font-size:14px;color:var(--hero-cap);font-weight:500;}
-  .hero .v{font-size:48px;font-weight:600;letter-spacing:-.035em;line-height:1.05;margin:6px 0 6px;color:var(--hero-ink);}
+  .hero .v{font-size:50px;font-weight:600;letter-spacing:-.035em;line-height:1.05;margin:6px 0 6px;color:var(--hero-ink);white-space:nowrap;font-variant-numeric:proportional-nums;}
   .hero .v.red-txt{color:#F6B9A8;}
   .hero .sub,.hero .sub-short{font-size:13.5px;color:var(--hero-sub);line-height:1.45;}
   .hero .sub b{color:var(--hero-ink);font-weight:600;}
   .hero-bar{height:6px;border-radius:3px;background:var(--hero-track);margin:14px 0 12px;overflow:hidden;}
-  .hero-bar>div{height:100%;width:0;border-radius:3px;background:var(--moss);transition:width .6s var(--ease);}
+  .hero-bar>div{height:100%;width:100%;border-radius:3px;background:var(--moss);transform:scaleX(0);transform-origin:left center;transition:transform .5s cubic-bezier(.23,1,.32,1);}
   .hero-bar>div.over{background:#E8A06A;}
   .hero-foot{display:flex;justify-content:space-between;gap:12px;font-size:12.5px;color:var(--hero-sub);}
   .hero-more{white-space:nowrap;color:var(--hero-cap);}
@@ -410,13 +431,13 @@
   .list-row>svg{width:16px;height:16px;color:var(--muted);}
 
   /* шторки снизу */
-  .scrim{position:fixed;inset:0;background:var(--scrim);opacity:0;pointer-events:none;z-index:80;transition:opacity .3s var(--ease);}
-  .scrim.open{opacity:1;pointer-events:auto;}
+  .scrim{position:fixed;inset:0;background:var(--scrim);opacity:0;pointer-events:none;z-index:80;transition:opacity .22s cubic-bezier(.23,1,.32,1);}
+  .scrim.open{opacity:1;pointer-events:auto;transition-duration:.36s;}
   .sheet{position:fixed;left:0;right:0;bottom:0;z-index:81;max-height:88vh;max-height:88dvh;overflow-y:auto;overscroll-behavior:contain;
     background:var(--sheet);-webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);
     border-radius:28px 28px 0 0;box-shadow:0 -8px 40px rgba(0,0,0,.18);padding:0 18px calc(20px + env(safe-area-inset-bottom));
-    transform:translateY(105%);visibility:hidden;transition:transform .45s var(--spring),visibility 0s linear .45s;}
-  .sheet.open{transform:translateY(0);visibility:visible;transition:transform .45s var(--spring),visibility 0s;}
+    transform:translateY(105%);visibility:hidden;transition:transform .26s cubic-bezier(.23,1,.32,1),visibility 0s linear .26s;}
+  .sheet.open{transform:translateY(0);visibility:visible;transition:transform .42s var(--spring),visibility 0s;}
   .sheet.dragging{transition:none;}
   .sheet-grab{width:40px;height:5px;border-radius:3px;background:var(--line2);margin:8px auto 4px;}
   .sheet-head{position:sticky;top:0;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0 12px;background:inherit;z-index:1;touch-action:none;}
@@ -478,7 +499,20 @@
     .tab.active svg{color:var(--gold);}
     .sheet{left:256px;max-width:600px;margin:0 auto;right:0;}
   }
+  @media(max-width:899.98px){
+    .btn,.btn.small,.sheet-x,.icon-btn{min-height:44px;}
+    .icon-btn{width:44px;height:44px;}
+    .del{min-width:44px;min-height:44px;}
+    .seg button{min-height:44px;}
+  }
+  @media(hover:none){
+    .btn:hover{background:var(--raised);} .btn.primary:hover{background:var(--primary);} .btn.he-btn:hover{background:#F4F1EB;}
+    .tab:hover{background:transparent;color:var(--ink2);} .del:hover{color:var(--muted);}
+    details.more>summary:hover{color:var(--muted);}
+  }
+  .btn:active,.sheet-x:active,.seg button:active,.icon-btn:active{transform:scale(.97);transition:transform .1s cubic-bezier(.23,1,.32,1);}
   @media(prefers-reduced-motion:reduce){
+    .hero,.chip{transform:none !important;}
     *,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important;}
   }
 </style>
@@ -513,6 +547,12 @@
     <div class="sub" id="dailySpendSub">обновляется после каждой траты</div>
     <div class="hero-bar" aria-hidden="true"><div id="todayBar"></div></div>
     <div class="hero-foot"><span id="paydayInfo"></span><span class="hero-more">Как посчитано</span></div>
+    <div class="hero-empty">
+      <div class="cap">Начнём</div>
+      <div class="he-t">Добавь зарплату и даты выплат — и я посчитаю, сколько можно тратить каждый день</div>
+      <button class="btn he-btn" type="button" data-goto="setup">Добавить доходы</button>
+    </div>
+    <div class="hero-sheen" aria-hidden="true"></div>
   </div>
 
   <div class="chips">
@@ -732,6 +772,13 @@
       <button type="button" data-theme-set="light">Светлая</button>
       <button type="button" data-theme-set="dark">Тёмная</button>
     </div>
+  </div>
+  <div class="card" id="motionCard" data-nofold>
+    <h2>Объём при наклоне</h2>
+    <label class="switch-row" style="margin:0;padding:0;border:0;">
+      <span><b>Плашки слегка поворачиваются за телефоном</b><span class="muted" id="tiltNote">как живая карточка: наклони телефон</span></span>
+      <input type="checkbox" id="tiltSwitch" class="switch">
+    </label>
   </div>
   <div class="card" id="dataCard" data-nofold>
     <h2>Данные</h2>
@@ -1220,6 +1267,7 @@ Object.assign(ICONS,{
   sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.9 4.9 1.4 1.4"/><path d="m17.7 17.7 1.4 1.4"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.3 17.7-1.4 1.4"/><path d="m19.1 4.9-1.4 1.4"/>',
   moon:'<path d="M20.5 14.5A8.5 8.5 0 1 1 9.5 3.5a7 7 0 0 0 11 11Z"/>',
   chev:'<path d="m9 6 6 6-6 6"/>',
+  check:'<path d="M20 6 9 17l-5-5"/>',
   target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>',
   pig:'<path d="M19 9.5c1 .4 2 1.4 2 2.5h-2"/><path d="M5 11a7 6 0 0 1 12-2.5h1.5L18 11a6 6 0 0 1-1.5 4l.5 3h-3l-.5-1.5h-4L9 18H6l.5-3.2A6 6 0 0 1 5 11Z"/><path d="M12 6.5V5"/>',
 });
@@ -1271,7 +1319,7 @@ function switchTab(name){
   document.querySelectorAll('.tabpane').forEach(p=>p.classList.toggle('active',p.id==='tab-'+name));
   if(changed&&!document.body.classList.contains('touring'))window.scrollTo({top:0});
   if(typeof renderComputed==='function'&&typeof state!=='undefined')renderComputed(name==='tx');
-  if(name==='dash'){pendingFlash.forEach(b=>{b.classList.remove('flash');void b.offsetWidth;b.classList.add('flash');});pendingFlash=[];}
+  if(name==='dash'){try{fitNums();}catch(e){}pendingFlash.forEach(b=>{b.classList.remove('flash');void b.offsetWidth;b.classList.add('flash');});pendingFlash=[];}
 }
 document.getElementById('tabs').addEventListener('click',e=>{
   const b=e.target.closest('[data-group]');if(!b)return;
@@ -1302,6 +1350,7 @@ function closeSheet(instant){
   $('#scrim').classList.remove('open');document.body.classList.remove('sheet-open');
 }
 document.addEventListener('click',e=>{
+  if(e.target.closest('[data-goto]'))return;
   const o=e.target.closest('[data-sheet]');if(o){e.preventDefault();openSheet(o.dataset.sheet);return;}
   const w=e.target.closest('[data-why]');if(w){e.preventDefault();openWhy(w.dataset.why);return;}
   if(e.target.closest('[data-close]')||e.target.id==='scrim')closeSheet();
@@ -1313,11 +1362,77 @@ document.addEventListener('keydown',e=>{
 /* закрыть свайпом вниз за «ручку» или заголовок */
 (function(){
   let y0=null,sh=null,dy=0;
-  document.addEventListener('touchstart',e=>{const h=e.target.closest('.sheet-grab,.sheet-head');if(!h||e.target.closest('button'))return;sh=h.closest('.sheet');y0=e.touches[0].clientY;dy=0;sh.classList.add('dragging');},{passive:true});
-  document.addEventListener('touchmove',e=>{if(y0===null)return;dy=Math.max(0,e.touches[0].clientY-y0);sh.style.transform=`translateY(${dy}px)`;},{passive:true});
-  document.addEventListener('touchend',()=>{if(y0===null)return;sh.classList.remove('dragging');if(dy>90)closeSheet();else sh.style.transform='';y0=null;sh=null;});
+  let t0=0,vy=0,yl=0,tl=0;
+  document.addEventListener('touchstart',e=>{const h=e.target.closest('.sheet-grab,.sheet-head');if(!h||e.target.closest('button'))return;sh=h.closest('.sheet');y0=e.touches[0].clientY;dy=0;vy=0;yl=y0;tl=t0=performance.now();sh.classList.add('dragging');},{passive:true});
+  document.addEventListener('touchmove',e=>{if(y0===null)return;const y=e.touches[0].clientY,t=performance.now();
+    if(t>tl)vy=vy*.4+((y-yl)/(t-tl))*.6;yl=y;tl=t;
+    const raw=y-y0;dy=raw>0?raw:-Math.sqrt(-raw)*2;   // вверх — с сопротивлением, как в iOS
+    sh.style.transform=`translateY(${dy}px)`;},{passive:true});
+  document.addEventListener('touchend',()=>{if(y0===null)return;sh.classList.remove('dragging');
+    // закрываем, если протащили далеко или резко смахнули вниз
+    if(dy>110||(vy>.45&&dy>12))closeSheet();else sh.style.transform='';y0=null;sh=null;});
 })();
 
+/* ================= объём при наклоне ================= */
+const TILT=(function(){
+  const els=()=>[...document.querySelectorAll('#heroCard,.chips .chip')];
+  const reduce=()=>window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const needsAsk=typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function';
+  let on=false,listening=false,b0=null,g0=null,tx=0,ty=0,cx=0,cy=0,raf=0,lastEv=0;
+  const pref=()=>{try{return localStorage.getItem('fin-tilt');}catch(e){return null;}};
+  const setPref=v=>{try{localStorage.setItem('fin-tilt',v);}catch(e){}};
+  function apply(){
+    raf=0;cx+=(tx-cx)*0.18;cy+=(ty-cy)*0.18;           // мягкое догоняние, без рывков
+    els().forEach((el,i)=>{const k=i?0.55:1;               // маленькие плашки — слабее
+      el.style.setProperty('--rx',(cx*k).toFixed(2)+'deg');el.style.setProperty('--ry',(cy*k).toFixed(2)+'deg');
+      el.style.setProperty('--gx',(50+cy*7).toFixed(1)+'%');el.style.setProperty('--gy',(30-cx*7).toFixed(1)+'%');});
+    if(Math.abs(tx-cx)>0.02||Math.abs(ty-cy)>0.02)raf=requestAnimationFrame(apply);
+  }
+  const kick=()=>{if(!raf)raf=requestAnimationFrame(apply);};
+  function onOri(e){
+    if(e.beta==null||e.gamma==null)return;
+    const now=performance.now();if(now-lastEv<16)return;lastEv=now;
+    if(b0===null){b0=e.beta;g0=e.gamma;}
+    b0+=(e.beta-b0)*0.01;g0+=(e.gamma-g0)*0.01;           // «ноль» медленно подстраивается под то, как держишь телефон
+    const cl=(v,m)=>Math.max(-m,Math.min(m,v));
+    tx=cl(-(e.beta-b0)*0.35,6);ty=cl((e.gamma-g0)*0.35,6);kick();
+  }
+  function listen(v){
+    if(v&&!listening){window.addEventListener('deviceorientation',onOri);listening=true;}
+    if(!v&&listening){window.removeEventListener('deviceorientation',onOri);listening=false;tx=ty=0;b0=g0=null;kick();}
+  }
+  function enable(fromTap){
+    if(reduce())return Promise.resolve(false);
+    if(needsAsk){
+      // без касания айфон откажет молча (без окна), а Android-Chrome разрешит сразу
+      return DeviceOrientationEvent.requestPermission().then(r=>{const ok=r==='granted';listen(ok);return ok;}).catch(()=>false);
+    }
+    listen(true);return Promise.resolve(true);
+  }
+  function sync(){const sw=document.getElementById('tiltSwitch');if(sw)sw.checked=on;
+    const n=document.getElementById('tiltNote');if(n&&reduce())n.textContent='выключено: в телефоне включено «Уменьшение движения»';}
+  function init(){
+    const p=pref();
+    if(p!=='off')enable(false).then(ok=>{
+      on=ok||p==='on';sync();
+      // айфон: включено, но разрешение нужно подтвердить касанием — просим при первом касании
+      if(!ok&&p==='on')document.addEventListener('touchend',function once(){enable(true).then(r=>{on=r;sync();});},{once:true});
+    });
+    // компьютер: плашка поворачивается за мышью
+    if(window.matchMedia&&matchMedia('(hover: hover) and (pointer: fine)').matches){
+      document.addEventListener('pointermove',e=>{if(!on||reduce())return;const h=e.target.closest&&e.target.closest('#heroCard,.chip');
+        if(!h){if(tx||ty){tx=ty=0;kick();}return;}const r=h.getBoundingClientRect();
+        ty=((e.clientX-r.left)/r.width-.5)*8;tx=-((e.clientY-r.top)/r.height-.5)*8;kick();});
+    }
+    sync();
+    document.addEventListener('change',e=>{if(e.target.id!=='tiltSwitch')return;
+      on=e.target.checked;setPref(on?'on':'off');
+      if(on)enable(true).then(ok=>{if(!ok&&needsAsk){on=false;setPref('off');sync();showToast('Без разрешения на «движение и ориентацию» эффект не работает. Его можно дать при следующем включении.','warn');}});
+      else listen(false);
+    });
+  }
+  return {init};
+})();
 /* ================= тема ================= */
 function themePref(){try{return localStorage.getItem('fin-theme')||'auto';}catch(e){return 'auto';}}
 function applyTheme(){
@@ -1335,6 +1450,7 @@ document.getElementById('themeBtn').addEventListener('click',()=>setTheme(docume
 document.addEventListener('click',e=>{const b=e.target.closest('[data-theme-set]');if(b)setTheme(b.dataset.themeSet);});
 try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{if(themePref()==='auto')applyTheme();});}catch(e){}
 applyTheme();
+TILT.init();
 
 /* ================= toast ================= */
 function showToast(html,type='ok',ms=5000){
@@ -1697,9 +1813,14 @@ function renderDash(c){
       const first=plain(rest[0][1]).split(/[.—:]/)[0];
       html+=`<details class="alerts" data-fold="alerts" ${SUB_OPEN.alerts?'open':''}><summary><span class="dot" style="background:${col[rest[0][0]]||'var(--muted)'}"></span><span class="t">${rest.length>1?`Напоминания: ${rest.length}`:'Напоминание'} · ${esc(first)}</span></summary>${rest.map(([t,h])=>`<div class="banner ${t}">${h}</div>`).join('')}</details>`;
     }
-    $('#dashAlerts').innerHTML=html;
+    $('#dashAlerts').innerHTML=html||`<div class="all-good"><span class="ag-ic">${icon('check')}</span><span><b>Всё в порядке</b><span class="muted">срочных дел нет</span></span></div>`;
   }
 
+  /* новичок: ни доходов, ни денег — вместо «0 ₽» приглашение начать */
+  {const empty=!state.incomes.some(i=>i.pays.some(p=>num(p.amount)>0))&&c.cash+c.card<=0;
+   const hero=$('#heroCard');hero.classList.toggle('is-empty',empty);
+   if(empty)hero.removeAttribute('data-why');else hero.dataset.why='daily';
+   $('#tab-dash').classList.toggle('is-empty',empty);}
   /* главный блок: сколько можно тратить — горизонт до конца СЛЕДУЮЩЕГО месяца */
   const eomNextISO=NEXT_YM+'-'+pad(daysInMonth(NEXT_YM));
   const daysLong=Math.max(1,daysUntil(eomNextISO));
@@ -1729,14 +1850,14 @@ function renderDash(c){
     ds.textContent=fmt(daily);ds.classList.toggle('red-txt',daily<=0);
     $('#dailyCap').textContent=spentToday>0?'Можно тратить в день':'Можно потратить сегодня';
     let t;
-    if(spentToday<=0)t='сегодня ещё ничего не потрачено';
-    else if(remain>=0)t=`сегодня потрачено <b>${fmt(spentToday)}</b> · от нормы дня (${fmt(allowance)}) ещё можно <b>${fmt(remain)}</b>`;
-    else t=`сегодня потрачено <b>${fmt(spentToday)}</b> при норме ${fmt(allowance)} · <span style="color:var(--amber)">перерасход ${fmt(-remain)} уже учтён</span>: он разложен на ${spreadN} дн. ${spreadTxt}, поэтому в день теперь ≈ ${fmt(daily)} (было ${fmt(allowance)})`;
-    const short=spentToday<=0?shortWhy:(remain>=0?`потрачено ${fmt(spentToday)} · сегодня можно ещё <b>${fmt(remain)}</b>`:`перерасход ${fmt(-remain)} учтён · разложен ${spreadTxt}`);
-    dsSub.innerHTML=foldSub('daily',short,t+'<br>'+why);
+    if(spentToday<=0)t='Сегодня ещё ничего не потрачено.';
+    else if(remain>=0)t=`Сегодня потрачено <b>${fmt(spentToday)}</b>. На сегодня было ${fmt(allowance)} — осталось <b>${fmt(remain)}</b>.`;
+    else t=`Сегодня потрачено <b>${fmt(spentToday)}</b>, а на сегодня было ${fmt(allowance)}. <span style="color:var(--amber)">Лишние ${fmt(-remain)} я разложил на ${spreadN} дн. ${spreadTxt}</span> — поэтому в день теперь ≈ ${fmt(daily)} вместо ${fmt(allowance)}. Это не запрет, просто дальше чуть меньше.`;
+    const short=spentToday<=0?shortWhy:(remain>=0?`потрачено ${fmt(spentToday)} · сегодня осталось <b>${fmt(remain)}</b>`:`потратил больше на ${fmt(-remain)} — разложил на следующие дни`);
+    dsSub.innerHTML=foldSub('daily',short,t+'<br><br>'+why);
     const bar=$('#todayBar');
     if(bar){const pct=allowance>0?Math.min(100,spentToday/allowance*100):(spentToday>0?100:0);
-      bar.style.width=pct.toFixed(1)+'%';bar.classList.toggle('over',remain<0);
+      bar.style.transform=`scaleX(${(pct/100).toFixed(3)})`;bar.classList.toggle('over',remain<0);
       bar.parentElement.setAttribute('title',`потрачено ${fmt(spentToday)} из ${fmt(allowance)}`);}
   };
   // три способа посчитать лимит — берём меньший, чтобы хватило на всё
@@ -1756,26 +1877,26 @@ function renderDash(c){
     const outSum=-outs.reduce((s,e)=>s+e.amount,0),inSum=ins.reduce((s,e)=>s+e.amount,0);
     const nextIn=cp.ev.find(e=>e.amount>0&&e.date>gapDay);
     gapWhy=outSum>0
-      ?`по датам платежей: до ${fmtDateShort(gapDay)} нужно заплатить ${fmt(outSum)} (${outs.slice(0,3).map(e=>esc(e.label.replace(/ \(.*\)$/,''))+' '+fmtDateShort(e.date)).join(', ')})${inSum>0?`, а придёт только ${fmt(inSum)}`:', а поступлений до этого дня нет'}. Чтобы хватило, лимит сейчас ниже обычного${nextIn?` — после ${fmtDateShort(nextIn.date)} станет свободнее`:''}`
+      ?`Смотрю на даты: до ${fmtDateShort(gapDay)} нужно заплатить ${fmt(outSum)} (${outs.slice(0,3).map(e=>esc(e.label.replace(/ \(.*\)$/,''))+' '+fmtDateShort(e.date)).join(', ')})${inSum>0?`, а придёт только ${fmt(inSum)}`:', а поступлений до этого дня нет'}. Чтобы хватило, лимит сейчас ниже обычного${nextIn?` — после ${fmtDateShort(nextIn.date)} станет свободнее`:''}`
       :`до ${nextIn?'поступления '+fmtDateShort(nextIn.date):fmtDateShort(gapDay)} есть только то, что на руках: ${fmt(cp.wallet)} на ${cp.safeAt+1} дн.${num(state.plan.payDelay)?' (с подстраховкой на задержку зарплаты)':''}`;
   }
   const whyTxt={
-    plan:`по твоему плану (${fmt(planLife)}/мес): ${untilTxt} на жизнь осталось ${fmt(Math.max(0,periodRest))} на ${pp.r} дн.`,
-    money:`по деньгам: на жизнь до конца ${curMonthGen} остаётся ${fmt(longFree)} на ${daysLong} дн. Все платежи и разовые уже вычтены`,
+    plan:`По твоему плану на жизнь (${fmt(planLife)} в месяц) ${untilTxt} осталось ${fmt(Math.max(0,periodRest))} на ${pp.r} дн. Делим поровну.`,
+    money:`Если из всех денег (что есть и что придёт) вычесть платежи и разовые траты, на жизнь до конца ${curMonthGen} остаётся ${fmt(longFree)} на ${daysLong} дн.`,
     gap:gapWhy};
-  const NAMES={plan:'по плану жизни',money:'по деньгам до конца '+curMonthGen,gap:'по датам платежей (чтобы ни в один день не уйти в минус)'};
-  const how=`<div class="how"><div style="color:var(--ink2);margin-bottom:2px;">Почему такая цифра</div>`
+  const NAMES={plan:'по твоему плану трат',money:'чтобы денег хватило до конца '+curMonthGen,gap:'чтобы ни в один день не уйти в минус'};
+  const how=`<div class="how"><div style="color:var(--ink);font-weight:600;margin-bottom:4px;">Считаю тремя способами</div>`
     +cands.map(x=>`<div class="${x===bind?'pick':''}">${x===bind?'→':'·'} ${NAMES[x.k]} — <b>${fmt(x.v)}</b>/день</div>`).join('')
-    +`<div class="muted">Считаю тремя способами и беру меньшее — тогда хватит и на план, и на все платежи в свои даты. ${followEff?'':'План жизни не задан — задай его во вкладке «План месяца», и лимит станет точнее.'}</div></div>`;
+    +`<div class="muted" style="margin-top:6px;">Беру самую осторожную цифру — тогда хватит и на план, и на все платежи в свои даты. ${followEff?'':'План трат не задан — задай его в «План → План месяца», и лимит станет точнее.'}</div></div>`;
   let headDaily;
   if(longFree<0){
-    lastDaily=0;lastRemain=0;headDaily=0;ds.textContent=fmt(0);ds.classList.add('red-txt');
+    lastDaily=0;lastRemain=0;headDaily=0;ds.textContent=fmt(0);ds.classList.add('red-txt');$('#heroCard').classList.add('danger');
     $('#dailyCap').textContent='Можно потратить сегодня';
     dsSub.innerHTML=foldSub('daily',`не хватает ${fmt(-longFree)} на платежи до конца ${curMonthGen}`,`На предстоящие платежи и траты до конца ${curMonthGen} не хватает ${fmt(-longFree)}. Нажми «Деньги сейчас» — там видно, куда уходят деньги.`);
-    if($('#todayBar'))$('#todayBar').style.width='0%';
+    if($('#todayBar'))$('#todayBar').style.transform='scaleX(0)';
   }else{
-    headDaily=bind.v;
-    const SHORT={plan:`по плану · ${untilTxt}`,money:`по деньгам · до конца ${curMonthGen}`,gap:cp.safeAt>=cp.days-1?`по деньгам · до конца ${curMonthGen}`:`ниже обычного: впереди платежи · ${bind.until}`};
+    headDaily=bind.v;$('#heroCard').classList.toggle('danger',bind.v<=0);
+    const SHORT={plan:`по твоему плану, ${untilTxt}`,money:`чтобы хватило до конца ${curMonthGen}`,gap:cp.safeAt>=cp.days-1?`чтобы хватило до конца ${curMonthGen}`:`меньше обычного: впереди платежи, ${bind.until}`};
     showToday(bind.v,whyTxt[bind.k]+how,bind.n,bind.until,SHORT[bind.k]);
   }
   // деньги: сейчас физически + что станет к концу ноября
@@ -1896,6 +2017,7 @@ function renderDash(c){
     if(OPEN_SHEET&&OPEN_SHEET.id==='sheet-money')$('#moneyWhy').innerHTML=WHY.left||'';
   }catch(err){console.error(err);}
   try{renderPots(c);}catch(err){console.error(err);}
+  fitNums();
   flashOnChange('cash',Math.round(c.cash),$('#inCash').closest('.card'));
   flashOnChange('card',Math.round(c.card),$('#inCard').closest('.card'));
   flashOnChange('debt',Math.round(c.debt),$('#dashCcStat'));
@@ -2888,6 +3010,15 @@ function openWhy(key){
   $('#whyBody').innerHTML=WHY[key]||'<div class="muted">Пока нечего объяснять — добавь доходы и траты.</div>';
   openSheet('why');
 }
+/* суммы не должны вылезать за плашку: уменьшаем шрифт по шагу */
+function fitNums(){
+  document.querySelectorAll('#heroCard .v,.chip .v').forEach(el=>{
+    el.style.fontSize='';if(!el.clientWidth)return;
+    let fs=parseFloat(getComputedStyle(el).fontSize);const min=fs*0.6;
+    while(el.scrollWidth>el.clientWidth+1&&fs>min){fs-=1;el.style.fontSize=fs+'px';}
+  });
+}
+window.addEventListener('resize',()=>{try{fitNums();}catch(e){}});
 /* «Ещё»: ссылки на редкие экраны */
 function renderMoreLinks(c){
   const el=$('#moreLinks');if(!el)return;
