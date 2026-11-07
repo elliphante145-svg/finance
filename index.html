@@ -561,6 +561,10 @@
     details.more>summary:hover{color:var(--muted);}
   }
   .btn:active,.sheet-x:active,.seg button:active,.icon-btn:active{transform:scale(.97);transition:transform .1s cubic-bezier(.23,1,.32,1);}
+  /* любой сенсорный экран (в т.ч. iPad горизонтально): поля 16px, чтобы Safari не приближал при вводе */
+  @media(pointer:coarse){
+    input:not([type=checkbox]):not([type=range]):not([type=file]),select,textarea{font-size:16px !important;}
+  }
   @media(prefers-reduced-motion:reduce){
     *,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important;}
   }
