@@ -20,8 +20,6 @@
   document.documentElement.setAttribute('data-theme',dark?'dark':'light');
   document.documentElement.setAttribute('data-theme-pref',t);})();
 </script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&display=swap">
 <style>
   /* v4: зелёная палитра — алебастр #F4F1EB · тёмно-зелёный #0D4C3C · сланцевый #2D5A4A · мох #7BA05B.
      Зелёный — «главное и всё в порядке», янтарный — «скоро платёж», красный — только тревоги.
@@ -40,8 +38,8 @@
     --shadow:0 1px 2px rgba(18,32,27,.04),0 6px 20px rgba(18,32,27,.06);
     --chart-line:#2D5A4A; --chart-in:#3D7A2C; --chart-out:#C9762E; --chart-grid:rgba(18,32,27,.18);
     --radius:20px; --ease:cubic-bezier(0.22,1,0.36,1); --spring:cubic-bezier(0.32,0.72,0,1);
-    --sans:"Instrument Sans",-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
-    --serif:"Instrument Serif",Georgia,"Times New Roman",serif;
+    --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --serif:Georgia,"Times New Roman",serif;
     --mono:var(--sans);
   }
   :root[data-theme="dark"]{
@@ -459,6 +457,15 @@
   .sheet .footer-note{margin-top:12px;}
   body.sheet-open{overflow:hidden;}
   .al-list{margin:6px 0 6px;padding-left:22px;}
+  .cc-plan{margin-top:10px;padding:10px 12px;border-radius:12px;background:var(--card);}
+  .cc-h{font-size:13px;font-weight:600;margin-bottom:4px;color:var(--ink);}
+  .cc-plan ol{margin:0 0 6px;padding:0;list-style:none;counter-reset:cc;}
+  .cc-plan li{display:flex;justify-content:space-between;gap:8px;padding:3px 0;font-size:14px;counter-increment:cc;}
+  .cc-plan li>span:first-child::before{content:counter(cc)'. ';color:var(--muted);}
+  .cc-plan li.muted>span:first-child::before{content:'';}
+  .qtype{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 12px;}
+  .qtype button{border:0;background:var(--raised);color:var(--ink2);font:inherit;font-size:13.5px;border-radius:20px;padding:8px 12px;min-height:38px;cursor:pointer;}
+  .qtype button.on{background:var(--primary);color:var(--on-primary);font-weight:600;}
   .al-list li{margin:2px 0;}
   .item{background:var(--deep);border-radius:16px;padding:12px;margin-bottom:10px;}
   .item.off{opacity:.55;}
@@ -880,6 +887,14 @@
   <div class="sheet-grab"></div>
   <div class="sheet-head"><h2>Новая запись</h2><button class="sheet-x" type="button" data-close>Закрыть</button></div>
   <div class="sheet-body">
+  <div class="qtype" id="qType" role="group" aria-label="Что записать">
+    <button type="button" data-q="exp:card">Трата</button>
+    <button type="button" data-q="exp:credit">С кредитки</button>
+    <button type="button" data-q="move:cash">Нал. → на карту</button>
+    <button type="button" data-q="move:card">Снял наличные</button>
+    <button type="button" data-q="repay:card">Взнос на кредитку</button>
+    <button type="button" data-q="inc:card">Доход</button>
+  </div>
   <div class="add-form">
     <div class="row" id="txForm">
       <div class="field" id="fDate"><label>Дата</label><input type="date" id="txDate"></div>
@@ -890,7 +905,7 @@
           <option value="inc">Доход / вернули долг</option>
           <option value="repay">↩ Взнос на кредитку</option>
           <option value="debtpay">Возврат долга</option>
-          <option value="move">Перевод: наличные ↔ карта</option>
+          <option value="move">Перевод</option>
         </select>
       </div>
       <div class="field" id="txCatField"><label>Категория</label>
@@ -1184,6 +1199,22 @@ function compute(){
   const hasCcDl=!!dlYm;
   const ccBase=Math.max(0,debt+plannedCcBuy-plannedCcRepay); // текущий долг: новые покупки по кредитке увеличивают взнос
   const ccMonthly=ccPlanMonths>0?ccBase/ccPlanMonths:(hasCcDl?ccBase:0);
+  // взносы на кредитку: долг делится поровну на дни зарплат между сегодня и сроком банка
+  // (две зарплаты в месяц — два взноса). Зарплат до срока нет — один взнос в день срока.
+  const ccSched=[];
+  if(hasCcDl&&ccBase>=1){
+    const dl=state.cc.deadline;
+    if(dl<=TODAY_ISO)ccSched.push({date:TODAY_ISO,amount:ccBase});
+    else{
+      const repaidToday=state.tx.some(t=>t.type==='repay'&&t.date===TODAY_ISO);
+      const dates=new Set();
+      for(let ym=TODAY_YM;monthNum(ym)<=monthNum(dl.slice(0,7));ym=addMonths(ym,1))
+        for(const p of paysFor(ym))if(p.amount>0&&p.date<=dl&&(p.date>TODAY_ISO||(p.date===TODAY_ISO&&!repaidToday)))dates.add(p.date);
+      const D=[...dates].sort();if(!D.length)D.push(dl);
+      const part=Math.ceil(ccBase/D.length/100)*100;let left=ccBase;
+      D.forEach((d,k)=>{const a=k===D.length-1?left:Math.min(left,part);if(a>=1)ccSched.push({date:d,amount:a});left-=a;});
+    }
+  }
   // кредиты
   const credits=state.credits.map(cr=>{
     const monthly=Math.max(0,num(cr.payment));
@@ -1246,7 +1277,7 @@ function compute(){
     }
   }
   return {expCash,expCard,expCredit,repCash,repCard,incCash,incCard,incExtra,dpCash,dpCard,debtPaidNoDl,mvCash,potCash,potCard,potBal,potsTotal,savedNet,plannedInc,plannedExp,plannedIncThis,plannedExpThis,cash,card,debt,availCC,hasCC,
-    hasCcDl,daysToDl,ccBase,ccMonthly,ccPlanMonths,credits,creditRemain,debts,debtsAuto,debtsNoDl,debtsTotal,
+    hasCcDl,daysToDl,ccBase,ccMonthly,ccPlanMonths,ccSched,credits,creditRemain,debts,debtsAuto,debtsNoDl,debtsTotal,
     incomeNow,netWorth,nextPay,pendingPays};
 }
 /* все плановые выплаты месяца: [{date, amount, name}] */
@@ -1266,10 +1297,7 @@ function incomeFor(ym){return paysFor(ym).reduce((s,p)=>s+p.amount,0);}
 /* взнос на кредитку в месяце ym (месячные взносы идут со следующего месяца; в текущем — только если срок в нём или просрочен) */
 function ccDueFor(c,ym){
   if(!(c.ccBase>0)||!state.cc.deadline)return 0;
-  const m=monthNum(ym),dl=monthNum(state.cc.deadline.slice(0,7)),nx=monthNum(NEXT_YM),tm=monthNum(TODAY_YM);
-  if(m===tm)return dl<=tm?c.ccBase:0;
-  if(m>=nx&&m<=dl)return c.ccMonthly;
-  return 0;
+  return c.ccSched.filter(x=>x.date.slice(0,7)===ym).reduce((s,x)=>s+x.amount,0);
 }
 /* автовзносы по долгам с дедлайном в месяце ym (в текущем — только если срок в нём или просрочен) */
 function debtsAutoFor(c,ym){
@@ -1404,6 +1432,7 @@ function openSheet(id){
   if(OPEN_SHEET&&OPEN_SHEET!==sh)closeSheet(true);
   if(id==='money'&&typeof WHY!=='undefined')$('#moneyWhy').innerHTML=WHY.left||'';
   if(id==='add'&&!$('#txDate').value)$('#txDate').value=TODAY_ISO;
+  if(id==='add')syncQType();
   OPEN_SHEET=sh;sh.style.transform='';
   sh.classList.add('open');sh.setAttribute('aria-hidden','false');
   $('#scrim').classList.add('open');document.body.classList.add('sheet-open');
@@ -1515,9 +1544,7 @@ function cashEvents(c){
     if(monthNum(NEXT_YM)<=monthNum(cr.last))add(payDateFor(NEXT_YM,cr.dueDay),-cr.monthly,''+cr.name,'pay');
   }
   if(state.cc.deadline){
-    const ccT=ccDueFor(c,TODAY_YM),ccN=ccDueFor(c,NEXT_YM);
-    if(ccT>0)add(state.cc.deadline,-ccT,'Кредитка','pay');
-    if(ccN>0)add(state.cc.deadline<=end?state.cc.deadline:payDateFor(NEXT_YM,+state.cc.deadline.slice(8)),-ccN,'Кредитка (взнос)','pay');
+    for(const x of c.ccSched)add(x.date,-x.amount,'Взнос на кредитку','pay');
   }
   for(const d of c.debts){
     if(!(d.enabled&&d.deadline&&d.amount>0))continue;
@@ -1798,7 +1825,8 @@ function renderDash(c){
   if(c.debt>0&&c.hasCcDl&&c.daysToDl<=0){
     alerts.push(['danger',`Срок кредитки (${fmtDateRu(state.cc.deadline)}) уже прошёл, долг ${fmt(c.debt)} — срочно пополни${state.cc.rate>0?', пойдут проценты ≈ '+fmt(c.debt*state.cc.rate/100/12)+' в месяц':''}`]);
   }else if(c.debt>0&&c.hasCcDl&&c.daysToDl<=30){
-    alerts.push(['warn',`Кредитку нужно пополнить на <b>${fmt(c.debt)}</b> до ${fmtDateRu(state.cc.deadline)} — осталось ${c.daysToDl} дн. (≈ ${fmt(c.debt/Math.max(c.daysToDl,1))} в день).${state.cc.rate>0?'<br>Если не успеешь — банк начислит ≈ <b>'+fmt(c.debt*state.cc.rate/100/12)+'/мес</b> процентов.':''}`]);
+    const nx=c.ccSched[0];
+    alerts.push(['warn',`Кредитку нужно вернуть — <b>${fmt(c.debt)}</b> до ${fmtDateRu(state.cc.deadline)} (осталось ${c.daysToDl} дн.).${nx?` Ближайший взнос: <b>${fmt(nx.amount)}</b> ${nx.date===TODAY_ISO?'сегодня':fmtDateShort(nx.date)}.`:''}${state.cc.rate>0?'<br>Если не успеешь — банк начислит ≈ <b>'+fmt(c.debt*state.cc.rate/100/12)+'/мес</b> процентов.':''}`]);
   }
   const upcoming=state.oneTime.filter(o=>!o.done&&(o.month===TODAY_YM||o.month===NEXT_YM));
   if(upcoming.length){
@@ -1985,7 +2013,9 @@ function renderDash(c){
   // покупки по кредитке: часть долга вернётся уже после конца горизонта — вычитаем её,
   // иначе «накопится» росло бы от покупки в долг
   const newCcDebt=Math.max(0,c.ccBase-state.start.creditDebt);
-  const ccBeyond=(c.hasCcDl&&c.ccPlanMonths>1)?newCcDebt*(1-1/c.ccPlanMonths):0;
+  const eomN=NEXT_YM+'-'+pad(daysInMonth(NEXT_YM));
+  const ccLater=c.ccSched.filter(x=>x.date>eomN).reduce((s,x)=>s+x.amount,0);
+  const ccBeyond=(c.ccBase>0)?newCcDebt*ccLater/c.ccBase:0;
   endSave-=ccBeyond;
   if(ccBeyond>=1)saveSub+=` · минус ${fmt(ccBeyond)}: часть покупок по кредитке, которую придётся вернуть позже`;
   fs.textContent=(endSave<0?'−':'+')+fmt(Math.abs(endSave));
@@ -2028,8 +2058,14 @@ function renderDash(c){
     </div>`);
   }
   if(c.hasCC&&c.debt>0){
-    dl.push(`<div class="card stat r"><div class="lbl">Кредитка: внести до ${fmtDateRu(state.cc.deadline)}</div><div class="big num-red">${fmt(c.debt)}</div>
-      <div class="hint">${!c.hasCcDl?'срок не задан':(c.daysToDl>0?'через '+c.daysToDl+' дн.':'срок сегодня')} · ≈ ${fmt(c.ccMonthly)}/мес × ${c.ccPlanMonths} мес. или ${fmt(c.debt/Math.max(c.daysToDl,1))}/день</div></div>`);
+    const sch=c.ccSched,shown=sch.slice(0,4);
+    dl.push(`<div class="card stat r"><div class="lbl">Кредитка — должен банку</div><div class="big num-red">${fmt(c.debt)}</div>
+      <div class="hint">${!c.hasCcDl?'Укажи в «План → Доходы и расходы» дату из банка, до которой вернуть долг без процентов — составлю план взносов.'
+        :`Без процентов, если вернуть до <b>${fmtDateRu(state.cc.deadline)}</b> (${c.daysToDl>0?'через '+c.daysToDl+' дн.':'срок сегодня'}).`}</div>
+      ${sch.length?`<div class="cc-plan"><div class="cc-h">${sch.length>1?`Клади с каждой зарплаты — и к сроку всё будет погашено:`:'Внести:'}</div>
+        <ol>${shown.map(x=>`<li><span>${x.date===TODAY_ISO?'сегодня':fmtDateShort(x.date)}</span><b>${fmt(x.amount)}</b></li>`).join('')}${sch.length>shown.length?`<li class="muted"><span>и ещё ${sch.length-shown.length} взн.</span><span>до ${fmtDateShort(sch[sch.length-1].date)}</span></li>`:''}</ol>
+        <div class="muted" style="font-size:12px;">Внёс — запиши «+» → «Взнос на кредитку». План пересчитается.</div></div>`:''}
+      ${state.cc.limit>0?`<div class="hint">Доступно на кредитке: ${fmt(c.availCC)} из ${fmt(state.cc.limit)}</div>`:''}</div>`);
   }
   for(const d of c.debts){
     if(!d.enabled)continue;
@@ -2188,7 +2224,7 @@ function renderPlan(){
   const free=income-credits-cc-debtsAuto-manual-one-sinkM-state.plan.spending-state.plan.savings;
   let calc=`<div class="calc-line"><span class="name">Плановый доход (${monthFull(ym)})</span><span>+${fmt(income)}</span></div>`;
   if(credits>0)calc+=`<div class="calc-line"><span class="name">Кредиты</span><span>−${fmt(credits)}</span></div>`;
-  if(cc>0)calc+=`<div class="calc-line"><span class="name">Взнос на кредитку (к ${fmtDateRu(state.cc.deadline)})</span><span>−${fmt(cc)}</span></div>`;
+  if(cc>0)calc+=`<div class="calc-line"><span class="name">Взносы на кредитку <div class="muted" style="font-size:12px;">${c.ccSched.filter(x=>x.date.slice(0,7)===ym).map(x=>fmtDateShort(x.date)+' — '+fmtN(x.amount)).join('; ')}</div></span><span>−${fmt(cc)}</span></div>`;
   if(debtsAuto>0)calc+=`<div class="calc-line"><span class="name">Долги с дедлайном (авто)</span><span>−${fmt(debtsAuto)}</span></div>`;
   if(manual>0)calc+=`<div class="calc-line"><span class="name">Долги без дедлайна (ползунок)</span><span>−${fmt(manual)}</span></div>`;
   calc+=`${one>0?`<div class="calc-line"><span class="name">Разовые траты <div class="muted" style="font-size:12px;">${oneOpen.map(o=>esc(o.name)+' — '+fmtN(num(o.amount))+' ₽').join('; ')}</div></span><span>−${fmt(one)}</span></div>`:''}
@@ -2443,7 +2479,7 @@ function rebuildCats(){
 function rebuildMethods(){
   const ty=$('#txType').value,sel=$('#txMethod'),prev=sel.value;
   $('#txMethodLbl').textContent=ty==='move'?'Куда перевожу':'Кошелёк';
-  const opts=ty==='move'?[['cash','→ положил наличные на карту'],['card','→ снял с карты наличные']]:[['cash','Наличные'],['card','Карта']];
+  const opts=ty==='move'?[['cash','нал. → на карту'],['card','с карты → нал.']]:[['cash','Наличные'],['card','Карта']];
   if(ty==='exp')opts.push(['credit','Кредитка']); // доход/взнос/возврат долга на кредитку не бывает
   sel.innerHTML=opts.map(([v,l])=>`<option value="${v}" ${v===prev?'selected':''}>${l}</option>`).join('');
 }
@@ -2549,6 +2585,14 @@ $('#txAdd').addEventListener('click',()=>{
   }catch(err){console.error(err);}
 });
 $('#txAdd').addEventListener('click',()=>{if($('#txAmount').value===''&&OPEN_SHEET&&OPEN_SHEET.id==='sheet-add'&&!document.body.classList.contains('touring'))closeSheet();});
+function syncQType(){const k=$('#txType').value+':'+$('#txMethod').value;
+  document.querySelectorAll('#qType [data-q]').forEach(b=>{const [t,m]=b.dataset.q.split(':');
+    b.classList.toggle('on',t===$('#txType').value&&(t==='exp'||t==='move'?m===$('#txMethod').value||(t==='exp'&&m==='card'&&$('#txMethod').value==='cash'):true));});}
+document.getElementById('qType').addEventListener('click',e=>{const b=e.target.closest('[data-q]');if(!b)return;
+  const [t,m]=b.dataset.q.split(':');const ty=$('#txType');ty.value=t;ty.dispatchEvent(new Event('change'));
+  const me=$('#txMethod');if([...me.options].some(o=>o.value===m)&&!(t==='exp'&&m==='card'&&me.value==='cash'))me.value=m;
+  syncQType();setTimeout(()=>{try{$('#txAmount').focus({preventScroll:true});}catch(err){}},50);});
+document.addEventListener('change',e=>{if(e.target.id==='txType'||e.target.id==='txMethod')syncQType();});
 document.getElementById('txHistory').addEventListener('click',e=>{
   const b=e.target.closest('[data-del]');if(!b)return;
   const t=state.tx.find(x=>x.id===+b.dataset.del);
@@ -3059,7 +3103,14 @@ document.addEventListener('click',e=>{if(e.target.id==='tourRestart'){state.tour
 })();
 // просим браузер не стирать данные и включаем работу без интернета (когда открыто с сайта, а не из файла)
 try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();}catch(e){}
-if('serviceWorker' in navigator&&location.protocol==='https:'){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});}
+if('serviceWorker' in navigator&&location.protocol==='https:'){window.addEventListener('load',()=>{
+  navigator.serviceWorker.register('sw.js').then(reg=>{
+    // новая версия скачалась в фоне — предложим обновить, не дёргая человека посреди ввода
+    reg.addEventListener('updatefound',()=>{const w=reg.installing;if(!w)return;
+      w.addEventListener('statechange',()=>{if(w.state==='installed'&&navigator.serviceWorker.controller)
+        showToast('Есть обновление приложения. <button class="btn small" onclick="location.reload()" style="margin-left:6px;">Обновить</button>','ok',20000);});});
+  }).catch(()=>{});
+});}
 /* сворачиваемые карточки: нажми на заголовок. Что свернул — запоминается в этом браузере */
 const FOLD_DEFAULT=['goalCard','potsCard','howCard','flowCard'];
 let FOLDS=null;
