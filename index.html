@@ -2813,7 +2813,7 @@ function renderSetup(){
       <div class="muted one-sink" style="font-size:12.5px;">${sinkHint(sk)}</div>
       <div class="item-foot">${o.done
         ?'<span class="pill p-inc">оплачено</span><button class="btn small" data-reopen="'+o.id+'">вернуть</button>'
-        :'<button class="btn small ok-btn" data-payone="'+o.id+'" data-how="card" title="Запишет трату в журнал: с карты">Оплатил картой</button><button class="btn small" data-payone="'+o.id+'" data-how="cash" title="Запишет трату в журнал: наличными">Наличными</button><button class="btn small" data-closeone="'+o.id+'" title="Убрать из планов без записи в журнал — деньги в кошельке не изменятся">Отменилась</button>'}</div></div>`;
+        :'<button class="btn small ok-btn" data-payone="'+o.id+'" data-how="card" title="Запишет трату в журнал: с карты">Оплатил картой</button><button class="btn small" data-payone="'+o.id+'" data-how="cash" title="Запишет трату в журнал: наличными">Наличными</button>'+((state.cc.limit>0||c.debt>0)?'<button class="btn small" data-payone="'+o.id+'" data-how="credit" title="Запишет трату в журнал: с кредитки — долг по кредитке вырастет">Кредиткой</button>':'')+'<button class="btn small" data-closeone="'+o.id+'" title="Убрать из планов без записи в журнал — деньги в кошельке не изменятся">Отменилась</button>'}</div></div>`;
   });
   $('#oneTimeForm').innerHTML=h;
   $('#ccLimit').value=state.cc.limit;
@@ -2951,7 +2951,7 @@ document.getElementById('oneTimeForm').addEventListener('click',e=>{
       const before=compute();
       const t=payOneTime(o,pc.dataset.how);
       save();renderSetup();renderComputed(true);
-      showToast(`«${esc(o.name)}» оплачена: −${fmt(t.amount)}${balanceDiff(before,compute())}<br>Записал в журнал. В дневной лимит «жизни» эта трата не входит.`);
+      showToast(`«${esc(o.name)}» оплачена${t.method==='credit'?' кредиткой':''}: −${fmt(t.amount)}${balanceDiff(before,compute())}<br>Записал в журнал. В дневной лимит «жизни» эта трата не входит.${t.method==='credit'?' Долг добавлен в план взносов по кредитке.':''}`);
     }
     return;}
   const c=e.target.closest('[data-closeone]');
