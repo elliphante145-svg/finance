@@ -2564,12 +2564,23 @@ $('#txAdd').addEventListener('click',()=>{
     let msg=`<b>${sign}${fmt(amount)}</b> · ${kindName}`+balanceDiff(before,after);
     if(type==='move')msg=`<b>Перевод ${fmt(amount)}</b> · ${t.method==='cash'?'наличные → карта':'карта → наличные'}`+balanceDiff(before,after)+`<br>Это не трата и не доход: всего денег столько же, лимит в день не меняется.`;
     let kind='ok';
-    if(type==='exp'&&t.date===TODAY_ISO){
+    if(oneRef){
+      const plan=num(oneRef.amount),d=amount-plan;
+      msg=`<b>«${esc(oneRef.name)}» оплачена: ${fmt(amount)}</b>${t.method==='credit'?' · с кредитки':''}`
+        +(Math.abs(d)>=1?`<br>По плану было ${fmt(plan)} — вышло на <b>${fmt(Math.abs(d))} ${d>0?'больше':'меньше'}</b>. ${d>0?'Разницу беру из общих денег':'Остаток вернулся в общие деньги'}: на жизнь до конца ${MONTHS_GEN[+NEXT_YM.split('-')[1]-1]} ${fmtN(mBefore.longFree)} → <b>${fmtN(LASTM.longFree)}</b> ₽.`:'<br>Ровно по плану.')
+        +balanceDiff(before,after)+`<br>Разовая трата не входит в дневной лимит «жизни»${Math.round(dailyBefore)!==Math.round(lastDaily)?`, но денег стало меньше — в день теперь ${fmtN(lastDaily)} ₽ (было ${fmtN(dailyBefore)})`:''}.`;
+      if(d>0)kind='warn';
+    }else if(type==='exp'&&t.date===TODAY_ISO){
       msg+=`<br>Можно тратить в день: ${fmtN(dailyBefore)} → <b>${fmtN(lastDaily)}</b> ₽`;
       if(amount>Math.max(0,limitBefore)){
         kind='warn';
         msg=`<b>Трата ${fmt(amount)} больше, чем оставалось по норме на сегодня (${fmt(Math.max(0,limitBefore))}).</b> Перерасход не «запрет» — он растянут на следующие дни, лимит в день пересчитан.<br>`+msg.replace(/^/,'');
       }
+    }
+    if(t.date<=TODAY_ISO&&(type==='exp'||type==='repay'||type==='debtpay'||type==='move')){
+      const neg=(t.method==='cash'||(type==='move'&&t.method==='cash'))&&after.cash<0&&before.cash>=0?['Наличных','наличными','Карта']
+        :(t.method==='card'||(type==='move'&&t.method==='card'))&&after.card<0&&before.card>=0?['На карте','картой','Наличные']:null;
+      if(neg){kind='warn';msg=`<b>${neg[0]} стало ${fmt(neg[0]==='Наличных'?after.cash:after.card)} — так не бывает.</b> Если платил не ${neg[1]}, удали эту запись в «Журнале» и внеси заново с «${neg[2]}». Или поправь баланс в «Деньги сейчас».<br>`+msg;}
     }
     if(t.date>TODAY_ISO){
       kind='warn';
@@ -2939,8 +2950,8 @@ document.getElementById('oneTimeForm').addEventListener('change',e=>{
   if(o){o.month=e.target.value;setupChanged();refreshSinkHints();}
 });
 /* разовая трата оплачена: пишем её в журнал и закрываем пункт (в лимит «жизни» такая трата не входит) */
-function payOneTime(o,method){
-  const t={id:uid(),date:TODAY_ISO,type:'exp',category:'Разовая трата',amount:num(o.amount),method,note:o.name,oneId:o.id};
+function payOneTime(o,method,amount){
+  const t={id:uid(),date:TODAY_ISO,type:'exp',category:'Разовая трата',amount:amount??num(o.amount),method,note:o.name,oneId:o.id};
   state.tx.push(t);o.done=true;o.paidTx=t.id;
   return t;
 }
@@ -2948,10 +2959,17 @@ document.getElementById('oneTimeForm').addEventListener('click',e=>{
   const pc=e.target.closest('[data-payone]');
   if(pc){const o=state.oneTime.find(x=>x.id===+pc.dataset.payone);
     if(o&&!o.done){
-      const before=compute();
-      const t=payOneTime(o,pc.dataset.how);
+      const r=prompt(`Сколько заплатил за «${o.name}»? По плану — ${fmtN(num(o.amount))} ₽`,String(num(o.amount)));
+      if(r===null)return;
+      const amt=Math.round(num(String(r).replace(/\s/g,'').replace(',','.')));
+      if(!(amt>0)){showToast('Нужна сумма больше нуля.','warn');return;}
+      const before=compute(),lfBefore=LASTM.longFree;
+      const t=payOneTime(o,pc.dataset.how,amt);
+      const d=amt-num(o.amount);
       save();renderSetup();renderComputed(true);
-      showToast(`«${esc(o.name)}» оплачена${t.method==='credit'?' кредиткой':''}: −${fmt(t.amount)}${balanceDiff(before,compute())}<br>Записал в журнал. В дневной лимит «жизни» эта трата не входит.${t.method==='credit'?' Долг добавлен в план взносов по кредитке.':''}`);
+      showToast(`«${esc(o.name)}» оплачена${t.method==='credit'?' кредиткой':''}: −${fmt(t.amount)}`
+        +(Math.abs(d)>=1?`<br>По плану было ${fmt(num(o.amount))} — вышло на <b>${fmt(Math.abs(d))} ${d>0?'больше':'меньше'}</b>. ${d>0?'Разницу беру из общих денег':'Остаток вернулся в общие деньги'}: на жизнь до конца ${MONTHS_GEN[+NEXT_YM.split('-')[1]-1]} ${fmtN(lfBefore)} → <b>${fmtN(LASTM.longFree)}</b> ₽.`:'')
+        +`${balanceDiff(before,compute())}<br>Записал в журнал. В дневной лимит «жизни» эта трата не входит.${t.method==='credit'?' Долг добавлен в план взносов по кредитке.':''}`,d>0?'warn':'ok',9000);
     }
     return;}
   const c=e.target.closest('[data-closeone]');
