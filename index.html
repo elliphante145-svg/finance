@@ -923,9 +923,10 @@
       <li><b>Один раз:</b> на главной нажми «Деньги сейчас» и впиши наличные и карту.</li>
       <li><b>Каждый день:</b> потратил — «+» внизу. Не тратил — ничего не нужно.</li>
       <li><b>Смотри</b> на большую цифру — столько можно потратить сегодня. Нажми на неё — увидишь расчёт.</li>
+      <li><b>Раз в неделю:</b> загляни в «На что уходят деньги» на главной — какая категория съедает больше всего.</li>
       <li><b>Раз в две недели:</b> «Ещё» → «Сохранить копию».</li>
     </ol>
-    <details class="gloss" data-fold="gloss" open>
+    <details class="gloss" data-fold="gloss">
       <summary>Словарик — что значат слова</summary>
       <dl>
         <dt>Можно потратить сегодня</dt><dd>Сколько тратить в день, чтобы хватило на всё до зарплаты. <i>Пример: 6 000 на 10 дней до зарплаты, платежей нет → 600 в день.</i></dd>
@@ -940,11 +941,16 @@
         <dt>Перевод</dt><dd>Положил наличные на карту или снял — это не трата, всего денег столько же.</dd>
         <dt>Копилка</dt><dd>Деньги, убранные отдельно (вклад, конверт). На жизнь не считаются, но остаются твоими.</dd>
         <dt>Меньше обычного</dt><dd>Скоро крупный платёж, а зарплата позже — лимит ниже, чтобы хватило. После зарплаты станет свободнее.</dd>
+        <dt>На что уходят деньги</dt><dd>Круг на главной: какая доля трат пришлась на каждую категорию за месяц или за 3 месяца. Платежи по кредитам не входят. <i>Продукты 46% → почти половина трат ушла на еду.</i></dd>
+        <dt>Стрелки ↑↓ у категорий</dt><dd>На сколько трат в категории стало больше или меньше, чем в прошлом месяце. Текущий месяц сравниваю с теми же днями прошлого — так честно.</dd>
+        <dt>Другое и мелочи</dt><dd>Небольшие категории, собранные в одну серую строку, чтобы круг не дробился. Под строкой видно, что в неё вошло.</dd>
+        <dt>Свёрнутые блоки</dt><dd>При каждом заходе блоки свёрнуты, в заголовке — короткая сводка. Нажми на заголовок — раскроется до выхода из приложения.</dd>
         <dt>Подстраховка</dt><dd>Считать, что зарплата может прийти на 3 дня позже, — лимит чуть осторожнее.</dd>
       </dl>
     </details>
     <div class="row" style="margin-top:12px;">
       <button class="btn small" id="tourRestart">Пройти обучение заново</button>
+      <button class="btn small" id="newsRestart">Что нового</button>
       <a class="btn small" href="reminder.ics" target="_blank" rel="noopener" id="remindLink">Напоминание в 21:00</a>
     </div>
     <div class="footer-note">Напоминание добавится в календарь телефона и будет каждый вечер в 21:00. Если не открылось: «Напоминания» → новое «Внести траты» → время 21:00 → повтор «Ежедневно».</div>
@@ -1947,7 +1953,7 @@ function renderDash(c){
     }
     $('#dashAlerts').innerHTML=html||`<div class="all-good"><span class="ag-ic">${icon('check')}</span><span><b>Всё в порядке</b><span class="muted">срочных дел нет</span></span></div>`;
     {const n=alerts.length,hot=alerts.filter(a=>a[0]==='danger').length;
-     $('#todoSum').textContent=!n?'всё в порядке':(n+' '+plural(n,'пункт','пункта','пунктов')+(hot?' · срочных: '+hot:''));}
+     $('#todoSum').innerHTML=!n?'всё в порядке':(n+' '+plural(n,'пункт','пункта','пунктов')+(hot?' · <span style="color:var(--red);font-weight:600;">срочных: '+hot+'</span>':''));}
   }
 
   /* новичок: ни доходов, ни денег — вместо «0 ₽» приглашение начать */
@@ -2764,7 +2770,7 @@ function renderTx(){
   months.forEach((ym,idx)=>{
     const list=byM[ym].slice().sort((a,b)=>b.date.localeCompare(a.date)||b.id-a.id);
     let e=0,i=0;for(const t of list){if(t.date>TODAY_ISO)continue;if(t.type==='exp')e+=t.amount;else if(t.type==='inc')i+=t.amount;}
-    const open=openBefore.size?openBefore.has(ym):ym===TODAY_YM;
+    const open=openBefore.has(ym);   // при заходе все месяцы свёрнуты
     const eager=open||idx<2;   // старые месяцы рисуем только когда их раскрыли — журнал не тормозит
     h+=`<details class="month" data-ym="${ym}" ${open?'open':''}>
       <summary><span>${monthFull(ym)}</span><span class="m-sum">${[e?`<span class="neg">−${fmtN(e)}</span>`:'',i?`<span class="pos">+${fmtN(i)}</span>`:''].filter(Boolean).join(' · ')||'—'}</span></summary>
@@ -3322,7 +3328,8 @@ function init(){
   CUR_TAB=state.onboarded?'dash':'setup';LAST_IN[groupOf(CUR_TAB).id]=CUR_TAB;
   renderNav(CUR_TAB);
   document.querySelectorAll('.tabpane').forEach(p=>p.classList.toggle('active',p.id==='tab-'+CUR_TAB));
-  if(tourActive())setTimeout(tourShow,300);
+  if(tourActive()){newsMarkSeen();setTimeout(tourShow,300);}
+  else setTimeout(newsShow,700);
 }
 function fitNav(){}
 /* ===== пошаговое обучение при первом запуске: переключает вкладки и ждёт, пока человек заполнит ===== */
@@ -3374,6 +3381,38 @@ function tourShow(){
     const b=box.querySelector('#tourNext');if(b)b.disabled=!ok;};
   clearInterval(tourTimer);check();tourTimer=setInterval(check,500);
 }
+/* ===== «Что нового»: показываем один раз после обновления — только то, что важно человеку ===== */
+const NEWS_VER='4.9';
+const NEWS=[
+  {title:'Что нового в приложении',text:'Появилось кое-что полезное — покажу за полминуты.'},
+  {tab:'dash',target:'#spendCard',scroll:'#spSummary',open:true,title:'На что уходят деньги',text:'Новый блок на главной. Круг показывает, на какие категории ушло больше всего денег. Нажми на кусок или строку — увидишь сумму и долю. Стрелками выбирай любой месяц, а «3 месяца» — сводка за три месяца и сколько в среднем уходит в месяц.'},
+  {tab:'dash',target:'#todoSec',title:'Блоки теперь свёрнуты',text:'При каждом заходе видны только заголовки с короткой сводкой — экран не перегружен. Нажми на заголовок, чтобы раскрыть. Пока ты в приложении, раскрытое остаётся открытым. Если в «Что сделать» есть срочное — это видно сразу, красным.'},
+];
+function newsMarkSeen(){try{localStorage.setItem('fin-news-seen',NEWS_VER);}catch(e){}}
+function newsShow(step){
+  let seen='';try{seen=localStorage.getItem('fin-news-seen')||'';}catch(e){}
+  if(step===undefined){if(seen===NEWS_VER||tourActive())return;step=0;}
+  const st=NEWS[step];
+  document.querySelectorAll('.tour-focus').forEach(e=>e.classList.remove('tour-focus'));
+  if(st.tab&&!document.getElementById('tab-'+st.tab).classList.contains('active'))switchTab(st.tab);
+  let box=document.getElementById('tour');
+  if(!box){box=document.createElement('div');box.id='tour';box.setAttribute('role','dialog');box.setAttribute('aria-label','Что нового');document.body.appendChild(box);}
+  document.body.classList.add('touring');
+  const last=step===NEWS.length-1;
+  box.innerHTML=`<div class="t-top"><div class="t-dots">${NEWS.map((x,k)=>`<i class="${k<=step?'on':''}"></i>`).join('')}</div><span class="muted" style="font-size:12px;">версия ${NEWS_VER}</span><button class="t-x" id="newsX">Закрыть</button></div>
+    <h3>${st.title}</h3><div class="t-text">${st.text}</div>
+    <div class="t-btns">${step>0?'<button class="btn small" id="newsBack">Назад</button>':''}<span class="grow"></span><button class="btn small primary" id="newsNext">${last?'Понятно':'Дальше'}</button></div>`;
+  const tgt=st.target&&document.querySelector(st.target);
+  if(tgt){
+    if(st.open&&tgt.classList.contains('foldable'))setFold(tgt,false);
+    tgt.classList.add('tour-focus');const sc=(st.scroll&&document.querySelector(st.scroll))||tgt;setTimeout(()=>sc.scrollIntoView({behavior:'smooth',block:'start'}),60);
+  }
+  const end=()=>{newsMarkSeen();box.remove();document.body.classList.remove('touring');document.querySelectorAll('.tour-focus').forEach(e=>e.classList.remove('tour-focus'));window.scrollTo({top:0,behavior:'smooth'});};
+  box.querySelector('#newsX').onclick=end;
+  box.querySelector('#newsNext').onclick=()=>{if(last)end();else newsShow(step+1);};
+  const bk=box.querySelector('#newsBack');if(bk)bk.onclick=()=>newsShow(step-1);
+}
+document.addEventListener('click',e=>{if(e.target.id==='newsRestart'){newsShow(0);}});
 document.addEventListener('click',e=>{if(e.target.id==='tourRestart'){state.tourDone=false;state.tourStep=0;save();tourShow();}});
 /* подсказка установки: показываем, только если приложение открыто во вкладке браузера на телефоне */
 (function(){
@@ -3395,42 +3434,59 @@ if('serviceWorker' in navigator&&location.protocol==='https:'){window.addEventLi
     // новая версия скачалась в фоне — предложим обновить, не дёргая человека посреди ввода
     reg.addEventListener('updatefound',()=>{const w=reg.installing;if(!w)return;
       w.addEventListener('statechange',()=>{if(w.state==='installed'&&navigator.serviceWorker.controller)
-        showToast('Есть обновление приложения. <button class="btn small" onclick="location.reload()" style="margin-left:6px;">Обновить</button>','ok',20000);});});
+        showToast('<b>Приложение обновилось.</b> Новая версия откроется при следующем запуске — там покажу, что появилось.','ok',9000);});});
   }).catch(()=>{});
 });}
-/* сворачиваемые карточки: нажми на заголовок. При каждом новом запуске всё раскрыто;
-   что свернул — держится, пока приложение открыто (sessionStorage) */
-let FOLDS=null;
+/* сворачиваемые блоки: при каждом заходе в приложение всё свёрнуто — видны только заголовки с короткой
+   сводкой. Нажал — раскрылось и так и остаётся, пока ты в приложении. Вышел (закрыл или ушёл больше чем
+   на 3 минуты) и вернулся — снова всё свёрнуто. Ничего не храним на телефоне. */
+const FOLD_RESET_MS=3*60*1000;
+let FOLDS={};                       // ключ → false, если человек раскрыл блок в этот заход
+const SUB_OPEN={};                  // то же для списков «Подробнее» / «Напоминания»
+function isFolded(k){return FOLDS[k]!==false;}
+function subOpen(k){return SUB_OPEN[k]===true;}
 function foldKey(card){return card.id||('h:'+(card.querySelector(':scope>h2').firstChild.textContent||'').trim().slice(0,40));}
-function loadFolds(){try{localStorage.removeItem('fin-folds-v2');}catch(e){}try{const r=JSON.parse(sessionStorage.getItem('fin-folds-s')||'null');if(r&&typeof r==='object')return r;}catch(e){}return {};}
-function saveFolds(){try{sessionStorage.setItem('fin-folds-s',JSON.stringify(FOLDS));}catch(e){}}
+function setFold(card,folded){
+  card.classList.toggle('folded',folded);FOLDS[foldKey(card)]=folded?true:false;
+  const h=card.querySelector(':scope>h2');if(h)h.setAttribute('aria-expanded',folded?'false':'true');
+}
+function applyTodoFold(){
+  const sec=$('#todoSec'),btn=$('#todoHead');if(!sec||!btn)return;
+  const f=isFolded('todo');sec.classList.toggle('sec-folded',f);btn.setAttribute('aria-expanded',f?'false':'true');
+}
 function setupFolds(){
-  FOLDS=loadFolds();
+  try{localStorage.removeItem('fin-folds-v2');sessionStorage.removeItem('fin-folds-s');sessionStorage.removeItem('fin-sub-s');}catch(e){}
   document.querySelectorAll('.tabpane .card').forEach(card=>{
     const h=card.querySelector(':scope>h2');if(!h||card.id==='installTip'||card.dataset.nofold!==undefined||card.classList.contains('stat')||card.classList.contains('foldable'))return;
     card.classList.add('foldable');
     h.insertAdjacentHTML('afterbegin','<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>');
     h.insertAdjacentHTML('beforeend','<span class="h2-sum"></span>');
     h.setAttribute('role','button');h.tabIndex=0;
-    if(FOLDS[foldKey(card)])card.classList.add('folded');
-    const toggle=()=>{card.classList.toggle('folded');FOLDS[foldKey(card)]=card.classList.contains('folded');saveFolds();};
+    setFold(card,isFolded(foldKey(card)));
+    const toggle=()=>setFold(card,!card.classList.contains('folded'));
     h.addEventListener('click',e=>{if(e.target.closest('input,button,select,a'))return;toggle();});
     h.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle();}});
   });
   /* «Что сделать» на главной */
-  const sec=$('#todoSec'),btn=$('#todoHead');
-  if(sec&&btn){
-    const apply=()=>{const f=!!FOLDS.todo;sec.classList.toggle('sec-folded',f);btn.setAttribute('aria-expanded',f?'false':'true');};
-    apply();
-    btn.addEventListener('click',()=>{FOLDS.todo=!FOLDS.todo;saveFolds();apply();});
-  }
+  const btn=$('#todoHead');
+  if(btn){applyTodoFold();btn.addEventListener('click',()=>{FOLDS.todo=!isFolded('todo');applyTodoFold();});}
 }
+/* новый заход: снова сворачиваем всё */
+function foldAll(){
+  FOLDS={};for(const k in SUB_OPEN)delete SUB_OPEN[k];
+  document.querySelectorAll('.card.foldable').forEach(c=>setFold(c,true));
+  document.querySelectorAll('details[data-fold],details.month,details.gloss').forEach(d=>{d.open=false;});
+  for(const k in FOLDS)delete FOLDS[k];
+  applyTodoFold();
+}
+let hiddenAt=0;
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden){hiddenAt=Date.now();return;}
+  if(hiddenAt&&Date.now()-hiddenAt>FOLD_RESET_MS&&!document.body.classList.contains('touring')&&!document.getElementById('tour'))foldAll();
+  hiddenAt=0;
+});
 function setSum(id,html){const el=document.querySelector('#'+id+'>h2 .h2-sum');if(el)el.innerHTML=html;}
-/* раскрывающиеся списки: при каждом новом запуске всё раскрыто; что человек свернул или раскрыл —
-   держится до закрытия приложения (sessionStorage), а при следующем запуске снова всё раскрыто */
-const SUB_OPEN=(()=>{try{const r=JSON.parse(sessionStorage.getItem('fin-sub-s')||'{}');return r&&typeof r==='object'?r:{};}catch(e){return {};}})();
-function subOpen(k){return SUB_OPEN[k]!==false;}
-document.addEventListener('toggle',e=>{const d=e.target;if(d&&d.dataset&&d.dataset.fold){SUB_OPEN[d.dataset.fold]=d.open;try{sessionStorage.setItem('fin-sub-s',JSON.stringify(SUB_OPEN));}catch(err){}}},true);
+document.addEventListener('toggle',e=>{const d=e.target;if(d&&d.dataset&&d.dataset.fold)SUB_OPEN[d.dataset.fold]=d.open;},true);
 const WHY={};
 const WHY_TITLE={daily:'Как посчитан лимит',left:'Деньги до конца следующего месяца',save:'Сколько получится накопить'};
 function foldSub(key,short,full){
