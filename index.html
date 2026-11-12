@@ -319,6 +319,20 @@
   .tour-focus{outline:2px solid var(--moss) !important;outline-offset:4px;border-radius:12px;scroll-margin-top:96px;}
   body.touring main{padding-bottom:300px;}
   .catbar-row .prev{position:absolute;top:0;bottom:0;border-left:2px solid var(--muted);}
+.pay-ask{background:var(--card);border:1.5px solid var(--moss);border-radius:var(--radius);padding:14px 16px;margin:0 0 12px;box-shadow:var(--shadow);}
+  .pay-ask .pa-t{font-size:15px;font-weight:600;color:var(--ink);margin-bottom:2px;}
+  .pay-ask .pa-s{font-size:13.5px;color:var(--ink2);line-height:1.45;}
+  .pay-ask .pa-btns{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
+  .pay-ask .pa-btns .btn{flex:1 1 120px;}
+  .pay-ask .pa-form{display:none;margin-top:10px;gap:8px;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));align-items:end;}
+  .pay-ask.open .pa-form{display:grid;}
+  .pay-ask.open .pa-btns{display:none;}
+  .pay-ask .pa-form .field{margin:0;}
+  .pay-ask .pa-form input,.pay-ask .pa-form select{width:100%;}
+  .pay-ask .pa-no{display:block;margin-top:8px;font-size:12.5px;color:var(--muted);background:none;border:0;padding:4px 0;cursor:pointer;text-decoration:underline;text-underline-offset:3px;}
+  .cc-tr{margin:8px 0 4px;display:flex;flex-direction:column;gap:6px;}
+  .cc-tr-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:0 10px;font-size:14px;color:var(--ink);}
+  .cc-tr-row small{grid-column:1/-1;font-size:12px;color:var(--muted);}
   /* «На что уходят деньги»: палитра категорий в тон приложению (лес, мох, охра, терракота, слива) */
   :root{--sp-1:#2F6B55;--sp-2:#4D7A9C;--sp-3:#B08A3E;--sp-4:#C2683F;--sp-5:#8F5876;--sp-6:#7FA05E;--sp-7:#5E6E78;--sp-8:#6E7AAE;--sp-9:#C9A27A;--sp-10:#8C6A54;--sp-11:#B9776B;--sp-12:#4F8C86;--sp-o:#ABA69B;--sp-gloss:.34;--sp-shade:.16;}
   :root[data-theme="dark"]{--sp-1:#6FB396;--sp-2:#86ADCB;--sp-3:#D9B567;--sp-4:#E38F68;--sp-5:#C48AAB;--sp-6:#A9C788;--sp-7:#9AABB5;--sp-8:#A3ADDB;--sp-9:#E2C49E;--sp-10:#C29D84;--sp-11:#E0A194;--sp-12:#86C2BB;--sp-o:#6F7A75;--sp-gloss:.16;--sp-shade:.28;}
@@ -360,6 +374,18 @@
   .sp-row .tr{font-size:12px;margin-left:6px;font-weight:500;}
   .sp-bar{height:5px;border-radius:3px;background:var(--raised);overflow:hidden;margin-top:6px;}
   .sp-bar i{display:block;height:100%;border-radius:3px;transition:width .5s var(--ease);}
+  .sp-chev{width:16px;height:16px;flex:none;stroke:var(--muted);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s var(--ease);}
+  .sp-row.on .sp-chev{transform:rotate(180deg);}
+  .sp-det{display:none;margin:2px 0 8px 10px;padding:6px 0 6px 14px;border-left:2px solid var(--line2);}
+  .sp-row.on+.sp-det{display:block;animation:slidein .25s var(--ease);}
+  .sp-det-h{font-size:12px;color:var(--muted);margin-bottom:4px;}
+  .sp-it{display:grid;grid-template-columns:52px minmax(0,1fr) auto;gap:8px;align-items:baseline;padding:5px 0;font-size:13.5px;border-bottom:1px solid var(--line);}
+  .sp-it:last-child{border-bottom:0;}
+  .sp-it .d{color:var(--muted);font-size:12.5px;white-space:nowrap;}
+  .sp-it .nm{min-width:0;color:var(--ink);overflow-wrap:anywhere;}
+  .sp-it .nm small{display:block;color:var(--muted);font-size:11.5px;}
+  .sp-it b{font-weight:600;color:var(--ink);white-space:nowrap;}
+  .sp-it.more .nm{color:var(--muted);}
   .sp-empty{text-align:center;color:var(--muted);font-size:14px;padding:6px 0 4px;}
   /* заголовок «Что сделать» сворачивается так же, как карточки */
   button.sec-fold{display:flex;align-items:center;gap:8px;width:calc(100% - 8px);background:none;border:0;font:inherit;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;text-align:left;padding:4px 0;}
@@ -677,6 +703,8 @@
     </div>
   </div>
 
+  <div id="payAsk"></div>
+
   <div id="todoSec">
     <div class="sec-h"><button type="button" class="sec-fold" id="todoHead" aria-expanded="true" aria-controls="todoBody"><span>Что сделать</span><span class="sec-sum" id="todoSum"></span><svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button></div>
     <div id="todoBody"><div id="dashAlerts"></div></div>
@@ -851,11 +879,13 @@
     <h2>Кредитка</h2>
     <div class="row">
       <div class="field"><label>Лимит, ₽ (0 — если кредитки нет)</label><input type="number" id="ccLimit" style="width:140px;"></div>
-      <div class="field"><label>Текущий долг внести до (дата из банка)</label><input type="date" id="ccDeadline"></div>
       <div class="field"><label>Беспроцентный период, дней</label><input type="number" id="ccGrace" style="width:100px;"></div>
+      <div class="field"><label>Гасить за, дней</label><input type="number" id="ccPayIn" style="width:100px;"></div>
+      <div class="field"><label id="ccDueLbl">Покупки этого месяца вернуть до (дата из банка)</label><input type="date" id="ccDueMonth"></div>
+      <div class="field" id="ccStartField"><label>Долг на начало учёта вернуть до</label><input type="date" id="ccDeadline"></div>
       <div class="field"><label>Ставка после льготного, % год.</label><input type="number" id="ccRate" style="width:100px;" placeholder="0"></div>
     </div>
-    <div class="hint">Долг правится на главной: «Деньги сейчас». Дата — до какого числа банк просит внести деньги, чтобы не было процентов.</div>
+    <div class="hint" id="ccHint"></div>
   </div>
   <div class="card" id="setDebtCard">
     <h2>Долги</h2>
@@ -922,8 +952,9 @@
       <li><b>Один раз:</b> «План» → «Доходы и расходы» — зарплата, кредиты, долги, крупные траты.</li>
       <li><b>Один раз:</b> на главной нажми «Деньги сейчас» и впиши наличные и карту.</li>
       <li><b>Каждый день:</b> потратил — «+» внизу. Не тратил — ничего не нужно.</li>
+      <li><b>В день зарплаты:</b> на главной ответь, пришла ли она, — «Пришла» и фактическая дата, или «Ещё нет».</li>
       <li><b>Смотри</b> на большую цифру — столько можно потратить сегодня. Нажми на неё — увидишь расчёт.</li>
-      <li><b>Раз в неделю:</b> загляни в «На что уходят деньги» на главной — какая категория съедает больше всего.</li>
+      <li><b>Раз в неделю:</b> загляни в «На что уходят деньги» на главной — какая категория съедает больше всего. Нажми на неё — увидишь сами траты.</li>
       <li><b>Раз в две недели:</b> «Ещё» → «Сохранить копию».</li>
     </ol>
     <details class="gloss" data-fold="gloss">
@@ -944,6 +975,9 @@
         <dt>На что уходят деньги</dt><dd>Круг на главной: какая доля трат пришлась на каждую категорию за месяц или за 3 месяца. Платежи по кредитам не входят. <i>Продукты 46% → почти половина трат ушла на еду.</i></dd>
         <dt>Стрелки ↑↓ у категорий</dt><dd>На сколько трат в категории стало больше или меньше, чем в прошлом месяце. Текущий месяц сравниваю с теми же днями прошлого — так честно.</dd>
         <dt>Другое и мелочи</dt><dd>Небольшие категории, собранные в одну серую строку, чтобы круг не дробился. Под строкой видно, что в неё вошло.</dd>
+        <dt>Зарплата пришла?</dt><dd>Зарплата сама не записывается. В день выплаты на главной спрошу: «Пришла» — укажешь фактическую дату и сумму; «Ещё нет» — спрошу завтра, а пока этих денег в кошельке не считаю.</dd>
+        <dt>Список трат в категории</dt><dd>В «На что уходят деньги» нажми на категорию — раскроется, на что именно ушли деньги за выбранный месяц. <i>Разовая трата → «Подарок маме 5 000», «Ремонт телефона 3 200».</i></dd>
+        <dt>Кредитка по месяцам</dt><dd>У покупок каждого месяца свой срок без процентов: купил в ноябре — банк ждёт до 28 февраля. Гашу раньше — за 105 дней из 120, чтобы был запас 15 дней.</dd>
         <dt>Свёрнутые блоки</dt><dd>При каждом заходе блоки свёрнуты, в заголовке — короткая сводка. Нажми на заголовок — раскроется до выхода из приложения.</dd>
         <dt>Подстраховка</dt><dd>Считать, что зарплата может прийти на 3 дня позже, — лимит чуть осторожнее.</dd>
       </dl>
@@ -1107,6 +1141,7 @@ function defaults(){
     ],
     customCats:[],
     ignoredAuto:[],
+    paySnooze:{},
     tx:[]
   };
 }
@@ -1190,36 +1225,129 @@ let state=load()||defaults();
   state.oneTime.forEach(o=>{if(!o.start)o.start=TODAY_YM;});
   if(!Array.isArray(state.declinedCats))state.declinedCats=[];
   if(state.plan.follow===undefined)state.plan.follow=true;
+  if(!state.paySnooze||typeof state.paySnooze!=='object'||Array.isArray(state.paySnooze))state.paySnooze={};
+  if(!state.cc.dueBy||typeof state.cc.dueBy!=='object'||Array.isArray(state.cc.dueBy))state.cc.dueBy={};
+  if(!(state.cc.payIn>0))state.cc.payIn=Math.max(1,(state.cc.grace||120)-15);
 })();
 function save(){
   if(LOAD_FAILED)return; // сохранённые данные не прочитались — не затираем их
   localStorage.setItem(LS,JSON.stringify(state));
 }
 
-/* ================= автоначисления зарплат ================= */
+/* ================= зарплата: подтверждение ================= */
+/* Зарплата сама не записывается. В день выплаты (и после, пока не ответишь) на главной спрашиваю:
+   «пришла?» — и записываю фактическую дату и сумму. Пока не подтвердил — в кошельке её нет,
+   в расчётах она считается ожидаемой с завтрашнего дня. */
 function payDateFor(ym,day){return ym+'-'+pad(Math.min(Math.max(1,day),daysInMonth(ym)));}
-function generateAutoIncomes(){
-  let added=0;
-  const fromYM=state.created.slice(0,7);
+function payKey(inc,date){return inc.id+'|'+date;}
+/* все плановые выплаты месяцев fromYM..toYM со статусом */
+function payList(fromYM,toYM){
+  const out=[];
   for(const inc of state.incomes){
-    for(let ym=fromYM;monthNum(ym)<=monthNum(TODAY_YM);ym=addMonths(ym,1)){
+    for(let ym=fromYM;monthNum(ym)<=monthNum(toYM);ym=addMonths(ym,1)){
       if(inc.from.slice(0,7)>ym)continue;
-      for(const pay of inc.pays){
-        const date=payDateFor(ym,pay.day);
-        if(date>TODAY_ISO)continue;
-        if(date<=state.created)continue; // до первого запуска деньги уже учтены в стартовом балансе
+      for(const p of inc.pays){
+        const date=payDateFor(ym,p.day);
         if(date<inc.from)continue;
-        const key=inc.id+'|'+date;
-        if(state.ignoredAuto.includes(key))continue;
-        if(state.tx.some(t=>t.srcKey===key))continue;
-        state.tx.push({id:uid(),srcKey:key,date,type:'inc',category:'Зарплата',amount:num(pay.amount),
-          method:pay.method==='cash'?'cash':'card',note:inc.name+' (авто)'});
-        added++;
+        if(date<=state.created)continue;        // до первого запуска деньги уже учтены в стартовом балансе
+        const key=payKey(inc,date);
+        if(state.ignoredAuto.includes(key))continue;   // «в этом месяце не будет»
+        const tx=state.tx.find(t=>t.srcKey===key);
+        out.push({key,ym,date,amount:num(p.amount),name:inc.name,method:p.method==='cash'?'cash':'card',tx:tx||null,
+          late:!tx&&date<=TODAY_ISO});
       }
     }
   }
-  if(added)save();
-  return added;
+  return out.sort((a,b)=>a.date.localeCompare(b.date));
+}
+/* ждут ответа «пришла?»: срок наступил, записи нет (смотрим не дальше 3 месяцев назад) */
+function awaitingPays(){
+  const from=addMonths(TODAY_YM,-3);
+  return payList(monthNum(state.created.slice(0,7))>monthNum(from)?state.created.slice(0,7):from,TODAY_YM).filter(p=>p.late);
+}
+/* ожидаемые поступления: не пришедшие в срок — с завтрашнего дня, будущие — в свой день */
+function expectedPays(toYM){
+  const from=addMonths(TODAY_YM,-3);
+  const tomorrow=addDaysISO(TODAY_ISO,1);
+  return payList(monthNum(state.created.slice(0,7))>monthNum(from)?state.created.slice(0,7):from,toYM)
+    .filter(p=>!p.tx&&(p.late||p.date>TODAY_ISO))
+    .map(p=>({...p,plan:p.date,date:p.late?tomorrow:p.date}));
+}
+/* ручная запись «Зарплата» через «+» засчитывает ближайшую неподтверждённую выплату (чтобы не было двойного дохода) */
+function linkManualSalary(t){
+  if(t.type!=='inc'||t.category!=='Зарплата'||t.srcKey)return null;
+  const cand=payList(addMonths(t.date.slice(0,7),-1),addMonths(t.date.slice(0,7),1))
+    .filter(p=>!p.tx&&Math.abs(daysUntil(p.date)-daysUntil(t.date))<=12)
+    .sort((a,b)=>Math.abs(daysUntil(a.date)-daysUntil(t.date))-Math.abs(daysUntil(b.date)-daysUntil(t.date)))[0];
+  if(cand)t.srcKey=cand.key;
+  return cand||null;
+}
+function confirmPay(key,date,amount,method){
+  const p=payList(addMonths(TODAY_YM,-4),TODAY_YM).find(x=>x.key===key);if(!p||p.tx)return null;
+  const t={id:uid(),srcKey:key,date,type:'inc',category:'Зарплата',amount,method,note:p.name};
+  state.tx.push(t);if(state.paySnooze)delete state.paySnooze[key];
+  return t;
+}
+
+/* ================= кредитка: месяцы покупок, сроки, план взносов ================= */
+const RU_MON_GEN=['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+function daysBetween(a,b){return Math.round((new Date(b+'T00:00:00')-new Date(a+'T00:00:00'))/864e5);}
+/* срок банка без процентов для покупок месяца ym */
+function ccBankDl(ym){
+  const due=state.cc.dueBy||{};
+  if(due[ym])return due[ym];
+  // есть дата из банка для другого месяца — тот же отступ от 1-го числа месяца покупок
+  const known=Object.keys(due).filter(k=>/^\d{4}-\d{2}$/.test(k)&&/^\d{4}-\d{2}-\d{2}$/.test(due[k])).sort();
+  if(known.length){const k=known[known.length-1];return addDaysISO(ym+'-01',daysBetween(k+'-01',due[k]));}
+  const g=Math.max(1,Math.round(num(state.cc.grace)||120));
+  return addDaysISO(ym+'-01',g-1);   // 120 дней с 1-го числа: покупки ноября → 28 февраля
+}
+/* за сколько дней до срока банка гасим (120 − 105 = 15) */
+function ccMargin(){const g=Math.max(1,Math.round(num(state.cc.grace)||120));const pi=Math.round(num(state.cc.payIn)||g-15);return Math.max(0,g-Math.min(g,pi));}
+/* даты, когда ожидаются деньги: подтверждённая сегодня зарплата, опоздавшие — завтра, будущие — по плану */
+function plannedExpectedDates(){
+  const horizon=addMonths(TODAY_YM,8);
+  const L=expectedPays(horizon).filter(p=>p.amount>0).map(p=>p.date);
+  for(const t of state.tx)if(t.srcKey&&t.type==='inc'&&t.date===TODAY_ISO)L.push(TODAY_ISO);
+  return [...new Set(L)].sort();
+}
+function ccModel(payDates){
+  const eomNext=NEXT_YM+'-'+pad(daysInMonth(NEXT_YM));
+  const startYM=((state.start&&state.start.date)||state.created||TODAY_ISO).slice(0,7);
+  const tr={};const get=(key,label,bankDl,ym)=>tr[key]||(tr[key]={key,label,ym,bankDl,amount:0});
+  // долг, который был на старте учёта (или поправлен вручную в «Деньги сейчас»)
+  let extraRepay=0;
+  const st=num(state.start.creditDebt);
+  if(st>0)get('start','долг на начало учёта',state.cc.deadline||ccBankDl(startYM),startYM).amount+=st;
+  else if(st<0)extraRepay+=-st;
+  // покупки по месяцам (прошедшие и запланированные до конца следующего месяца)
+  let repaid=extraRepay;const repayToday=state.tx.some(t=>t.type==='repay'&&t.date===TODAY_ISO);
+  for(const t of state.tx){
+    if(!t.date)continue;
+    if(t.date>TODAY_ISO&&(t.srcKey||t.date>eomNext))continue;
+    if(t.type==='exp'&&t.method==='credit'){const ym=t.date.slice(0,7);get(ym,'покупки '+MONTHS_GEN[+ym.slice(5)-1]+(ym.slice(0,4)!==TODAY_YM.slice(0,4)?' '+ym.slice(0,4):''),ccBankDl(ym),ym).amount+=t.amount;}
+    else if(t.type==='repay')repaid+=t.amount;
+  }
+  // взносы гасят самый старый долг первым (как в банке)
+  const list=Object.values(tr).sort((a,b)=>a.bankDl.localeCompare(b.bankDl)||a.key.localeCompare(b.key));
+  for(const x of list){const r=Math.min(x.amount,repaid);x.left=x.amount-r;repaid-=r;}
+  const margin=ccMargin();
+  const bucket={};
+  for(const x of list){
+    x.target=addDaysISO(x.bankDl,-margin);
+    if(x.left<1){x.left=0;x.plan=[];continue;}
+    let D;
+    if(x.bankDl<TODAY_ISO){D=[TODAY_ISO];x.overdue=true;}
+    else{
+      const lim=x.target>TODAY_ISO?x.target:x.bankDl;
+      D=payDates.filter(d=>d<=lim&&(d>TODAY_ISO||(d===TODAY_ISO&&!repayToday)));
+      if(x.target<=TODAY_ISO)D=D.slice(0,1);         // запас уже съеден — гасим с ближайших денег
+      if(!D.length)D=[x.target>TODAY_ISO?x.target:TODAY_ISO];
+    }
+    const part=Math.ceil(x.left/D.length/100)*100;let left=x.left;x.plan=[];
+    D.forEach((d,k)=>{const a=k===D.length-1?left:Math.min(left,part);if(a>=1){x.plan.push({date:d,amount:a});(bucket[d]=bucket[d]||{date:d,amount:0,parts:[]});bucket[d].amount+=a;bucket[d].parts.push({label:x.label,amount:a});}left-=a;});
+  }
+  return {tranches:list,sched:Object.values(bucket).sort((a,b)=>a.date.localeCompare(b.date))};
 }
 
 /* ================= compute ================= */
@@ -1272,28 +1400,17 @@ function compute(){
   const debt=state.start.creditDebt+expCredit-repCash-repCard;
   const availCC=Math.max(0,state.cc.limit-debt);
   const hasCC=state.cc.limit>0||debt>0;
-  const dlYm=state.cc.deadline?state.cc.deadline.slice(0,7):'';
-  const daysToDl=state.cc.deadline?daysUntil(state.cc.deadline):0;
-  const ccPlanMonths=dlYm?monthsIncl(NEXT_YM,dlYm):0;
-  const hasCcDl=!!dlYm;
-  const ccBase=Math.max(0,debt+plannedCcBuy-plannedCcRepay); // текущий долг: новые покупки по кредитке увеличивают взнос
-  const ccMonthly=ccPlanMonths>0?ccBase/ccPlanMonths:(hasCcDl?ccBase:0);
-  // взносы на кредитку: долг делится поровну на дни зарплат между сегодня и сроком банка
-  // (две зарплаты в месяц — два взноса). Зарплат до срока нет — один взнос в день срока.
-  const ccSched=[];
-  if(hasCcDl&&ccBase>=1){
-    const dl=state.cc.deadline;
-    if(dl<=TODAY_ISO)ccSched.push({date:TODAY_ISO,amount:ccBase});
-    else{
-      const repaidToday=state.tx.some(t=>t.type==='repay'&&t.date===TODAY_ISO);
-      const dates=new Set();
-      for(let ym=TODAY_YM;monthNum(ym)<=monthNum(dl.slice(0,7));ym=addMonths(ym,1))
-        for(const p of paysFor(ym))if(p.amount>0&&p.date<=dl&&(p.date>TODAY_ISO||(p.date===TODAY_ISO&&!repaidToday)))dates.add(p.date);
-      const D=[...dates].sort();if(!D.length)D.push(dl);
-      const part=Math.ceil(ccBase/D.length/100)*100;let left=ccBase;
-      D.forEach((d,k)=>{const a=k===D.length-1?left:Math.min(left,part);if(a>=1)ccSched.push({date:d,amount:a});left-=a;});
-    }
-  }
+  // ===== кредитка: долг по месяцам покупок =====
+  // У каждого месяца покупок свой беспроцентный срок (Покупки ноября → до 28 февраля при 120 днях).
+  // Взносы — гасим не к сроку банка, а раньше: за «гасить за» дней (по умолчанию 105 из 120) — запас на случай задержки.
+  const cm=ccModel(plannedExpectedDates());
+  const {tranches:ccTr,sched:ccSched}=cm;
+  const ccNext=ccTr.find(x=>x.left>=1)||null;
+  const hasCcDl=!!ccNext;
+  const daysToDl=ccNext?daysUntil(ccNext.bankDl):0;
+  const ccBase=Math.max(0,ccTr.reduce((s,x)=>s+x.left,0));
+  const ccPlanMonths=ccNext?monthsIncl(NEXT_YM,ccNext.target.slice(0,7)):0;
+  const ccMonthly=ccPlanMonths>0?ccBase/ccPlanMonths:ccBase;
   // кредиты
   const credits=state.credits.map(cr=>{
     const monthly=Math.max(0,num(cr.payment));
@@ -1331,33 +1448,16 @@ function compute(){
   const debtsTotal=debts.filter(d=>d.enabled).reduce((s,d)=>s+d.amount,0);
   const incomeNow=state.incomes.filter(i=>i.from<=TODAY_ISO).reduce((s,i)=>s+i.pays.reduce((a,p)=>a+num(p.amount),0),0);
   const netWorth=cash+card+potsTotal-debt-creditRemain-debtsTotal;
-  // ближайшая выплата
-  let nextPay=null;
-  for(const inc of state.incomes){
-    for(const pay of inc.pays){
-      let d=payDateFor(TODAY_YM,pay.day);
-      if(d<=TODAY_ISO)d=payDateFor(NEXT_YM,pay.day);
-      if(d<inc.from)d=inc.from;
-      if(!nextPay||d<nextPay.date)nextPay={date:d,amount:num(pay.amount),name:inc.name,method:pay.method};
-    }
-  }
-  // ещё не пришедшие начисления до конца месяца (для кассового расчёта)
+  // ожидаемые зарплаты: не подтверждённые в срок — с завтрашнего дня
+  const expPays=expectedPays(NEXT_YM);
   const eomISO=TODAY_YM+'-'+pad(daysInMonth(TODAY_YM));
-  const pendingPays=[];
-  for(const inc of state.incomes){
-    for(const pay of inc.pays){
-      const d=payDateFor(TODAY_YM,pay.day);
-      if(d<=TODAY_ISO||d>eomISO)continue;
-      if(d<inc.from)continue;
-      const key=inc.id+'|'+d;
-      if(state.tx.some(t=>t.srcKey===key))continue;
-      if(state.ignoredAuto.includes(key))continue;
-      pendingPays.push({date:d,amount:num(pay.amount),name:inc.name,method:pay.method});
-    }
-  }
+  const pendingPays=expPays.filter(p=>p.ym!==NEXT_YM||p.late);          // ещё придёт «в этом месяце» (и опоздавшие)
+  const nextMonthPays=expPays.filter(p=>p.ym===NEXT_YM&&!p.late);       // придёт в следующем месяце
+  const incNext=nextMonthPays.reduce((s,p)=>s+p.amount,0);
+  const nextPay=expPays[0]||null;
   return {expCash,expCard,expCredit,repCash,repCard,incCash,incCard,incExtra,dpCash,dpCard,debtPaidNoDl,mvCash,potCash,potCard,potBal,potsTotal,savedNet,plannedInc,plannedExp,plannedIncThis,plannedExpThis,cash,card,debt,availCC,hasCC,
-    hasCcDl,daysToDl,ccBase,ccMonthly,ccPlanMonths,ccSched,credits,creditRemain,debts,debtsAuto,debtsNoDl,debtsTotal,
-    incomeNow,netWorth,nextPay,pendingPays};
+    hasCcDl,daysToDl,ccBase,ccMonthly,ccPlanMonths,ccSched,ccTr,ccNext,credits,creditRemain,debts,debtsAuto,debtsNoDl,debtsTotal,
+    incomeNow,netWorth,nextPay,pendingPays,nextMonthPays,incNext,awaiting:awaitingPays()};
 }
 /* все плановые выплаты месяца: [{date, amount, name}] */
 function paysFor(ym){
@@ -1375,7 +1475,7 @@ function paysFor(ym){
 function incomeFor(ym){return paysFor(ym).reduce((s,p)=>s+p.amount,0);}
 /* взнос на кредитку в месяце ym (месячные взносы идут со следующего месяца; в текущем — только если срок в нём или просрочен) */
 function ccDueFor(c,ym){
-  if(!(c.ccBase>0)||!state.cc.deadline)return 0;
+  if(!(c.ccBase>0))return 0;
   return c.ccSched.filter(x=>x.date.slice(0,7)===ym).reduce((s,x)=>s+x.amount,0);
 }
 /* автовзносы по долгам с дедлайном в месяце ym (в текущем — только если срок в нём или просрочен) */
@@ -1615,16 +1715,15 @@ function cashEvents(c){
   const delay=num(state.plan.payDelay)||0;
   const add=(date,amount,label,kind)=>{if(!date)return;if(date<TODAY_ISO)date=TODAY_ISO;if(date>end||!(Math.abs(amount)>=1))return;ev.push({date,amount,label,kind});};
   const late=delay?` (с запасом +${delay} дн.)`:'';
-  for(const p of c.pendingPays)add(addDaysISO(p.date,delay),p.amount,''+p.name+late,'inc');
-  for(const p of paysFor(NEXT_YM))add(addDaysISO(p.date,delay),p.amount,''+p.name+late,'inc');
+  const payAt=p=>{const d=addDaysISO(p.plan,delay);return d>p.date?d:p.date;};   // опоздавшая — не раньше завтра
+  for(const p of c.pendingPays)add(payAt(p),p.amount,''+p.name+(p.late?' (ещё не пришла — жду)':late),'inc');
+  for(const p of c.nextMonthPays)add(payAt(p),p.amount,''+p.name+late,'inc');
   for(const cr of c.credits){
     if(!cr.active)continue;
     if(!cr.paidThisMonth)add(cr.dueISO,-cr.monthly,''+cr.name,'pay');
     if(monthNum(NEXT_YM)<=monthNum(cr.last))add(payDateFor(NEXT_YM,cr.dueDay),-cr.monthly,''+cr.name,'pay');
   }
-  if(state.cc.deadline){
-    for(const x of c.ccSched)add(x.date,-x.amount,'Взнос на кредитку','pay');
-  }
+  for(const x of c.ccSched)add(x.date,-x.amount,'Взнос на кредитку','pay');
   for(const d of c.debts){
     if(!(d.enabled&&d.deadline&&d.amount>0))continue;
     const dlm=monthNum(d.deadline.slice(0,7));
@@ -1839,7 +1938,6 @@ function renderDash(c){
   const factLife=factSpentLife(TODAY_YM);
   const oneThis=oneTimeOpenFor(TODAY_YM);
   const futureInc=c.pendingPays.reduce((s,p)=>s+p.amount,0);
-  const dlYm0=state.cc.deadline?state.cc.deadline.slice(0,7):'';
   const ccDue=ccDueFor(c,TODAY_YM);
   const credDue=c.credits.filter(cr=>cr.active&&!cr.paidThisMonth).reduce((s,cr)=>s+cr.monthly,0);
   const debtsAutoNow=debtsAutoFor(c,TODAY_YM);
@@ -1901,12 +1999,12 @@ function renderDash(c){
       alerts.push(['ok',`Ты тратишь меньше плана: ~${fmt(avgDay)}/день против лимита ${fmt(limDay)}. До конца месяца сэкономишь ≈ <b>${fmt(spare)}</b> — можно ${offer}.`]);
     }
   }
-  if(c.debt>0&&c.hasCcDl&&c.daysToDl<=0){
-    alerts.push(['danger',`Срок кредитки (${fmtDateRu(state.cc.deadline)}) уже прошёл, долг ${fmt(c.debt)} — срочно пополни${state.cc.rate>0?', пойдут проценты ≈ '+fmt(c.debt*state.cc.rate/100/12)+' в месяц':''}`]);
-  }else if(c.debt>0&&c.hasCcDl&&c.daysToDl<=30){
-    const nx=c.ccSched[0];
-    alerts.push(['warn',`Кредитку нужно вернуть — <b>${fmt(c.debt)}</b> до ${fmtDateRu(state.cc.deadline)} (осталось ${c.daysToDl} дн.).${nx?` Ближайший взнос: <b>${fmt(nx.amount)}</b> ${nx.date===TODAY_ISO?'сегодня':fmtDateShort(nx.date)}.`:''}${state.cc.rate>0?'<br>Если не успеешь — банк начислит ≈ <b>'+fmt(c.debt*state.cc.rate/100/12)+'/мес</b> процентов.':''}`]);
-  }
+  {const od=c.ccTr.filter(x=>x.left>=1&&x.overdue);
+   if(od.length){const sum=od.reduce((a,x)=>a+x.left,0);
+     alerts.push(['danger',`Кредитка: срок банка прошёл (${od.map(x=>x.label+' — до '+fmtDateShort(x.bankDl)).join(', ')}). Внеси <b>${fmt(sum)}</b> как можно скорее${state.cc.rate>0?', иначе пойдут проценты ≈ '+fmt(sum*state.cc.rate/100/12)+' в месяц':''}.`]);}
+   else if(c.ccNext&&daysUntil(c.ccNext.target)<=30){
+     const x=c.ccNext,nx=c.ccSched[0],dt=daysUntil(x.target);
+     alerts.push(['warn',`Кредитка: ${x.label} — <b>${fmt(x.left)}</b>. По плану закрыть до ${fmtDateShort(x.target)}${dt>0?` (через ${dt} дн.)`:''}, банк ждёт до ${fmtDateShort(x.bankDl)}.${nx?` Ближайший взнос: <b>${fmt(nx.amount)}</b> ${nx.date===TODAY_ISO?'сегодня':fmtDateShort(nx.date)}.`:''}`]);}}
   const upcoming=state.oneTime.filter(o=>!o.done&&(o.month===TODAY_YM||o.month===NEXT_YM));
   if(upcoming.length){
     const tot=upcoming.reduce((s,o)=>s+num(o.amount),0);
@@ -1971,7 +2069,7 @@ function renderDash(c){
   const debtsAutoNext=debtsAutoFor(c,NEXT_YM);
   const manualNext=c.debtsNoDl.length?state.plan.debtsPay:0;
   const longReserve=reserve+ccNextDue+credDueNext+debtsAutoNext+manualNext+nearOneSum+state.plan.savings+(sinkNext-sinkThis);
-  const longFree=c.cash+c.card+futureInc+incomeFor(NEXT_YM)+c.plannedInc-c.plannedExp-longReserve;
+  const longFree=c.cash+c.card+futureInc+c.incNext+c.plannedInc-c.plannedExp-longReserve;
   // план жизни: остаток этого месяца + следующий. Если начал вести учёт в середине месяца — план этого месяца только на оставшиеся дни
   const firstDayM=(state.created&&state.created.slice(0,7)===TODAY_YM)?+state.created.slice(8):1;
   const planLifeThis=planLife*(daysInMonth(TODAY_YM)-firstDayM+1)/daysInMonth(TODAY_YM);
@@ -2050,8 +2148,8 @@ function renderDash(c){
   ll.classList.remove('red-txt');
   const monName=ym=>MONTHS_FULL[+ym.split('-')[1]-1];
   const dm=d=>d.slice(8)+'.'+d.slice(5,7);
-  const nextPays=paysFor(NEXT_YM);
-  const inNext=nextPays.reduce((x,p)=>x+p.amount,0);
+  const nextPays=c.nextMonthPays;
+  const inNext=c.incNext;
   const payParts=[];
   if(c.pendingPays.length)payParts.push(`до конца ${MONTHS_GEN[+TODAY_YM.split('-')[1]-1]}: ${c.pendingPays.map(p=>dm(p.date)+' — '+fmtN(p.amount)).join(', ')}`);
   if(nextPays.length)payParts.push(`${monName(NEXT_YM)}: ${nextPays.map(p=>dm(p.date)+' — '+fmtN(p.amount)).join(', ')}`);
@@ -2108,7 +2206,8 @@ function renderDash(c){
   const ph=[];
   if(c.nextPay){
     const d=daysUntil(c.nextPay.date);
-    ph.push(`Следующая выплата: <b>${esc(c.nextPay.name)}</b> +${fmt(c.nextPay.amount)} — ${fmtDateShort(c.nextPay.date)}${d>0?' (через '+d+' дн.)':''}`);
+    ph.push(c.nextPay.late?`Зарплата <b>${esc(c.nextPay.name)}</b> +${fmt(c.nextPay.amount)} по плану ${fmtDateShort(c.nextPay.plan)} ещё не подтверждена — считаю, что придёт завтра, в кошелёк пока не добавляю`
+      :`Следующая выплата: <b>${esc(c.nextPay.name)}</b> +${fmt(c.nextPay.amount)} — ${fmtDateShort(c.nextPay.date)}${d>0?' (через '+d+' дн.)':''}`);
   }
   const recentInc=state.tx.filter(t=>t.type==='inc'&&t.date<=TODAY_ISO&&t.date.slice(0,7)===TODAY_YM).sort((a,b)=>a.date.localeCompare(b.date)||a.id-b.id).slice(-1)[0];
   if(recentInc)ph.push(`<span class="paid-mark">получено: ${esc(recentInc.note||recentInc.category)} +${fmtN(recentInc.amount)} (${fmtDateShort(recentInc.date)})</span>`);
@@ -2118,7 +2217,7 @@ function renderDash(c){
   const normPerDay=followEff?planLife/daysInMonth(TODAY_YM):moneyPerDay;
   const savedNow=Math.round(normPerDay*daysTracked-factLife);
   if(savedNow>300&&daysTracked>=3)ph.push(`За ${daysTracked} дн. потратил на ${fmt(savedNow)} меньше возможного — их можно отложить или потратить сегодня сверх лимита`);
-  $('#paydayInfo').innerHTML=c.nextPay?`${esc(c.nextPay.name)} +${fmtN(c.nextPay.amount)} · ${daysUntil(c.nextPay.date)>0?'через '+daysUntil(c.nextPay.date)+' дн.':'сегодня'}`:'Зарплаты не добавлены';
+  $('#paydayInfo').innerHTML=c.nextPay?`${esc(c.nextPay.name)} +${fmtN(c.nextPay.amount)} · ${c.nextPay.late?'жду с '+fmtDateShort(c.nextPay.plan):(daysUntil(c.nextPay.date)>0?'через '+daysUntil(c.nextPay.date)+' дн.':'сегодня')}`:'Зарплаты не добавлены';
   if(ph.length&&WHY.daily)WHY.daily+=`<div class="why-note">${ph.join('<br>')}</div>`;
   /* обязательства */
   const dl=[];
@@ -2139,15 +2238,16 @@ function renderDash(c){
     </div>`);
   }
   if(c.hasCC&&c.debt>0){
-    const sch=c.ccSched,shown=sch.slice(0,4);
+    const sch=c.ccSched,shown=sch.slice(0,4),tr=c.ccTr.filter(x=>x.left>=1),g=Math.round(num(state.cc.grace)||120);
     dl.push(`<div class="card stat r"><div class="lbl">Кредитка — должен банку</div><div class="big num-red">${fmt(c.debt)}</div>
-      <div class="hint">${!c.hasCcDl?'Укажи в «План → Доходы и расходы» дату из банка, до которой вернуть долг без процентов — составлю план взносов.'
-        :`Без процентов, если вернуть до <b>${fmtDateRu(state.cc.deadline)}</b> (${c.daysToDl>0?'через '+c.daysToDl+' дн.':'срок сегодня'}).`}</div>
-      ${sch.length?`<div class="cc-plan"><div class="cc-h">${sch.length>1?`Клади с каждой зарплаты — и к сроку всё будет погашено:`:'Внести:'}</div>
+      ${tr.length?`<div class="cc-tr">${tr.map(x=>`<div class="cc-tr-row"><span>${esc(x.label[0].toUpperCase()+x.label.slice(1))}</span><b>${fmt(x.left)}</b><small>${x.overdue?'<span style="color:var(--red)">срок банка прошёл '+fmtDateShort(x.bankDl)+'</span>':`гашу до ${fmtDateShort(x.target)} · банк до ${fmtDateShort(x.bankDl)}`}</small></div>`).join('')}</div>
+        <div class="hint">Гашу за ${Math.max(1,g-ccMargin())} дней из ${g} — запас ${ccMargin()} дн. до срока банка.</div>`:''}
+      ${sch.length?`<div class="cc-plan"><div class="cc-h">${sch.length>1?`Клади с каждой зарплаты — и всё будет погашено раньше срока:`:'Внести:'}</div>
         <ol>${shown.map(x=>`<li><span>${x.date===TODAY_ISO?'сегодня':fmtDateShort(x.date)}</span><b>${fmt(x.amount)}</b></li>`).join('')}${sch.length>shown.length?`<li class="muted"><span>и ещё ${sch.length-shown.length} взн.</span><span>до ${fmtDateShort(sch[sch.length-1].date)}</span></li>`:''}</ol>
         <div class="muted" style="font-size:12px;">Внёс — запиши «+» → «Взнос на кредитку». План пересчитается.</div></div>`:''}
       ${state.cc.limit>0?`<div class="hint">Доступно на кредитке: ${fmt(c.availCC)} из ${fmt(state.cc.limit)}</div>`:''}</div>`);
   }
+
   for(const d of c.debts){
     if(!d.enabled)continue;
     if(d.deadline){
@@ -2413,7 +2513,6 @@ document.getElementById('envList').addEventListener('input',e=>{
 $('#btnPreset5030').addEventListener('click',()=>{
   const inc=incomeFor(state.plan.month);
   const c=compute();
-  const dlYm=state.cc.deadline?state.cc.deadline.slice(0,7):'';
   const ccDue=ccDueFor(c,state.plan.month);
   const cred=c.credits.filter(cr=>cr.active&&monthNum(state.plan.month)<=monthNum(cr.last)&&!(state.plan.month===TODAY_YM&&cr.paidThisMonth)).reduce((s,cr)=>s+cr.monthly,0);
   const auto=debtsAutoFor(c,state.plan.month);
@@ -2430,7 +2529,6 @@ $('#btnPreset5030').addEventListener('click',()=>{
 $('#btnPresetDebts').addEventListener('click',()=>{
   const inc=incomeFor(state.plan.month);
   const c=compute();
-  const dlYm=state.cc.deadline?state.cc.deadline.slice(0,7):'';
   const ccDue=ccDueFor(c,state.plan.month);
   const cred=c.credits.filter(cr=>cr.active&&monthNum(state.plan.month)<=monthNum(cr.last)&&!(state.plan.month===TODAY_YM&&cr.paidThisMonth)).reduce((s,cr)=>s+cr.monthly,0);
   const auto=debtsAutoFor(c,state.plan.month);
@@ -2476,8 +2574,7 @@ function simulate(){
     for(const cr of c.credits){
       if(cr.active&&monthNum(m)>monthNum(cr.last)&&!freedDone[cr.id]){freedDone[cr.id]=1;freedCredit+=cr.monthly;}
     }
-    const dlYm=state.cc.deadline?state.cc.deadline.slice(0,7):'';
-    const cc=ccDueFor(c,m);
+      const cc=ccDueFor(c,m);
     const one=oneTimeOpenFor(m);
     let auto=0;
     for(const d of debts){
@@ -2617,7 +2714,9 @@ $('#txAdd').addEventListener('click',()=>{
     debtRef.amount=Math.max(0,num(debtRef.amount)-amount);
   }
   if(oneRef){t.oneId=oneRef.id;t.category='Разовая трата';if(!t.note)t.note=oneRef.name;}
+  const linkedPay=linkManualSalary(t);   // «+» → Зарплата: засчитываю как пришедшую плановую выплату
   state.tx.push(t);
+  if(linkedPay)setTimeout(()=>showToast(`Засчитал как зарплату «${esc(linkedPay.name)}» по плану на ${fmtDateShort(linkedPay.date)} — спрашивать о ней больше не буду.`),400);
   if(oneRef){oneRef.done=true;oneRef.paidTx=t.id;}
   if(type==='exp'&&t.note){
     const norm=t.note.trim().toLowerCase().slice(0,30);
@@ -2706,9 +2805,7 @@ document.getElementById('txHistory').addEventListener('click',e=>{
     if(d)d.amount=num(d.amount)+(t.debtApplied||0);
     renderSetup();
   }
-  if(t&&t.srcKey&&!state.ignoredAuto.includes(t.srcKey)){
-    state.ignoredAuto.push(t.srcKey); // не пересоздавать автоначисление
-  }
+  // удалили подтверждённую зарплату — она снова ждёт ответа «пришла?» (если срок уже наступил)
   save();renderComputed(true);
   if(t)showToast(`Запись удалена: ${t.type==='move'?'⇄ ':(t.type==='inc'||t.type==='unsave')?'+':'−'}${fmt(t.amount)} · ${esc(t.category)}`+balanceDiff(beforeDel,compute()));
 });
@@ -2721,7 +2818,7 @@ function txRow(t){
     :(t.type==='save'||t.type==='unsave')?(t.type==='save'?'в копилку':'из копилки')+' · '+MN[t.method]
     :t.type==='debtpay'?'возврат долга · '+MN[t.method]
     :t.type==='repay'?'взнос на кредитку · '+MN[t.method]
-    :t.type==='inc'?(t.srcKey?'зарплата (авто)':'доход')+' · '+MN[t.method]
+    :t.type==='inc'?(t.srcKey?'зарплата':'доход')+' · '+MN[t.method]
     :MN[t.method];
   const fut=t.date>TODAY_ISO?' <span class="pill p-fut" title="Будущая дата: на деньги не влияет, пока этот день не наступил">план</span>':'';
   const dup=DUPS.has(dupKey(t))&&!t.srcKey&&!t.creditId?' <span class="pill p-dup" title="Есть такая же запись: та же дата, сумма, категория и способ">дубль?</span>':'';
@@ -2834,6 +2931,52 @@ function renderHistory(){
   }
   $('#histCats').innerHTML=c+'<div class="footer-note">Полоса — траты этого месяца, пунктирная отметка — уровень прошлого месяца в этой же категории.</div>';
 }
+
+/* ================= «Зарплата пришла?» (главная) ================= */
+function renderPayAsk(c){
+  const box=$('#payAsk');if(!box)return;
+  const snooze=state.paySnooze||{};
+  const list=(c.awaiting||[]).filter(p=>snooze[p.key]!==TODAY_ISO);
+  box.innerHTML=list.map(p=>{
+    const d=daysUntil(p.date),when=d===0?'сегодня':(d===-1?'вчера':fmtDateShort(p.date));
+    return `<div class="pay-ask" data-key="${esc(p.key)}">
+      <div class="pa-t">${esc(p.name)}: зарплата пришла?</div>
+      <div class="pa-s">По плану ${when} — <b>${fmt(p.amount)}</b> ${p.method==='cash'?'наличными':'на карту'}.${d<0?' Пока не ответишь, считаю, что денег ещё нет.':''}</div>
+      <div class="pa-btns"><button type="button" class="btn primary" data-pa="yes">Пришла</button><button type="button" class="btn" data-pa="wait">Ещё нет</button></div>
+      <div class="pa-form">
+        <div class="field"><label>Когда пришла</label><input type="date" class="pa-date" value="${p.date}" max="${TODAY_ISO}"></div>
+        <div class="field"><label>Сколько, ₽</label><input type="number" inputmode="decimal" class="pa-amt" value="${Math.round(p.amount)}"></div>
+        <div class="field"><label>Куда</label><select class="pa-m"><option value="card"${p.method==='card'?' selected':''}>на карту</option><option value="cash"${p.method==='cash'?' selected':''}>наличными</option></select></div>
+        <button type="button" class="btn primary" data-pa="save">Записать</button>
+      </div>
+      <button type="button" class="pa-no" data-pa="skip">В этом месяце её не будет</button>
+    </div>`;}).join('');
+}
+document.addEventListener('click',e=>{
+  const b=e.target.closest('#payAsk [data-pa]');if(!b)return;
+  const card=b.closest('.pay-ask'),key=card.dataset.key,act=b.dataset.pa;
+  const p=awaitingPays().find(x=>x.key===key);if(!p){renderComputed(true);return;}
+  if(act==='yes'){card.classList.add('open');card.querySelector('.pa-amt').focus();return;}
+  if(act==='wait'){
+    if(!state.paySnooze)state.paySnooze={};state.paySnooze[key]=TODAY_ISO;save();renderComputed(true);
+    showToast(`Хорошо, спрошу завтра. Пока считаю, что ${fmt(p.amount)} придут завтра — на кошелёк сегодня не добавляю.`);return;}
+  if(act==='skip'){
+    if(!confirm(`«${p.name}» по плану ${fmtDateShort(p.date)} не придёт в этом месяце? Уберу её из расчётов.`))return;
+    state.ignoredAuto.push(key);save();renderComputed(true);
+    showToast('Убрал эту выплату из расчётов. Если всё-таки придёт — запиши через «+» → Доход → Зарплата.','warn');return;}
+  if(act==='save'){
+    const date=card.querySelector('.pa-date').value||TODAY_ISO;
+    const amt=Math.round(num(String(card.querySelector('.pa-amt').value).replace(/\s/g,'')));
+    if(!(amt>0)){showToast('Впиши сумму больше нуля.','warn');return;}
+    if(date>TODAY_ISO){showToast('Дата не может быть в будущем.','warn');return;}
+    const before=compute();
+    const t=confirmPay(key,date,amt,card.querySelector('.pa-m').value==='cash'?'cash':'card');
+    if(!t){renderComputed(true);return;}
+    save();renderComputed(true);
+    const diff=amt-p.amount;
+    showToast(`Записал: +${fmt(amt)} · ${esc(p.name)}, ${fmtDateShort(date)}${Math.abs(diff)>=1?` (${diff>0?'на '+fmt(diff)+' больше':'на '+fmt(-diff)+' меньше'} плана)`:''}`+balanceDiff(before,compute()));
+  }
+});
 
 /* ================= на что уходят деньги (главная) ================= */
 function plural(n,a,b,c){n=Math.abs(n)%100;const d=n%10;if(n>10&&n<20)return c;if(d>1&&d<5)return b;if(d===1)return a;return c;}
@@ -2958,6 +3101,20 @@ function renderSpend(){
   // таблица-пояснение
   const maxV=Math.max(1,...rows.map(r=>r.v));
   let list='';
+  // сами траты периода — для раскрытия строки: на что именно ушли деньги
+  const spTx=state.tx.filter(t=>t.type==='exp'&&!t.creditId&&t.date<=TODAY_ISO&&yms.includes(t.date.slice(0,7)))
+    .sort((a,b)=>b.date.localeCompare(a.date)||b.amount-a.amount);
+  const MLAB={cash:'наличные',card:'карта',credit:'кредитка'};
+  const detFor=r=>{
+    const cats=r.parts?r.parts.map(p=>p.name):[r.name];
+    const its=spTx.filter(t=>cats.includes(t.category||'Другое'));
+    const N=15,shown=its.slice(0,N),rest=its.slice(N);
+    return `<div class="sp-det" data-for="${esc(r.key)}"><div class="sp-det-h">${its.length} ${plural(its.length,'запись','записи','записей')} · ${mode===1?MONTHS_FULL[+SP.ym.slice(5)-1]:'за 3 месяца'}</div>`
+      +shown.map(t=>{const nm=t.note?esc(t.note):(r.parts?esc(t.category):'<span class="muted">без комментария</span>');
+        return `<div class="sp-it"><span class="d">${fmtDateShort(t.date)}</span><span class="nm">${nm}${r.parts&&t.note?` <small>${esc(t.category)}</small>`:''}<small>${MLAB[t.method]||''}</small></span><b>${fmt(t.amount)}</b></div>`;}).join('')
+      +(rest.length?`<div class="sp-it more"><span class="d"></span><span class="nm">и ещё ${rest.length} — смотри «Журнал»</span><b>${fmt(rest.reduce((a,t)=>a+t.amount,0))}</b></div>`:'')
+      +'</div>';
+  };
   if(!tot){
     list=`<div class="sp-empty">${isNow?'Записывай траты в журнале — и здесь появится картина: куда уходит больше всего.':'Выбери другой месяц стрелками.'}</div>`;
   }else for(const r of rows){
@@ -2975,10 +3132,10 @@ function renderSpend(){
       <span class="sp-dot" style="background:${r.color}"></span>
       <div class="m"><div class="t"><span class="n">${esc(r.name)}${trend}</span><span class="v">${fmt(r.v)}<span class="p">${pcT}%</span></span></div>
       ${sub?`<div class="sub">${sub}</div>`:''}
-      <div class="sp-bar"><i style="width:${(r.v/maxV*100).toFixed(1)}%;background:${r.color}"></i></div></div></div>`;
+      <div class="sp-bar"><i style="width:${(r.v/maxV*100).toFixed(1)}%;background:${r.color}"></i></div></div><svg class="sp-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></div>${detFor(r)}`;
   }
   $('#spList').innerHTML=list;
-  $('#spNote').innerHTML=tot?`Нажми на кусок или строку — покажу подробно.${prev.total>0?(mode===1?(partial?' Стрелки ↑↓ — по сравнению с теми же днями прошлого месяца (если разница заметная).':' Стрелки ↑↓ — по сравнению с прошлым месяцем (если разница заметная).'):' Стрелки ↑↓ — по сравнению с тремя месяцами до этого.'):''} Платежи по кредитам сюда не входят — только траты.`:'';
+  $('#spNote').innerHTML=tot?`Нажми на кусок или строку — покажу, на что именно ушли деньги.${prev.total>0?(mode===1?(partial?' Стрелки ↑↓ — по сравнению с теми же днями прошлого месяца (если разница заметная).':' Стрелки ↑↓ — по сравнению с прошлым месяцем (если разница заметная).'):' Стрелки ↑↓ — по сравнению с тремя месяцами до этого.'):''} Платежи по кредитам сюда не входят — только траты.`:'';
   SP.rows=rows;SP.tot=tot;
   spApplySel();
   if(fresh&&tot)spSweep();
@@ -3016,12 +3173,14 @@ function spSweep(){
 }
 document.addEventListener('click',e=>{
   const t=e.target.closest('#spDonut .sp-g,#spList .sp-row');
-  if(t){SP.sel=SP.sel===t.dataset.k?null:t.dataset.k;spApplySel();return;}
+  if(t){SP.sel=SP.sel===t.dataset.k?null:t.dataset.k;spApplySel();
+    if(SP.sel&&t.closest('#spDonut')){const row=document.querySelector(`#spList .sp-row[data-k="${CSS.escape(SP.sel)}"]`);if(row)setTimeout(()=>row.scrollIntoView({behavior:'smooth',block:'nearest'}),80);}
+    return;}
   if(e.target.closest('#spPrev')){const m=spMonths(),i=m.indexOf(SP.ym);if(i<m.length-1){SP.ym=m[i+1];SP.sel=null;renderSpend();}return;}
   if(e.target.closest('#spNext')){const m=spMonths(),i=m.indexOf(SP.ym);if(i>0){SP.ym=m[i-1];SP.sel=null;renderSpend();}return;}
   const mb=e.target.closest('#spMode button');
   if(mb){const m=+mb.dataset.m;if(m!==SP.mode){SP.mode=m;SP.sel=null;renderSpend();}return;}
-  if(SP.sel&&e.target.closest('#spendCard')&&!e.target.closest('.sp-ctrl')){SP.sel=null;spApplySel();}
+  if(SP.sel&&e.target.closest('#spendCard')&&!e.target.closest('.sp-ctrl,.sp-det')){SP.sel=null;spApplySel();}
 });
 document.addEventListener('keydown',e=>{
   const t=e.target.closest&&e.target.closest('#spList .sp-row');
@@ -3104,7 +3263,10 @@ function renderSetup(){
   $('#oneTimeForm').innerHTML=h;
   $('#ccLimit').value=state.cc.limit;
   $('#ccDeadline').value=state.cc.deadline;
+  $('#ccStartField').style.display=num(state.start.creditDebt)>0?'':'none';
   $('#ccGrace').value=state.cc.grace;
+  $('#ccPayIn').value=state.cc.payIn;
+  ccSetupHint();
   $('#ccRate').value=state.cc.rate;
 }
 const focusNew=sel=>setTimeout(()=>{const el=document.querySelector(sel);if(el){el.focus();el.select&&el.select();}},30);
@@ -3268,7 +3430,22 @@ document.getElementById('oneTimeForm').addEventListener('click',e=>{
 });
 $('#ccLimit').addEventListener('input',e=>{state.cc.limit=num(e.target.value);setupChanged();});
 $('#ccDeadline').addEventListener('change',e=>{state.cc.deadline=e.target.value;setupChanged();});
-$('#ccGrace').addEventListener('input',e=>{state.cc.grace=Math.max(0,Math.round(num(e.target.value)));setupChanged();});
+$('#ccGrace').addEventListener('input',e=>{const old=Math.round(num(state.cc.grace)||120),g=Math.max(0,Math.round(num(e.target.value)));
+  if(g>0&&Math.round(num(state.cc.payIn))===old-15){state.cc.payIn=Math.max(1,g-15);$('#ccPayIn').value=state.cc.payIn;}
+  state.cc.grace=g;ccSetupHint();setupChanged();});
+$('#ccPayIn').addEventListener('input',e=>{const v=Math.round(num(e.target.value));if(!(v>0))return;state.cc.payIn=v;ccSetupHint();setupChanged();});
+$('#ccDueMonth').addEventListener('change',e=>{
+  const v=e.target.value;if(!state.cc.dueBy)state.cc.dueBy={};
+  if(v&&v>=TODAY_YM+'-01')state.cc.dueBy[TODAY_YM]=v;else delete state.cc.dueBy[TODAY_YM];
+  ccSetupHint();setupChanged();});
+/* подсказка: сроки по месяцам покупок и сколько дней запаса */
+function ccSetupHint(){
+  const g=Math.round(num(state.cc.grace)||120),m=ccMargin(),mon=MONTHS_GEN[+TODAY_YM.slice(5)-1];
+  $('#ccDueLbl').textContent=`Покупки ${mon} вернуть без % до (дата из банка)`;
+  $('#ccDueMonth').value=ccBankDl(TODAY_YM);
+  const ex=[-1,0,1].map(k=>{const ym=addMonths(TODAY_YM,k),d=ccBankDl(ym);return `${MONTHS_FULL[+ym.slice(5)-1]} → банк до ${fmtDateShort(d)}, гашу до ${fmtDateShort(addDaysISO(d,-m))}`;});
+  $('#ccHint').innerHTML=`У покупок каждого месяца свой срок без процентов. Банк даёт ${g} дн., гашу за ${Math.max(1,g-m)} — запас ${m} дн., если зарплата задержится.<br>${ex.join('<br>')}<br>Если в банке другая дата для покупок ${mon} — впиши её, остальные месяцы посчитаю так же. Долг правится на главной: «Деньги сейчас».`;
+}
 $('#ccRate').addEventListener('input',e=>{state.cc.rate=Math.max(0,num(e.target.value));setupChanged();});
 
 /* ================= бэкап / сброс ================= */
@@ -3304,7 +3481,7 @@ $('#btnReset').addEventListener('click',()=>{
 let lastErrMsg='';
 function renderComputed(withTx){
   const c=compute();
-  const jobs=[()=>renderDash(c),renderSpend,renderPlan,renderForecast,renderHistory,renderGoal,rebuildOneSelect];
+  const jobs=[()=>renderDash(c),()=>renderPayAsk(c),renderSpend,renderPlan,renderForecast,renderHistory,renderGoal,rebuildOneSelect];
   if(withTx)jobs.push(renderTx);
   for(const job of jobs){
     try{job();}catch(err){
@@ -3315,7 +3492,6 @@ function renderComputed(withTx){
 }
 function init(){
   setupFolds();
-  generateAutoIncomes();
   // неоплаченные разовые траты прошлых месяцев не должны пропадать из расчётов — переносим на этот месяц
   const overdue=state.oneTime.filter(o=>!o.done&&monthNum(o.month)<monthNum(TODAY_YM));
   if(overdue.length){overdue.forEach(o=>{o.month=TODAY_YM;});save();
@@ -3339,7 +3515,7 @@ const TOUR=[
   {tab:'setup',target:'#setCredCard',title:'2. Платежи',text:'Есть кредит, ипотека, кредитка или долг — добавь (ниже на этой странице). Не знаешь, сколько платежей осталось, — оставь пустым. Нет ничего — жми «Дальше».'},
   {tab:'dash',sheet:'money',target:'.cards4',title:'3. Сколько денег сейчас',text:'Впиши, сколько сейчас наличных и на карте. Это окно потом открывается нажатием на «Деньги сейчас».',done:()=>{const c=compute();return c.cash+c.card>0;},need:'Впиши наличные или сумму на карте'},
   {tab:'plan',target:'#slSpend',title:'4. План трат',text:'Сколько в месяц уходит на жизнь: еда, проезд, мелочи. Можно примерно. Нажми на сумму справа — впишешь точно.',done:()=>state.plan.spending>0,need:'Задай «Траты на жизнь»'},
-  {tab:'dash',sheet:'add',target:'#txForm',title:'5. Каждый день',text:'Потратил — нажми «+» внизу: сумма, категория, наличные или карта. Зарплата запишется сама. Не было трат — ничего не вноси.'},
+  {tab:'dash',sheet:'add',target:'#txForm',title:'5. Каждый день',text:'Потратил — нажми «+» внизу: сумма, категория, наличные или карта. В день зарплаты спрошу, пришла ли она. Не было трат — ничего не вноси.'},
   {tab:'dash',target:'#heroCard',title:'Готово',text:'Большая цифра — сколько можно потратить сегодня. Нажми на неё — покажу, как посчитано. Напомнить каждый вечер в 21:00 внести траты?',remind:true,next:'Начать пользоваться'},
 ];
 let tourTimer=null;
@@ -3382,11 +3558,13 @@ function tourShow(){
   clearInterval(tourTimer);check();tourTimer=setInterval(check,500);
 }
 /* ===== «Что нового»: показываем один раз после обновления — только то, что важно человеку ===== */
-const NEWS_VER='4.9';
+const NEWS_VER='5.0';
 const NEWS=[
-  {title:'Что нового в приложении',text:'Появилось кое-что полезное — покажу за полминуты.'},
-  {tab:'dash',target:'#spendCard',scroll:'#spSummary',open:true,title:'На что уходят деньги',text:'Новый блок на главной. Круг показывает, на какие категории ушло больше всего денег. Нажми на кусок или строку — увидишь сумму и долю. Стрелками выбирай любой месяц, а «3 месяца» — сводка за три месяца и сколько в среднем уходит в месяц.'},
-  {tab:'dash',target:'#todoSec',title:'Блоки теперь свёрнуты',text:'При каждом заходе видны только заголовки с короткой сводкой — экран не перегружен. Нажми на заголовок, чтобы раскрыть. Пока ты в приложении, раскрытое остаётся открытым. Если в «Что сделать» есть срочное — это видно сразу, красным.'},
+  {title:'Что нового в приложении',text:'Две вещи: зарплату теперь подтверждаешь сам, а в «На что уходят деньги» видно, на что именно ушли деньги. Покажу за полминуты.'},
+  {tab:'dash',target:()=>document.querySelector('#payAsk .pay-ask')||document.getElementById('heroCard'),title:'Зарплата: пришла или нет',text:'Зарплата больше не записывается сама. В день выплаты здесь появится вопрос «Зарплата пришла?». Нажми «Пришла» — укажи, когда пришла на самом деле и сколько. «Ещё нет» — спрошу завтра, а пока не считаю эти деньги в кошельке. Так цифры не обманывают, если зарплату задержали.'},
+  {tab:'dash',target:'#spendCard',scroll:'#spSummary',open:true,act:()=>{SP.sel=null;spApplySel();},title:'Шаг 1. Открой «На что уходят деньги»',text:'Нажми на заголовок блока на главной — раскроется круг и список категорий за месяц.'},
+  {tab:'dash',target:'#spList',open:'#spendCard',act:()=>{const r=(SP.rows||[]).find(x=>x.key==='Разовая трата')||(SP.rows||[])[0];if(r){SP.sel=r.key;spApplySel();return document.querySelector(`#spList .sp-row[data-k="${CSS.escape(r.key)}"]`);}},title:'Шаг 2. Нажми на категорию',text:'Под строкой раскроется список: дата, на что потрачено и сколько. Например, нажми «Разовая трата» — увидишь, какие именно разовые траты были в этом месяце. Нажми ещё раз — список свернётся.'},
+  {tab:'dash',target:'#spendCard',scroll:'.sp-ctrl',open:true,act:()=>{SP.sel=null;spApplySel();},title:'Шаг 3. Другой месяц',text:'Стрелками ‹ › выбери любой месяц, «3 месяца» — сводка за три месяца. Список под категорией покажет траты за выбранный период.'},
 ];
 function newsMarkSeen(){try{localStorage.setItem('fin-news-seen',NEWS_VER);}catch(e){}}
 function newsShow(step){
@@ -3402,10 +3580,11 @@ function newsShow(step){
   box.innerHTML=`<div class="t-top"><div class="t-dots">${NEWS.map((x,k)=>`<i class="${k<=step?'on':''}"></i>`).join('')}</div><span class="muted" style="font-size:12px;">версия ${NEWS_VER}</span><button class="t-x" id="newsX">Закрыть</button></div>
     <h3>${st.title}</h3><div class="t-text">${st.text}</div>
     <div class="t-btns">${step>0?'<button class="btn small" id="newsBack">Назад</button>':''}<span class="grow"></span><button class="btn small primary" id="newsNext">${last?'Понятно':'Дальше'}</button></div>`;
-  const tgt=st.target&&document.querySelector(st.target);
+  const tgt=typeof st.target==='function'?st.target():(st.target&&document.querySelector(st.target));
+  if(st.open){const card=typeof st.open==='string'?document.querySelector(st.open):tgt;if(card&&card.classList.contains('foldable'))setFold(card,false);}
+  let actEl=null;if(st.act)try{actEl=st.act()||null;}catch(e){}
   if(tgt){
-    if(st.open&&tgt.classList.contains('foldable'))setFold(tgt,false);
-    tgt.classList.add('tour-focus');const sc=(st.scroll&&document.querySelector(st.scroll))||tgt;setTimeout(()=>sc.scrollIntoView({behavior:'smooth',block:'start'}),60);
+    tgt.classList.add('tour-focus');const sc=actEl||(st.scroll&&document.querySelector(st.scroll))||tgt;setTimeout(()=>sc.scrollIntoView({behavior:'smooth',block:'start'}),60);
   }
   const end=()=>{newsMarkSeen();box.remove();document.body.classList.remove('touring');document.querySelectorAll('.tour-focus').forEach(e=>e.classList.remove('tour-focus'));window.scrollTo({top:0,behavior:'smooth'});};
   box.querySelector('#newsX').onclick=end;
