@@ -330,6 +330,46 @@
   .pay-ask .pa-form .field{margin:0;}
   .pay-ask .pa-form input,.pay-ask .pa-form select{width:100%;}
   .pay-ask .pa-no{display:block;margin-top:8px;font-size:12.5px;color:var(--muted);background:none;border:0;padding:4px 0;cursor:pointer;text-decoration:underline;text-underline-offset:3px;}
+  .one-when{font-size:12.5px;line-height:1.45;color:var(--ink2);margin:2px 0 4px;}
+  .one-when.warn{color:var(--amber,var(--ink2));}
+  .fc-m{border-bottom:1px solid var(--line);}
+  .fc-m:last-child{border-bottom:0;}
+  .fc-m summary{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;padding:10px 0;cursor:pointer;list-style:none;}
+  .fc-m summary::-webkit-details-marker{display:none;}
+  .fc-m .mn{font-size:14.5px;color:var(--ink);font-weight:500;}
+  .fc-m .fr{font-weight:600;text-align:right;}
+  .fc-m .dl{grid-column:1/-1;font-size:12px;color:var(--muted);}
+  .fc-m[open]{padding-bottom:8px;}
+  .today-line{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:11px 14px;margin:0 0 12px;font:inherit;font-size:14px;color:var(--ink2);cursor:pointer;text-align:left;}
+  .today-line b{color:var(--ink);font-weight:600;}
+  .today-line .go{color:var(--moss);font-size:13px;white-space:nowrap;}
+  .jp-chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 -2px 12px;padding:2px;}
+  .jp-chips::-webkit-scrollbar{display:none;}
+  .jp-chips button{flex:none;font:inherit;font-size:13.5px;padding:7px 12px;border-radius:999px;border:1px solid var(--line2);background:transparent;color:var(--ink2);cursor:pointer;}
+  .jp-chips button.on{background:var(--ink);color:var(--card);border-color:var(--ink);}
+  .jp-month{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px;font-weight:600;color:var(--ink);}
+  .jp-month .sp-nav[disabled]{opacity:.35;}
+  .jp-custom{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
+  .jp-custom input{width:100%;}
+  .jp-sum{margin-bottom:12px;}
+  .jp-big{font-size:28px;font-weight:650;color:var(--ink);letter-spacing:-.01em;}
+  .jp-sub{font-size:13.5px;color:var(--ink2);margin-top:2px;}
+  .jp-cmp{font-size:13px;color:var(--muted);margin-top:4px;}
+  .jp-cats{display:flex;flex-direction:column;gap:2px;margin-bottom:8px;}
+  .jp-cat{display:block;width:100%;text-align:left;background:none;border:0;font:inherit;padding:7px 8px;margin:0 -8px;width:calc(100% + 16px);border-radius:10px;cursor:pointer;}
+  .jp-cat.on{background:var(--raised);}
+  .jp-cat .t{display:flex;justify-content:space-between;gap:10px;font-size:14px;color:var(--ink);}
+  .jp-cat .n{display:flex;align-items:center;gap:8px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .jp-cat .n i{width:9px;height:9px;border-radius:50%;flex:none;}
+  .jp-cat .v{font-weight:600;white-space:nowrap;} .jp-cat small{color:var(--muted);font-weight:400;}
+  .jp-filter{font-size:13px;color:var(--ink2);margin:2px 0 8px;}
+  .linkish{background:none;border:0;padding:0;font:inherit;color:var(--moss);text-decoration:underline;text-underline-offset:3px;cursor:pointer;}
+  .jp-day{margin-top:10px;}
+  .jp-dh{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);padding:6px 0;border-bottom:1px solid var(--line);}
+  .jp-dh b{color:var(--ink);font-weight:600;}
+  .jp-other{margin-top:14px;padding-top:8px;border-top:1px solid var(--line);}
+  .jp-oh{font-size:12.5px;color:var(--muted);margin-bottom:2px;}
+  .jp-met{margin-top:10px;font-size:13px;color:var(--ink2);display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
   .cc-tr{margin:8px 0 4px;display:flex;flex-direction:column;gap:6px;}
   .cc-tr-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:0 10px;font-size:14px;color:var(--ink);}
   .cc-tr-row small{grid-column:1/-1;font-size:12px;color:var(--muted);}
@@ -488,6 +528,9 @@
   .seg button.on{background:var(--card);color:var(--ink);font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.08);}
   .switch-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:4px 0 16px;margin-bottom:16px;border-bottom:1px solid var(--line);cursor:pointer;}
   .switch-row>span{display:flex;flex-direction:column;gap:2px;font-size:14.5px;}
+  .switch-row.sm{padding:6px 0 2px;margin:4px 0 0;border-bottom:0;}
+  .switch-row.sm>span{font-size:14px;}
+  .switch-row .muted{font-size:12.5px;line-height:1.4;}
   .switch-row b{font-weight:500;}
   .switch{appearance:none;-webkit-appearance:none;width:50px;height:30px;border-radius:15px;background:var(--line2);position:relative;flex:none;cursor:pointer;transition:background-color .2s var(--ease);margin:0;}
   .switch::after{content:'';position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .25s var(--spring);}
@@ -550,7 +593,7 @@
   .nb{width:26px;height:26px;border-radius:50%;background:var(--gold-soft);color:var(--gold);font-size:13px;font-weight:600;display:inline-flex;align-items:center;justify-content:center;flex:none;}
   .pay-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;align-items:end;margin-bottom:8px;}
   .pay-grid .del{align-self:end;}
-  .pay-grid.g-pay{grid-template-columns:64px minmax(0,1fr) minmax(0,1fr) auto;}
+  .pay-grid.g-pay{grid-template-columns:58px minmax(0,1.35fr) minmax(0,1fr) auto;}
   .pay-grid.g-cr{grid-template-columns:minmax(0,1fr) 72px minmax(0,1fr);}
   .pay-grid input,.pay-grid select{width:100%;min-width:0;}
   .field>span{font-size:12px;color:var(--ink2);}
@@ -703,6 +746,7 @@
     </div>
   </div>
 
+  <button type="button" class="today-line" id="todayLine"></button>
   <div id="payAsk"></div>
 
   <div id="todoSec">
@@ -813,8 +857,21 @@
   <button class="btn primary block" type="button" data-sheet="add" id="txOpen">+ Новая запись</button>
   <div class="nospend-row" id="noSpendRow"></div>
 
-  <div class="card">
-    <h2>Итоги текущего месяца</h2>
+  <div id="txDup"></div>
+  <div class="card" id="jpCard">
+    <h2>Траты за период</h2>
+    <div class="jp-chips" id="jpChips" role="radiogroup" aria-label="Период">
+      <button type="button" data-jp="today">Сегодня</button><button type="button" data-jp="yest">Вчера</button><button type="button" data-jp="d3">3 дня</button><button type="button" data-jp="week">Неделя</button><button type="button" data-jp="month">Месяц</button><button type="button" data-jp="custom">Свой период</button>
+    </div>
+    <div class="jp-month" id="jpMonth">
+      <button type="button" class="icon-btn sp-nav" id="jpPrev" aria-label="Предыдущий месяц"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button>
+      <span id="jpMonthLbl"></span>
+      <button type="button" class="icon-btn sp-nav" id="jpNext" aria-label="Следующий месяц"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></button>
+    </div>
+    <div class="jp-custom" id="jpCustom">
+      <label class="field"><span>С</span><input type="date" id="jpFrom"></label>
+      <label class="field"><span>По</span><input type="date" id="jpTo"></label>
+    </div>
     <div id="txSummary"></div>
   </div>
 
@@ -844,20 +901,22 @@
   </div>
   <div class="card" id="forecastCard">
     <h2>Когда закроются долги</h2>
-    <div class="slider-row">
-      <div class="top-row"><span>Отдавать по долгам без дедлайна</span><span class="val" id="slDebts2Val"></span></div>
-      <input type="range" id="slDebts2" min="0" max="40000" step="500">
-    </div>
-    <label style="display:flex;gap:8px;align-items:flex-start;font-size:14px;margin-bottom:10px;">
-      <input type="checkbox" id="allFreeToDebts" style="margin-top:3px;">
-      <span>Направлять долгам ещё и <b>весь свободный остаток</b> после трат и подушки (закроются быстрее)</span>
-    </label>
     <div id="forecastHead"></div>
+    <div class="slider-row" id="fcSlider">
+      <div class="top-row"><span>Сколько в месяц отдавать долгам без срока</span><span class="val" id="slDebts2Val"></span></div>
+      <input type="range" id="slDebts2" min="0" max="40000" step="500">
+      <div class="hint" id="fcSliderHint"></div>
+    </div>
+    <label class="switch-row" id="fcSwitchRow">
+      <span><b>Отдавать долгам весь свободный остаток</b><span class="muted" id="fcSwitchSub"></span></span>
+      <input type="checkbox" id="allFreeToDebts" class="switch">
+    </label>
+    <div id="fcDebts"></div>
   </div>
-  <div class="card">
-    <h2>Помесячный прогноз</h2>
-    <div class="table-wrap"><table id="forecastTable"></table></div>
-    <div class="footer-note">Расчёт: доход − кредиты (до закрытия) − взносы по кредитке − автовзносы по долгам с дедлайном − разовые траты − жизнь − подушка — ручные взносы по долгам.</div>
+  <div class="card" id="fcMonthsCard">
+    <h2>По месяцам</h2>
+    <div id="forecastTable"></div>
+    <div class="footer-note">Остаток месяца = доход − кредиты − взносы по кредитке − долги − разовые траты − жизнь − подушка. Нажми на месяц — покажу, из чего он сложился.</div>
   </div>
 </section>
 
@@ -867,7 +926,7 @@
     <h2>Доходы (зарплаты, подработки)</h2>
     <div id="incomesForm"></div>
     <button class="btn small" id="addIncome">+ Добавить источник дохода</button>
-    <div class="footer-note">Укажи, какого числа обычно приходят аванс и зарплата, сколько и куда. Система сама запишет начисление в журнал в день выплаты (если пришло меньше — удали запись и добавь свою). Если в середине месяца узнал, что будет больше или меньше — просто поправь суммы здесь.</div>
+    <div class="footer-note">Укажи, какого числа обычно приходят аванс и зарплата, сколько и куда. В день выплаты на главной спрошу «Зарплата пришла?» — отметишь, когда пришла на самом деле и сколько. Если в середине месяца узнал, что будет больше или меньше, — просто поправь суммы здесь.</div>
   </div>
   <div class="card" id="setCredCard">
     <h2>Кредиты</h2>
@@ -897,7 +956,7 @@
     <h2>Разовые траты и события</h2>
     <div id="oneTimeForm"></div>
     <button class="btn small" id="addOneTime">+ Добавить разовую трату</button>
-    <div class="footer-note">Если намечается трата или событие (налог, подарок, ремонт, отпуск) — отметь её здесь. Если до неё больше месяца, приложение само разделит сумму на равные части и будет откладывать понемногу каждый месяц — так в месяц оплаты не будет провала. Когда оплатишь — нажми «Оплатил» или «Наличными»: трата запишется в журнал и спишется с кошелька. «Закрыть без записи» — только если трата отменилась.</div>
+    <div class="footer-note">Если намечается трата или событие (налог, подарок, ремонт, отпуск) — отметь её здесь и укажи, <b>к какому числу</b> нужны деньги. Ближе месяца — сумма откладывается заранее, и лимит на день сразу её учитывает. Дальше — приложение разделит сумму на равные части и будет откладывать понемногу каждый месяц, чтобы к этой дате не было провала. Когда оплатишь — нажми «Оплатил картой» или «Наличными»: трата запишется в журнал и спишется с кошелька. «Отменилась» — если трата не нужна.</div>
   </div>
   <div class="card" style="text-align:center;">
     <button class="btn primary" id="btnOnboarded" style="font-size:15px;padding:10px 22px;">Всё заполнил — к плану месяца</button>
@@ -952,6 +1011,7 @@
       <li><b>Один раз:</b> «План» → «Доходы и расходы» — зарплата, кредиты, долги, крупные траты.</li>
       <li><b>Один раз:</b> на главной нажми «Деньги сейчас» и впиши наличные и карту.</li>
       <li><b>Каждый день:</b> потратил — «+» внизу. Не тратил — ничего не нужно.</li>
+      <li><b>Вечером:</b> загляни в Журнал → «Траты за период» → «Сегодня» — всё ли записал.</li>
       <li><b>В день зарплаты:</b> на главной ответь, пришла ли она, — «Пришла» и фактическая дата, или «Ещё нет».</li>
       <li><b>Смотри</b> на большую цифру — столько можно потратить сегодня. Нажми на неё — увидишь расчёт.</li>
       <li><b>Раз в неделю:</b> загляни в «На что уходят деньги» на главной — какая категория съедает больше всего. Нажми на неё — увидишь сами траты.</li>
@@ -978,6 +1038,10 @@
         <dt>Зарплата пришла?</dt><dd>Зарплата сама не записывается. В день выплаты на главной спрошу: «Пришла» — укажешь фактическую дату и сумму; «Ещё нет» — спрошу завтра, а пока этих денег в кошельке не считаю.</dd>
         <dt>Список трат в категории</dt><dd>В «На что уходят деньги» нажми на категорию — раскроется, на что именно ушли деньги за выбранный месяц. <i>Разовая трата → «Подарок маме 5 000», «Ремонт телефона 3 200».</i></dd>
         <dt>Кредитка по месяцам</dt><dd>У покупок каждого месяца свой срок без процентов: купил в ноябре — банк ждёт до 28 февраля. Гашу раньше — за 105 дней из 120, чтобы был запас 15 дней.</dd>
+        <dt>Траты за период</dt><dd>В Журнале: выбери Сегодня, Вчера, 3 дня, Неделю, Месяц или свои даты — увидишь сумму, среднее за день, сравнение с прошлым таким же периодом и все записи по дням. Нажми на категорию — останутся только её записи.</dd>
+        <dt>Сегодня потрачено</dt><dd>Строка на главной: сколько ты записал трат за сегодня. Нажми — откроется Журнал за сегодня.</dd>
+        <dt>Дата разовой траты</dt><dd>Число, к которому нужны деньги. Ближе месяца — сумма откладывается заранее и лимит на день её учитывает. Дальше — откладываю понемногу каждый месяц.</dd>
+        <dt>Весь свободный остаток в долги</dt><dd>Переключатель в «Когда закроются долги»: всё, что остаётся после трат и подушки, идёт в долги — сначала без срока, потом досрочно со сроком. Рядом видно, к какому месяцу закроешь с ним и без него.</dd>
         <dt>Свёрнутые блоки</dt><dd>При каждом заходе блоки свёрнуты, в заголовке — короткая сводка. Нажми на заголовок — раскроется до выхода из приложения.</dd>
         <dt>Подстраховка</dt><dd>Считать, что зарплата может прийти на 3 дня позже, — лимит чуть осторожнее.</dd>
       </dl>
@@ -1502,9 +1566,12 @@ function sinkList(){
     return {o,start,N,per,byThis:by(TODAY_YM),byNext:by(NEXT_YM)};
   });
 }
-function sinkHint(sk){return sk?`копим по ${fmtN(sk.per)} ₽/мес (${sk.N} мес.) — чтобы в ${monthLoc(sk.o.month)} не было провала`:'';}
+function sinkHint(sk){return sk?`копим по ${fmtN(sk.per)} ₽/мес (${sk.N} мес.) — чтобы ${oneDate(sk.o)?'к '+fmtDateShort(oneDate(sk.o)):'в '+monthLoc(sk.o.month)} не было провала`:'';}
 function refreshSinkHints(){const m={};for(const x of sinkList())m[x.o.id]=x;document.querySelectorAll('#oneTimeForm [data-one]').forEach(r=>{const el=r.querySelector('.one-sink');if(el)el.textContent=sinkHint(m[+r.dataset.one]);});}
 function sinkFor(ym){return sinkList().filter(x=>monthNum(ym)>=monthNum(x.start)&&monthNum(ym)<monthNum(x.o.month)).reduce((a,x)=>a+x.per,0);}
+/* когда разовая трата: точная дата (если указана) или только месяц */
+function oneDate(o){return o.date&&/^\d{4}-\d{2}-\d{2}$/.test(o.date)&&o.date.slice(0,7)===o.month?o.date:'';}
+function oneWhen(o){const d=oneDate(o);if(d)return 'к '+fmtDateShort(d);return o.month===TODAY_YM?'в этом месяце (число не указано)':'в '+monthLoc(o.month)+' (число не указано)';}
 function oneTimeOpenFor(ym){return state.oneTime.filter(o=>o.month===ym&&!o.done).reduce((s,o)=>s+num(o.amount),0);}
 function factSpent(ym){return state.tx.filter(t=>t.type==='exp'&&t.date<=TODAY_ISO&&t.date.slice(0,7)===ym).reduce((s,t)=>s+t.amount,0);}
 function factSpentLife(ym){return state.tx.filter(t=>t.type==='exp'&&t.date<=TODAY_ISO&&t.date.slice(0,7)===ym&&!t.creditId&&!t.oneId).reduce((s,t)=>s+t.amount,0);}
@@ -1736,8 +1803,10 @@ function cashEvents(c){
   }
   for(const o of state.oneTime){
     if(o.done)continue;
-    if(o.month===TODAY_YM)add(eomThis,-num(o.amount),''+o.name+' (дата не указана — считаю в конце месяца)','pay');
-    if(o.month===NEXT_YM)add(end,-num(o.amount),''+o.name+' (дата не указана — считаю в конце месяца)','pay');
+    if(o.month!==TODAY_YM&&o.month!==NEXT_YM)continue;
+    const d=oneDate(o);
+    if(d)add(d<TODAY_ISO?TODAY_ISO:d,-num(o.amount),''+o.name+(d<TODAY_ISO?' (срок '+fmtDateShort(d)+' прошёл, ещё не оплачено)':' (разовая трата)'),'pay');
+    else add(o.month===TODAY_YM?eomThis:end,-num(o.amount),''+o.name+' (число не указано — считаю в конце месяца)','pay');
   }
   for(const t of state.tx){
     if(t.srcKey||!(t.date>TODAY_ISO)||t.date>end)continue;
@@ -2008,7 +2077,7 @@ function renderDash(c){
   const upcoming=state.oneTime.filter(o=>!o.done&&(o.month===TODAY_YM||o.month===NEXT_YM));
   if(upcoming.length){
     const tot=upcoming.reduce((s,o)=>s+num(o.amount),0);
-    alerts.push(['info',`Скоро разовые траты (${upcoming.length}) — уже учтены в расчётах:<ol class="al-list">`+upcoming.map(o=>`<li>${esc(o.name)} — <b>${fmtN(num(o.amount))} ₽</b> <span class="muted">${o.month===TODAY_YM?'в этом месяце':'в '+monthLoc(o.month)}</span></li>`).join('')+`</ol>Итого ${fmt(tot)}. Когда заплатишь — нажми «Оплатил» в «План → Доходы и расходы».`]);
+    alerts.push(['info',`Скоро разовые траты (${upcoming.length}) — уже учтены в расчётах:<ol class="al-list">`+upcoming.map(o=>`<li>${esc(o.name)} — <b>${fmtN(num(o.amount))} ₽</b> <span class="muted">${oneWhen(o)}</span></li>`).join('')+`</ol>Итого ${fmt(tot)}. Когда заплатишь — нажми «Оплатил» в «План → Доходы и расходы».`]);
   }
   const freeLife=freeForLife(TODAY_YM);
   if(freeLife<0&&cashFree>=0){
@@ -2408,7 +2477,7 @@ function renderPlan(){
   if(cc>0)calc+=`<div class="calc-line"><span class="name">Взносы на кредитку <div class="muted" style="font-size:12px;">${c.ccSched.filter(x=>x.date.slice(0,7)===ym).map(x=>fmtDateShort(x.date)+' — '+fmtN(x.amount)).join('; ')}</div></span><span>−${fmt(cc)}</span></div>`;
   if(debtsAuto>0)calc+=`<div class="calc-line"><span class="name">Долги с дедлайном (авто)</span><span>−${fmt(debtsAuto)}</span></div>`;
   if(manual>0)calc+=`<div class="calc-line"><span class="name">Долги без дедлайна (ползунок)</span><span>−${fmt(manual)}</span></div>`;
-  calc+=`${one>0?`<div class="calc-line"><span class="name">Разовые траты <div class="muted" style="font-size:12px;">${oneOpen.map(o=>esc(o.name)+' — '+fmtN(num(o.amount))+' ₽').join('; ')}</div></span><span>−${fmt(one)}</span></div>`:''}
+  calc+=`${one>0?`<div class="calc-line"><span class="name">Разовые траты <div class="muted" style="font-size:12px;">${oneOpen.map(o=>esc(o.name)+' — '+fmtN(num(o.amount))+' ₽'+(oneDate(o)?' ('+fmtDateShort(oneDate(o))+')':'')).join('; ')}</div></span><span>−${fmt(one)}</span></div>`:''}
     ${sinkM>0?`<div class="calc-line"><span class="name">Копим заранее на будущие траты<div class="muted" style="font-size:12px;">${sinkL.map(x=>esc(x.o.name)+' (в '+monthLoc(x.o.month)+') — по '+fmtN(x.per)+' ₽/мес').join('; ')}</div></span><span>−${fmt(sinkM)}</span></div>`:''}
     <div class="calc-line"><span class="name">Траты на жизнь (ползунок)</span><span>−${fmt(state.plan.spending)}</span></div>
     <div class="calc-line"><span class="name">Подушка (ползунок)</span><span>−${fmt(state.plan.savings)}</span></div>
@@ -2552,100 +2621,230 @@ function strategyOrder(){
     .map(d=>({id:d.id,name:d.name,amount:d.amount,rate:num(d.rate)}));
   return list.sort((a,b)=>a.amount-b.amount);
 }
-function simulate(){
+function simulate(allFree){
+  if(allFree===undefined)allFree=!!state.plan.allFreeToDebts;
   const c=compute();
   const start=NEXT_YM;
   const order=strategyOrder();
-  let debts=c.debts.map(d=>({...d,left:d.amount}));
+  let debts=c.debts.filter(d=>d.enabled).map(d=>({...d,left:d.amount}));
   let freedCredit=0; // освободившиеся платежи закрытых кредитов перекатываются в долги
   const freedDone={};
   let deficit=false;
   const rows=[];let allClosedYM=null;const closedYM={};
+  const close=(d,m)=>{if(d.left<=0.5){d.left=0;if(!closedYM[d.id])closedYM[d.id]=m;}};
   // этот месяц: что ещё по плану отдать по долгам без срока + взносы по долгам, срок которых уже наступил
   {let cur=manualFor(c,TODAY_YM);
    for(const od of order){if(cur<=0)break;const d=debts.find(x=>x.id===od.id);if(!d||d.left<=0)continue;
-     const pay=Math.min(d.left,cur);d.left-=pay;cur-=pay;if(d.left<=0&&!closedYM[od.id])closedYM[od.id]=TODAY_YM;}
-   for(const d of debts){if(d.enabled&&d.deadline&&d.left>0&&monthNum(d.deadline.slice(0,7))<=monthNum(TODAY_YM)){d.left=Math.max(0,d.left-d.monthly);if(d.left<=0)closedYM[d.id]=TODAY_YM;}}}
+     const pay=Math.min(d.left,cur);d.left-=pay;cur-=pay;close(d,TODAY_YM);}
+   for(const d of debts){if(d.deadline&&d.left>0&&monthNum(d.deadline.slice(0,7))<=monthNum(TODAY_YM)){d.left=Math.max(0,d.left-d.monthly);close(d,TODAY_YM);}}}
   for(let i=0;i<36;i++){
     const m=addMonths(start,i);
     const income=incomeFor(m);
     const credits=c.credits.filter(cr=>cr.active&&monthNum(m)<=monthNum(cr.last)).reduce((s,cr)=>s+cr.monthly,0);
-    // каскад: кредит закрылся — его платёж добавляется в пул долгов со следующего месяца
     for(const cr of c.credits){
       if(cr.active&&monthNum(m)>monthNum(cr.last)&&!freedDone[cr.id]){freedDone[cr.id]=1;freedCredit+=cr.monthly;}
     }
-      const cc=ccDueFor(c,m);
+    const cc=ccDueFor(c,m);
     const one=oneTimeOpenFor(m);
+    // долги со сроком: равными частями до срока (не больше, чем осталось)
     let auto=0;
     for(const d of debts){
-      if(d.enabled&&d.deadline&&d.left>0&&monthNum(m)<=monthNum(d.deadline.slice(0,7)))auto+=d.monthly;
+      if(d.deadline&&d.left>0&&monthNum(m)<=monthNum(d.deadline.slice(0,7))){const pay=Math.min(d.left,d.monthly);auto+=pay;d.left-=pay;close(d,m);}
     }
-    let pool=(c.debtsNoDl.length?state.plan.debtsPay:0)+freedCredit;
+    const anyNoDl=debts.some(d=>!d.deadline&&d.left>0);
+    let pool=anyNoDl?(c.debtsNoDl.length?state.plan.debtsPay:0)+freedCredit:0;
     let free=income-credits-cc-auto-pool-one-state.plan.spending-state.plan.savings;
-    if(state.plan.allFreeToDebts&&free>0&&debts.some(d=>d.enabled&&d.left>0)){pool+=free;free=0;}
-    for(const d of debts){
-      if(d.enabled&&d.deadline&&d.left>0&&monthNum(m)<=monthNum(d.deadline.slice(0,7)))d.left=Math.max(0,d.left-d.monthly);
-    }
-    // каскад по стратегии: пул — первому долгу, пока не закроется, остаток — следующему
+    let extra=0;
+    if(allFree&&free>0&&debts.some(d=>d.left>0)){extra=free;free=0;}
+    // пул (ползунок + освободившиеся кредиты) — долгам без срока по очереди
     let used=0;
     for(const od of order){
-      const d=debts.find(x=>x.id===od.id);
-      if(!d||d.left<=0)continue;
-      const pay=Math.min(d.left,pool-used);
-      d.left-=pay;used+=pay;
-      if(d.left<=0&&!closedYM[od.id])closedYM[od.id]=m;
+      const d=debts.find(x=>x.id===od.id);if(!d||d.left<=0)continue;
+      const pay=Math.min(d.left,pool-used);d.left-=pay;used+=pay;close(d,m);
       if(used>=pool)break;
     }
-    free+=pool-used; // неиспользованная часть пула возвращается в остаток
-    if(free<0)deficit=true;
-    const totalLeft=debts.filter(d=>d.enabled).reduce((s,d)=>s+d.left,0);
-    if(totalLeft<=0&&!allClosedYM)allClosedYM=m;
-    rows.push({m,income,credits,cc,auto,manual:used,one,free,totalLeft});
+    // весь свободный остаток (если включено): сначала долги без срока, потом досрочно — долги со сроком
+    let usedX=0;
+    if(extra>0){
+      const q=[...order.map(o=>debts.find(x=>x.id===o.id)).filter(Boolean),
+               ...debts.filter(d=>d.deadline).sort((a,b)=>a.deadline.localeCompare(b.deadline))];
+      for(const d of q){if(usedX>=extra)break;if(d.left<=0)continue;
+        const pay=Math.min(d.left,extra-usedX);d.left-=pay;usedX+=pay;close(d,m);}
+    }
+    free+=(pool-used)+(extra-usedX); // неиспользованное возвращается в остаток
+    if(free<-0.5)deficit=true;
+    const totalLeft=debts.reduce((s,d)=>s+d.left,0);
+    if(totalLeft<=0.5&&!allClosedYM)allClosedYM=m;
+    rows.push({m,income,credits,cc,auto,manual:used+usedX,one,free,totalLeft});
     if(allClosedYM&&i>2)break;
   }
+  if(!debts.length)allClosedYM=null;
   return {rows,allClosedYM,deficit,order,closedYM};
 }
 function renderForecast(){
   const c=compute();
-  const {rows,allClosedYM,deficit,order,closedYM}=simulate();
-  // стратегия погашения
-  let strat=`<div class="muted">Сначала закрываю самый маленький долг, потом следующий — так быстрее видно результат.</div>`;
-  if(order.length){
-    strat+='<ol style="margin:10px 0 0;padding-left:22px;">'+order.map((d,i)=>
-      `<li style="margin-bottom:4px;"><b>${esc(d.name)}</b> — ${fmt(d.amount)} — ${closedYM[d.id]?'закроешь к <b>'+monthDat(closedYM[d.id])+'</b>':'при текущем темпе не закроешь — подвинь ползунок вправо'}</li>`).join('')+'</ol>';
-    strat+='<div class="footer-note">Все свободные деньги идут первому долгу из списка, после его закрытия — следующему. Когда закрывается кредит, его платёж автоматически перекатывается в долги.</div>';
-  }
-  let list='<h3>Стратегия погашения</h3>'+strat+'<h3 style="margin-top:14px;">Все долги</h3>';
-  for(const d of c.debts){
-    if(d.deadline){
-      list+=`<div class="calc-line"><span class="name">${esc(d.name)} — до ${fmtDateRu(d.deadline)}${d.note?' <span class="muted">('+esc(d.note)+')</span>':''}</span>
-        <span class="neg">${fmt(d.amount)} <span class="muted">(${fmt(d.monthly)}/мес)</span></span></div>`;
-    }else{
-      list+=`<div class="calc-line"><span class="name">${esc(d.name)}${d.note?' <span class="muted">('+esc(d.note)+')</span>':''}</span>
-        <span class="neg">${fmt(d.amount)} <span class="muted">(${closedYM[d.id]?'закроется к '+monthDat(closedYM[d.id]):'темп слишком низкий'})</span></span></div>`;
+  const sim=simulate(),{rows,allClosedYM,deficit,order,closedYM}=sim;
+  const debts=c.debts.filter(d=>d.enabled&&d.amount>0);
+  const hasNoDl=c.debtsNoDl.length>0;
+  // «Мои долги»: стратегия + все долги
+  let list='';
+  if(!debts.length){list='<div class="muted">Долгов нет. Добавить можно в «План → Доходы и расходы → Долги».</div>';}
+  else{
+    if(order.length){
+      list+=`<h3>Долги без срока — по очереди</h3><div class="muted" style="font-size:13px;">Сначала закрываю самый маленький, потом следующий — так быстрее видно результат.</div>
+        <ol style="margin:8px 0 12px;padding-left:22px;">`+order.map(d=>`<li style="margin-bottom:4px;"><b>${esc(d.name)}</b> — ${fmt(d.amount)} — ${closedYM[d.id]?'закроешь к <b>'+monthDat(closedYM[d.id])+'</b>':'<span style="color:var(--red)">при таком темпе не закрыть</span>'}</li>`).join('')+'</ol>';
+    }
+    const dl=debts.filter(d=>d.deadline);
+    if(dl.length){
+      list+='<h3>Долги со сроком — равными частями</h3>'+dl.map(d=>`<div class="calc-line"><span class="name">${esc(d.name)} — до ${fmtDateRu(d.deadline)}${d.note?' <span class="muted">('+esc(d.note)+')</span>':''}</span>
+        <span class="neg">${fmt(d.amount)} <span class="muted">(${fmt(d.monthly)}/мес)</span></span></div>`).join('');
     }
   }
-  $('#debtsList').innerHTML=list||'<div class="muted">Долгов нет. Добавить можно на вкладке «Доходы и расходы».</div>';
+  $('#debtsList').innerHTML=list;
+  // главный вывод
   let head='';
-  if(deficit)head+=`<div class="banner danger">При таких настройках в каком-то месяце расходы больше доходов. Уменьши «траты на жизнь», «подушку» или взносы по долгам.</div>`;
-  if(allClosedYM){
-    head+=`<div class="banner ok">Все долги будут закрыты к <b>${monthFull(allClosedYM)}</b>.</div>`;
-  }else if(c.debtsTotal>0){
-    head+=`<div class="banner warn">При ${fmt(state.plan.debtsPay)}/мес за 3 года долги без дедлайна не закрыть. Подвинь ползунок вправо (после закрытия кредитов освобождаются их платежи).</div>`;
+  if(!debts.length){head=`<div class="banner ok">Долгов нет — считать нечего. Если появится долг, добавь его в «План → Доходы и расходы».</div>`;}
+  else{
+    if(allClosedYM)head+=`<div class="banner ok">Все долги будут закрыты к <b>${monthDat(allClosedYM)}</b>.</div>`;
+    else head+=`<div class="banner warn">За 3 года долги не закрыть при таких настройках. ${hasNoDl?'Подвинь ползунок вправо или включи «весь свободный остаток».':''}</div>`;
+    if(deficit)head+=`<div class="banner danger">В каком-то месяце расходы больше доходов — смотри «По месяцам» ниже. Уменьши траты на жизнь, подушку или взносы по долгам.</div>`;
+    const paid=c.debtsTotal-rows[rows.length-1].totalLeft;
+    const pct=Math.min(100,Math.max(0,paid)/Math.max(c.debtsTotal,1)*100);
+    head+=`<div style="margin:8px 0 4px;font-size:14px;">Сейчас долгов: <b>${fmt(c.debtsTotal)}</b></div>`;
   }
-  const paid=c.debtsTotal-rows[rows.length-1].totalLeft;
-  const pct=Math.min(100,Math.max(0,paid)/Math.max(c.debtsTotal,1)*100);
-  head+=`<div style="margin-top:6px;">Прогресс по долгам: ${fmt(paid)} из ${fmt(c.debtsTotal)} (${Math.round(pct)}%)</div><div class="progress"><div style="width:${pct}%"></div></div>`;
   $('#forecastHead').innerHTML=head;
-  let h=`<tr><th>Месяц</th><th>Плановый доход</th><th>Кредиты</th><th>Кредитка</th><th>Долги (дедлайн)</th><th>Долги (руками)</th><th>Разовые</th><th>Жизнь</th><th>Остаток</th><th>Долгов осталось</th></tr>`;
+  // ползунок — только если есть долги без срока
+  $('#fcSlider').style.display=hasNoDl?'':'none';
+  $('#fcSliderHint').innerHTML=hasNoDl?`Для: ${c.debtsNoDl.map(d=>esc(d.name)).join(', ')}. Долги со сроком считаются сами — равными частями до даты.`:'';
+  // переключатель: показываем, что он реально меняет
+  const sw=$('#fcSwitchRow');sw.style.display=debts.length?'':'none';
+  if(debts.length){
+    const on=simulate(true),off=simulate(false);
+    const t=r=>r.allClosedYM?monthDat(r.allClosedYM):'не за 3 года';
+    const same=on.allClosedYM===off.allClosedYM;
+    $('#fcSwitchSub').innerHTML=(state.plan.allFreeToDebts?'<b style="color:var(--green)">Включено.</b> ':'<b>Выключено.</b> ')
+      +(same?`Срок не меняется — свободного остатка почти нет или долги и так закрываются по графику (к ${t(off)}).`
+        :`С ним закроешь все долги к <b>${t(on)}</b>, без него — к <b>${t(off)}</b>. Всё, что остаётся после трат и подушки, пойдёт в долги, поэтому копить на цели пока будет нечего.`);
+  }
+  // каждый долг — когда закроется
+  $('#fcDebts').innerHTML=debts.length?'<h3 style="margin-top:6px;">Каждый долг</h3>'+debts.map(d=>{
+    const m=closedYM[d.id];
+    return `<div class="calc-line"><span class="name">${esc(d.name)}<div class="muted" style="font-size:12px;">${d.deadline?'по графику '+fmt(d.monthly)+'/мес до '+fmtDateShort(d.deadline):'без срока — из ползунка'+(state.plan.allFreeToDebts?' и свободного остатка':'')}</div></span><span>${m?'<b>к '+monthDat(m)+'</b>':'<span style="color:var(--red)">не за 3 года</span>'}</span></div>`;}).join(''):'';
+  // по месяцам
+  let h='';
   for(const r of rows){
-    h+=`<tr><td>${monthShort(r.m)}</td><td>+${fmtN(r.income)}</td><td>−${fmtN(r.credits)}</td><td>−${fmtN(r.cc)}</td><td>−${fmtN(r.auto)}</td><td>−${fmtN(r.manual)}</td><td>−${fmtN(r.one)}</td><td>−${fmtN(state.plan.spending)}</td><td class="${r.free>=0?'pos':'neg'}">${r.free>=0?'+':''}${fmtN(r.free)}</td><td><b>${fmtN(r.totalLeft)}</b></td></tr>`;
-    if(r.totalLeft<=0)break;
+    const lines=[['Доход по плану','+'+fmtN(r.income)],r.credits?['Кредиты','−'+fmtN(r.credits)]:null,r.cc?['Взносы на кредитку','−'+fmtN(r.cc)]:null,
+      r.auto?['Долги со сроком','−'+fmtN(r.auto)]:null,r.manual?['Долги без срока'+(state.plan.allFreeToDebts?' (с остатком)':''),'−'+fmtN(r.manual)]:null,
+      r.one?['Разовые траты','−'+fmtN(r.one)]:null,['Жизнь','−'+fmtN(state.plan.spending)],state.plan.savings?['Подушка','−'+fmtN(state.plan.savings)]:null].filter(Boolean);
+    h+=`<details class="fc-m" data-fold="fc-${r.m}"${subOpen('fc-'+r.m)?' open':''}><summary><span class="mn">${MONTHS_FULL[+r.m.slice(5)-1]} ${r.m.slice(0,4)}</span>
+      <span class="fr ${r.free>=0?'pos':'neg'}">${r.free>=0?'+':'−'}${fmtN(Math.abs(r.free))}</span><span class="dl">${r.totalLeft>0.5?'долгов '+fmtN(r.totalLeft):'долгов нет'}</span></summary>
+      ${lines.map(l=>`<div class="calc-line"><span class="name">${l[0]}</span><span>${l[1]}</span></div>`).join('')}
+      <div class="calc-line total"><span>Остаётся</span><span class="${r.free>=0?'pos':'neg'}">${r.free>=0?'+':'−'}${fmt(Math.abs(r.free))}</span></div></details>`;
+    if(r.totalLeft<=0.5&&rows.indexOf(r)>=2)break;
   }
   $('#forecastTable').innerHTML=h;
 }
 
 /* ================= журнал ================= */
+/* «Траты за период»: сегодня / вчера / 3 дня / неделя / месяц / свой период */
+const JP={mode:'today',ym:null,from:'',to:'',cat:null};
+const WEEKDAYS_FULL=['Воскресенье','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота'];
+function jpRange(){
+  const T=TODAY_ISO,d=k=>addDaysISO(T,k);
+  switch(JP.mode){
+    case 'yest':return {from:d(-1),to:d(-1),label:'вчера',prevFrom:d(-2),prevTo:d(-2),prevLabel:'позавчера'};
+    case 'd3':return {from:d(-2),to:T,label:'за 3 дня',prevFrom:d(-5),prevTo:d(-3),prevLabel:'за 3 дня до этого'};
+    case 'week':return {from:d(-6),to:T,label:'за 7 дней',prevFrom:d(-13),prevTo:d(-7),prevLabel:'за 7 дней до этого'};
+    case 'month':{
+      const ym=JP.ym||TODAY_YM,from=ym+'-01',end=ym+'-'+pad(daysInMonth(ym)),cur=ym===TODAY_YM;
+      const pym=addMonths(ym,-1),pDays=cur?Math.min(NOW.getDate(),daysInMonth(pym)):daysInMonth(pym);
+      return {from,to:cur?T:end,label:'за '+MONTHS_FULL[+ym.slice(5)-1]+(cur?' (пока)':''),prevFrom:pym+'-01',prevTo:pym+'-'+pad(pDays),prevLabel:cur?'за те же дни прошлого месяца':'в '+MONTHS_LOC[+pym.slice(5)-1]};}
+    case 'custom':{
+      let f=JP.from||d(-6),t=JP.to||T;if(f>t)[f,t]=[t,f];if(t>T)t=T;
+      const n=daysBetween(f,t)+1;
+      return {from:f,to:t,label:n===1?fmtDateShort(f):fmtDateShort(f)+' – '+fmtDateShort(t),prevFrom:addDaysISO(f,-n),prevTo:addDaysISO(f,-1),prevLabel:'за столько же дней до этого'};}
+    default:return {from:T,to:T,label:'сегодня',prevFrom:d(-1),prevTo:d(-1),prevLabel:'вчера'};
+  }
+}
+const jpIsSpend=t=>t.type==='exp'&&!t.creditId;
+function renderJP(){
+  const box=$('#txSummary');if(!box)return;
+  const R=jpRange(),days=daysBetween(R.from,R.to)+1;
+  $('#jpChips').querySelectorAll('button').forEach(b=>{const on=b.dataset.jp===JP.mode;b.classList.toggle('on',on);b.setAttribute('aria-checked',on);});
+  $('#jpMonth').style.display=JP.mode==='month'?'':'none';
+  $('#jpCustom').style.display=JP.mode==='custom'?'':'none';
+  if(JP.mode==='month'){const ym=JP.ym||TODAY_YM;$('#jpMonthLbl').textContent=monthFull(ym).replace(/^./,c=>c.toUpperCase());$('#jpNext').disabled=ym>=TODAY_YM;}
+  if(JP.mode==='custom'){$('#jpFrom').value=R.from;$('#jpTo').value=R.to;$('#jpFrom').max=$('#jpTo').max=TODAY_ISO;}
+  const inR=(t,f,to)=>t.date>=f&&t.date<=to;
+  const all=state.tx.filter(t=>inR(t,R.from,R.to));
+  const spend=all.filter(jpIsSpend);
+  const total=spend.reduce((a,t)=>a+t.amount,0);
+  const prevTotal=state.tx.filter(t=>jpIsSpend(t)&&inR(t,R.prevFrom,R.prevTo)).reduce((a,t)=>a+t.amount,0);
+  const hasPrevData=state.tx.some(t=>t.date<=R.prevTo)&&(state.created||'')<=R.prevTo;
+  // сводка
+  let h=`<div class="jp-sum"><div class="jp-big">${fmt(total)}</div><div class="jp-sub">потрачено ${R.label} · ${spend.length} ${plural(spend.length,'запись','записи','записей')}${days>1&&total>0?' · в среднем '+fmt(total/days)+' в день':''}</div>`;
+  if(hasPrevData&&(total>0||prevTotal>0)){
+    if(prevTotal>0){const df=Math.round((total-prevTotal)/prevTotal*100);
+      h+=`<div class="jp-cmp">${R.prevLabel[0].toUpperCase()+R.prevLabel.slice(1)} — ${fmt(prevTotal)}${Math.abs(df)<3?' · примерно столько же':` · сейчас <b style="color:${df>0?'var(--red)':'var(--green)'}">${df>0?'на '+df+'% больше':'на '+(-df)+'% меньше'}</b>`}</div>`;}
+    else h+=`<div class="jp-cmp">${R.prevLabel[0].toUpperCase()+R.prevLabel.slice(1)} трат не было.</div>`;
+  }
+  h+='</div>';
+  if(!spend.length){
+    h+=`<div class="sp-empty" style="padding:10px 0;">${JP.mode==='today'?'Сегодня трат пока нет. Потратил — нажми «+».':'За этот период трат нет.'}</div>`;
+  }else{
+    // категории — полоски, нажатие фильтрует записи
+    const by={};for(const t of spend){const k=t.category||'Другое';by[k]=(by[k]||0)+t.amount;}
+    const cats=Object.entries(by).sort((a,b)=>b[1]-a[1]),mx=cats[0][1];
+    if(JP.cat&&!by[JP.cat])JP.cat=null;
+    h+=`<div class="jp-cats">`+cats.map(([k,v])=>`<button type="button" class="jp-cat${JP.cat===k?' on':''}" data-jpcat="${esc(k)}"><span class="t"><span class="n"><i style="background:${spColor(k)}"></i>${esc(k)}</span><span class="v">${fmt(v)} <small>${Math.round(v/total*100)}%</small></span></span><span class="sp-bar"><i style="width:${(v/mx*100).toFixed(1)}%;background:${spColor(k)}"></i></span></button>`).join('')+`</div>`;
+    if(JP.cat)h+=`<div class="jp-filter">Показываю только «${esc(JP.cat)}» · <button type="button" class="linkish" data-jpcat="">показать все</button></div>`;
+    // записи по дням
+    const list=spend.filter(t=>!JP.cat||(t.category||'Другое')===JP.cat).sort((a,b)=>b.date.localeCompare(a.date)||b.id-a.id);
+    const byDay={};for(const t of list)(byDay[t.date]=byDay[t.date]||[]).push(t);
+    h+='<div class="jp-days">';
+    for(const d of Object.keys(byDay).sort().reverse()){
+      const L=byDay[d],sum=L.reduce((a,t)=>a+t.amount,0),dn=daysUntil(d);
+      const name=dn===0?'Сегодня':dn===-1?'Вчера':WEEKDAYS_FULL[new Date(d+'T00:00:00').getDay()];
+      h+=`<div class="jp-day"><div class="jp-dh"><span>${name}, ${fmtDateShort(d)}</span><b>${fmt(sum)}</b></div>${L.map(txRow).join('')}</div>`;
+    }
+    h+='</div>';
+  }
+  // не траты — отдельно, чтобы не путались
+  const sumT=f=>all.filter(f).reduce((a,t)=>a+t.amount,0);
+  const inc=sumT(t=>t.type==='inc'),loans=sumT(t=>t.type==='exp'&&t.creditId),rep=sumT(t=>t.type==='repay'),dp=sumT(t=>t.type==='debtpay'),
+        mv=sumT(t=>t.type==='move'),pot=sumT(t=>t.type==='save')-sumT(t=>t.type==='unsave');
+  const other=[inc?['Поступления (доходы)','+'+fmt(inc),'pos']:null,loans?['Платежи по кредитам','−'+fmt(loans),'']:null,rep?['Взносы на кредитку','−'+fmt(rep),'']:null,
+    dp?['Возврат долгов','−'+fmt(dp),'']:null,mv?['Переводы наличные ⇄ карта','⇄ '+fmt(mv),'']:null,pot?[pot>0?'Отложено в копилки':'Взято из копилок',fmt(Math.abs(pot)),'']:null].filter(Boolean);
+  if(other.length)h+=`<div class="jp-other"><div class="jp-oh">Не траты, а движение денег</div>${other.map(o=>`<div class="calc-line"><span class="name">${o[0]}</span><span class="${o[2]}">${o[1]}</span></div>`).join('')}</div>`;
+  if(spend.length){const bm={};for(const t of spend)bm[t.method]=(bm[t.method]||0)+t.amount;
+    h+=`<div class="jp-met">${['card','cash','credit'].filter(k=>bm[k]).map(k=>`${METHOD_PILL[k]} ${fmt(bm[k])}`).join(' ')}</div>`;}
+  box.innerHTML=h;
+}
+document.addEventListener('click',e=>{
+  const ch=e.target.closest('#jpChips [data-jp]');
+  if(ch){JP.mode=ch.dataset.jp;JP.cat=null;if(JP.mode==='month'&&!JP.ym)JP.ym=TODAY_YM;renderJP();return;}
+  if(e.target.closest('#jpPrev')){JP.ym=addMonths(JP.ym||TODAY_YM,-1);JP.cat=null;renderJP();return;}
+  if(e.target.closest('#jpNext')){const n=addMonths(JP.ym||TODAY_YM,1);if(n<=TODAY_YM){JP.ym=n;JP.cat=null;renderJP();}return;}
+  const ct=e.target.closest('#txSummary [data-jpcat]');
+  if(ct){const k=ct.dataset.jpcat;JP.cat=!k||JP.cat===k?null:k;renderJP();return;}
+  if(e.target.closest('#todayLine')){openJournalToday();}
+});
+document.addEventListener('change',e=>{
+  if(e.target&&(e.target.id==='jpFrom'||e.target.id==='jpTo')){JP.from=$('#jpFrom').value;JP.to=$('#jpTo').value;JP.cat=null;renderJP();}
+});
+function openJournalToday(){
+  JP.mode='today';JP.cat=null;switchTab('tx');
+  const card=$('#jpCard');if(card&&card.classList.contains('foldable'))setFold(card,false);
+  renderJP();setTimeout(()=>card&&card.scrollIntoView({behavior:'smooth',block:'start'}),60);
+}
+/* строка на главной: сколько потрачено сегодня */
+function renderTodayLine(){
+  const el=$('#todayLine');if(!el)return;
+  const L=state.tx.filter(t=>t.date===TODAY_ISO&&jpIsSpend(t)),sum=L.reduce((a,t)=>a+t.amount,0);
+  el.innerHTML=L.length?`<span>Сегодня потрачено: <b>${fmt(sum)}</b> · ${L.length} ${plural(L.length,'запись','записи','записей')}</span><span class="go">смотреть ›</span>`
+    :`<span>Сегодня трат пока нет</span><span class="go">журнал ›</span>`;
+}
+
 const METHOD_PILL={cash:'<span class="pill p-cash">наличные</span>',card:'<span class="pill p-card">карта</span>',credit:'<span class="pill p-credit">кредитка</span>'};
 function rebuildCats(){
   const type=$('#txType').value;
@@ -2671,7 +2870,7 @@ function rebuildOneSelect(){
   const open=state.oneTime.filter(o=>!o.done);
   fld.style.display=($('#txType').value==='exp'&&open.length>0)?'':'none';
   const prev=sel.value;
-  sel.innerHTML='<option value="">— нет, обычная трата —</option>'+open.map(o=>`<option value="${o.id}" ${String(o.id)===prev?'selected':''}>${esc(o.name)} — ${fmtN(num(o.amount))} ₽ (${monthShort(o.month)})</option>`).join('');
+  sel.innerHTML='<option value="">— нет, обычная трата —</option>'+open.map(o=>`<option value="${o.id}" ${String(o.id)===prev?'selected':''}>${esc(o.name)} — ${fmtN(num(o.amount))} ₽ (${oneDate(o)?fmtDateShort(oneDate(o)):monthShort(o.month)})</option>`).join('');
 }
 $('#txOne').addEventListener('change',e=>{
   const o=state.oneTime.find(x=>x.id===+e.target.value);if(!o)return;
@@ -2829,28 +3028,6 @@ function renderTx(){
   {const ops=state.tx.filter(t=>t.date===TODAY_ISO&&!t.srcKey).length,ns=(state.noSpend||[]).includes(TODAY_ISO);
    $('#noSpendRow').innerHTML=ops?'':(ns?'<div class="muted" style="text-align:center;">Сегодня отмечен как день без трат</div>':'<button class="btn block" type="button" data-nospend style="min-height:44px;font-size:15px;">Сегодня трат не было</button>');}
   rebuildCats();rebuildMethods();rebuildDebtSelect();rebuildOneSelect();
-  const monthTx=state.tx.filter(t=>t.date<=TODAY_ISO&&t.date.slice(0,7)===TODAY_YM);
-  const byCat={},byMet={};let total=0,incTotal=0,repayTotal=0,potTotal=0,moveTotal=0;
-  for(const t of monthTx){
-    if(t.type==='repay'||t.type==='debtpay'){repayTotal+=t.amount;continue;}
-    if(t.type==='move'){moveTotal+=t.amount;continue;}
-    if(t.type==='save'||t.type==='unsave'){potTotal+=(t.type==='save'?1:-1)*t.amount;continue;}
-    byCat[t.category]=(byCat[t.category]||0)+t.amount;
-    byMet[t.method]=(byMet[t.method]||0)+t.amount;
-    if(t.type==='inc')incTotal+=t.amount;else total+=t.amount;
-  }
-  let s=`<div class="calc-line total" style="margin-bottom:10px;"><span>Траты за ${monthFull(TODAY_YM)}</span><span class="neg">${total>0?'−':''}${fmt(total)}</span></div>
-    <div class="calc-line"><span class="name">Поступления (доходы)</span><span class="pos">+${fmt(incTotal)}</span></div>`;
-  if(moveTotal>0)s+=`<div class="calc-line"><span class="name">Переводы между наличными и картой (не трата)</span><span>${fmt(moveTotal)}</span></div>`;
-  if(potTotal!==0)s+=`<div class="calc-line"><span class="name">${potTotal>0?'Отложено в копилки':'Взято из копилок'} (перевод, не трата)</span><span>${fmt(Math.abs(potTotal))}</span></div>`;
-  if(repayTotal>0)s+=`<div class="calc-line"><span class="name">↩︎ Взносы на кредитку и возврат долгов (перевод, не трата)</span><span>${fmt(repayTotal)}</span></div>`;
-  s+='<div class="row" style="gap:18px;flex-wrap:wrap;margin-top:10px;"><div style="min-width:220px;flex:1;"><h3>По способу</h3>';
-  for(const k of['cash','card','credit']){if(byMet[k])s+=`<div class="calc-line"><span class="name">${METHOD_PILL[k]}</span><span>${fmt(byMet[k])}</span></div>`;}
-  s+='</div><div style="min-width:220px;flex:1;"><h3>По категориям</h3>';
-  for(const[k,v]of Object.entries(byCat).sort((a,b)=>b[1]-a[1])){s+=`<div class="calc-line"><span class="name">${esc(k)}</span><span>${fmt(v)}</span></div>`;}
-  s+='</div></div>';
-  if(!monthTx.length)s+=`<div class="muted">В этом месяце записей нет.</div>`;
-  $('#txSummary').innerHTML=s;
   // группируем записи по месяцам один раз; помечаем возможные дубли
   const byM={},seen={};DUPS=new Set();
   for(const t of state.tx){
@@ -2858,11 +3035,13 @@ function renderTx(){
     if(t.srcKey||t.creditId)continue;
     const k=dupKey(t);seen[k]=(seen[k]||0)+1;if(seen[k]>1)DUPS.add(k);
   }
+  renderJP();
   const months=Object.keys(byM).sort().reverse();
   if(!months.length){$('#txHistory').innerHTML='<div class="muted">Пока пусто — добавь первую запись.</div>';return;}
   const openBefore=new Set([...document.querySelectorAll('#txHistory details.month[open]')].map(d=>d.dataset.ym));
   const dupCount=state.tx.filter(t=>!t.srcKey&&!t.creditId&&DUPS.has(dupKey(t))).length;
-  if(dupCount)$('#txSummary').insertAdjacentHTML('afterbegin',`<div class="dupnote">Найдено записей-близнецов: <b>${dupCount}</b> (одинаковые дата, сумма, категория и способ). Они помечены «дубль?» в журнале — если это случайные повторы, удали лишние ✕.</div>`);
+  $('#txDup').innerHTML='';
+  if(dupCount)$('#txDup').insertAdjacentHTML('afterbegin',`<div class="dupnote">Найдено записей-близнецов: <b>${dupCount}</b> (одинаковые дата, сумма, категория и способ). Они помечены «дубль?» в журнале — если это случайные повторы, удали лишние ✕.</div>`);
   let h='';
   months.forEach((ym,idx)=>{
     const list=byM[ym].slice().sort((a,b)=>b.date.localeCompare(a.date)||b.id-a.id);
@@ -3242,7 +3421,7 @@ function renderSetup(){
       <div class="pay-grid">
         <label class="field" style="grid-column:1/-1;"><span>Примечание</span><input type="text" class="debt-note" value="${esc(d.note||'')}" placeholder="необязательно"></label>
       </div>
-      <label class="muted check-row"><input type="checkbox" class="debt-en" ${d.enabled?'checked':''}> учитывать в расчётах</label></div>`;
+      <label class="switch-row sm"><span>Учитывать в расчётах<span class="muted">${d.enabled?'включено — долг есть в плане и прогнозе':'выключено — долг не влияет на расчёты'}</span></span><input type="checkbox" class="debt-en switch" ${d.enabled?'checked':''}></label></div>`;
   });
   $('#debtsForm').innerHTML=h;
   h='';
@@ -3253,8 +3432,9 @@ function renderSetup(){
       <div class="item-h"><span class="nb">${k+1}</span><input type="text" class="one-name" value="${esc(o.name)}" placeholder="например, Подарок маме"><button class="del" data-delone="${o.id}" aria-label="Удалить">✕</button></div>
       <div class="pay-grid">
         <label class="field"><span>Сумма, ₽</span><input type="number" class="one-amt" value="${num(o.amount)||''}" inputmode="numeric" placeholder="0"></label>
-        <label class="field"><span>Когда</span><select class="one-month">${monthOptions(o.month,TODAY_YM,OPT_TO)}</select></label>
+        <label class="field"><span>К какому числу</span><input type="date" class="one-date" value="${oneDate(o)}" min="${TODAY_ISO}" max="${OPT_TO}-31"></label>
       </div>
+      ${o.done?'':`<div class="one-when ${oneDate(o)?'':'warn'}">${oneDate(o)?oneExplain(o):`Число не указано — считаю в конце ${MONTHS_GEN[+o.month.slice(5)-1]}. Укажи, к какому числу нужны деньги, — так расчёт будет точнее.`}</div>`}
       <div class="muted one-sink" style="font-size:12.5px;">${sinkHint(sk)}</div>
       <div class="item-foot">${o.done
         ?'<span class="pill p-inc">оплачено</span><button class="btn small" data-reopen="'+o.id+'">вернуть</button>'
@@ -3273,7 +3453,7 @@ const focusNew=sel=>setTimeout(()=>{const el=document.querySelector(sel);if(el){
 $('#addIncome').addEventListener('click',()=>{state.incomes.push({id:uid(),name:'Работа',from:TODAY_ISO,pays:[{day:10,amount:0,method:'card'}]});renderSetup();setupChanged();focusNew('#incomesForm .item:last-child .pay-amt');});
 $('#addCredit').addEventListener('click',()=>{state.credits.push({id:uid(),name:'Кредит',payment:0,dueDay:15,last:ONGOING,lastPaid:'',added:TODAY_ISO});renderSetup();setupChanged();focusNew('#creditsForm .item:last-child .cr-name');});
 $('#addDebt').addEventListener('click',()=>{state.debts.push({id:uid(),name:'',note:'',amount:0,deadline:'',enabled:true});renderSetup();setupChanged();focusNew('#debtsForm .item:last-child .debt-name');});
-  $('#addOneTime').addEventListener('click',()=>{state.oneTime.push({id:uid(),name:'',amount:0,month:NEXT_YM,done:false,start:TODAY_YM});renderSetup();setupChanged();focusNew('#oneTimeForm .item:last-child .one-name');});
+  $('#addOneTime').addEventListener('click',()=>{state.oneTime.push({id:uid(),name:'',amount:0,month:NEXT_YM,date:'',done:false,start:TODAY_YM});renderSetup();setupChanged();focusNew('#oneTimeForm .item:last-child .one-name');});
 $('#btnOnboarded').addEventListener('click',()=>{save();switchTab('plan');renderPlan();showToast('Настрой план: сколько тратить на жизнь и откладывать. Потом жми «План готов».');});
 /* изменение настроек: сохраняем, пересчитываем и коротко говорим, что поменялось на панели */
 let chgBase=null,chgTimer=null;
@@ -3382,10 +3562,23 @@ document.getElementById('oneTimeForm').addEventListener('input',e=>{
   setupChanged();refreshSinkHints();
 });
 document.getElementById('oneTimeForm').addEventListener('change',e=>{
-  if(!e.target.classList.contains('one-month'))return;
-  const row=e.target.closest('[data-one]');const o=state.oneTime.find(x=>x.id===+row.dataset.one);
-  if(o){o.month=e.target.value;setupChanged();refreshSinkHints();}
+  if(!e.target.classList.contains('one-date'))return;
+  const row=e.target.closest('[data-one]');const o=state.oneTime.find(x=>x.id===+row.dataset.one);if(!o)return;
+  const v=e.target.value;
+  if(/^\d{4}-\d{2}-\d{2}$/.test(v)){
+    if(v<TODAY_ISO){showToast('Дата уже прошла — выбери сегодня или позже.','warn');e.target.value=oneDate(o);return;}
+    o.date=v;o.month=v.slice(0,7);
+  }else o.date='';
+  const w=row.querySelector('.one-when');
+  if(w){w.classList.toggle('warn',!oneDate(o));w.innerHTML=oneDate(o)?oneExplain(o):`Число не указано — считаю в конце ${MONTHS_GEN[+o.month.slice(5)-1]}.`;}
+  setupChanged();refreshSinkHints();
 });
+/* мини-пояснение к дате разовой траты */
+function oneExplain(o){
+  const d=oneDate(o),n=daysUntil(d);
+  if(o.month===TODAY_YM||o.month===NEXT_YM)return `Через ${n} ${plural(n,'день','дня','дней')}. До этого числа ${fmt(num(o.amount)||0)} будут отложены — лимит на день сразу это учитывает.`;
+  return `Через ${n} ${plural(n,'день','дня','дней')}. Пока далеко — откладываю понемногу каждый месяц, к ${fmtDateShort(d)} сумма будет готова.`;
+}
 /* разовая трата оплачена: пишем её в журнал и закрываем пункт (в лимит «жизни» такая трата не входит) */
 function payOneTime(o,method,amount){
   const t={id:uid(),date:TODAY_ISO,type:'exp',category:'Разовая трата',amount:amount??num(o.amount),method,note:o.name,oneId:o.id};
@@ -3481,7 +3674,7 @@ $('#btnReset').addEventListener('click',()=>{
 let lastErrMsg='';
 function renderComputed(withTx){
   const c=compute();
-  const jobs=[()=>renderDash(c),()=>renderPayAsk(c),renderSpend,renderPlan,renderForecast,renderHistory,renderGoal,rebuildOneSelect];
+  const jobs=[()=>renderDash(c),()=>renderPayAsk(c),renderTodayLine,renderSpend,renderPlan,renderForecast,renderHistory,renderGoal,rebuildOneSelect];
   if(withTx)jobs.push(renderTx);
   for(const job of jobs){
     try{job();}catch(err){
@@ -3494,7 +3687,7 @@ function init(){
   setupFolds();
   // неоплаченные разовые траты прошлых месяцев не должны пропадать из расчётов — переносим на этот месяц
   const overdue=state.oneTime.filter(o=>!o.done&&monthNum(o.month)<monthNum(TODAY_YM));
-  if(overdue.length){overdue.forEach(o=>{o.month=TODAY_YM;});save();
+  if(overdue.length){overdue.forEach(o=>{o.month=TODAY_YM;o.date='';});save();
     showToast(`Неоплаченные разовые траты прошлых месяцев (${overdue.map(o=>esc(o.name)).join(', ')}) перенёс на ${monthFull(TODAY_YM)} — они всё ещё ждут оплаты и учтены в расчётах.`,'warn',10000);}
   if(monthNum(state.plan.month)<monthNum(TODAY_YM)){state.plan.month=(NOW.getDate()>=25?NEXT_YM:TODAY_YM);save();}
   if(state.goal)$('#goalAmount').value=state.goal;
@@ -3558,13 +3751,15 @@ function tourShow(){
   clearInterval(tourTimer);check();tourTimer=setInterval(check,500);
 }
 /* ===== «Что нового»: показываем один раз после обновления — только то, что важно человеку ===== */
-const NEWS_VER='5.0';
+const NEWS_VER='5.1';
 const NEWS=[
-  {title:'Что нового в приложении',text:'Две вещи: зарплату теперь подтверждаешь сам, а в «На что уходят деньги» видно, на что именно ушли деньги. Покажу за полминуты.'},
-  {tab:'dash',target:()=>document.querySelector('#payAsk .pay-ask')||document.getElementById('heroCard'),title:'Зарплата: пришла или нет',text:'Зарплата больше не записывается сама. В день выплаты здесь появится вопрос «Зарплата пришла?». Нажми «Пришла» — укажи, когда пришла на самом деле и сколько. «Ещё нет» — спрошу завтра, а пока не считаю эти деньги в кошельке. Так цифры не обманывают, если зарплату задержали.'},
-  {tab:'dash',target:'#spendCard',scroll:'#spSummary',open:true,act:()=>{SP.sel=null;spApplySel();},title:'Шаг 1. Открой «На что уходят деньги»',text:'Нажми на заголовок блока на главной — раскроется круг и список категорий за месяц.'},
-  {tab:'dash',target:'#spList',open:'#spendCard',act:()=>{const r=(SP.rows||[]).find(x=>x.key==='Разовая трата')||(SP.rows||[])[0];if(r){SP.sel=r.key;spApplySel();return document.querySelector(`#spList .sp-row[data-k="${CSS.escape(r.key)}"]`);}},title:'Шаг 2. Нажми на категорию',text:'Под строкой раскроется список: дата, на что потрачено и сколько. Например, нажми «Разовая трата» — увидишь, какие именно разовые траты были в этом месяце. Нажми ещё раз — список свернётся.'},
-  {tab:'dash',target:'#spendCard',scroll:'.sp-ctrl',open:true,act:()=>{SP.sel=null;spApplySel();},title:'Шаг 3. Другой месяц',text:'Стрелками ‹ › выбери любой месяц, «3 месяца» — сводка за три месяца. Список под категорией покажет траты за выбранный период.'},
+  {title:'Что нового в приложении',text:'Траты за любой период в Журнале, строка «Сегодня потрачено» на главной, точная дата у разовых трат и понятный блок «Когда закроются долги». Покажу коротко.'},
+  {tab:'dash',target:'#todayLine',title:'Сегодня потрачено',text:'На главной теперь видно, сколько ты потратил сегодня. Нажми на строку — откроется Журнал с тратами за сегодня.'},
+  {tab:'tx',target:'#jpCard',scroll:'#jpChips',open:true,act:()=>{JP.mode='today';JP.cat=null;renderJP();},title:'Шаг 1. Выбери период',text:'В Журнале блок «Траты за период». Сверху выбери: Сегодня, Вчера, 3 дня, Неделя, Месяц (стрелками — любой месяц) или Свой период с датами «с» и «по».'},
+  {tab:'tx',target:'#jpCard',scroll:'#jpChips',open:true,act:()=>{JP.mode='week';JP.cat=null;renderJP();},title:'Шаг 2. Смотри сводку и записи',text:'Сверху — сколько потрачено, сколько записей и в среднем за день, и сравнение с таким же прошлым периодом. Ниже — категории и сами записи по дням с итогом за каждый день.'},
+  {tab:'tx',target:'#jpCard',open:true,act:()=>{JP.mode='week';const b=document.querySelector('#txSummary .jp-cat');if(b){JP.cat=b.dataset.jpcat;renderJP();}return document.querySelector('#txSummary .jp-cats');},title:'Шаг 3. Нажми на категорию',text:'Останутся только её записи. Нажми ещё раз или «показать все» — вернутся все. Доходы, переводы и взносы на кредитку — отдельно внизу, в траты не входят.'},
+  {tab:'setup',target:'#oneTimeForm',open:'#setOneCard',act:()=>{JP.mode='today';JP.cat=null;},title:'Разовые траты: к какому числу',text:'Вместо месяца теперь указываешь число, к которому нужны деньги. Лимит на день заранее их учтёт, а под тратой коротко написано, что это значит. Без числа считаю в конце месяца, как раньше.'},
+  {tab:'debts',target:'#forecastCard',scroll:'#forecastHead',open:true,title:'Когда закроются долги',text:'Сверху — к какому месяцу закроешь все долги, ниже — каждый долг отдельно. Переключатель «Отдавать долгам весь свободный остаток» теперь сам пишет, что он меняет: например, «с ним — к январю, без него — к марту». Внизу — «По месяцам»: нажми на месяц, и покажу, из чего сложился остаток.'},
 ];
 function newsMarkSeen(){try{localStorage.setItem('fin-news-seen',NEWS_VER);}catch(e){}}
 function newsShow(step){
