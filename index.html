@@ -329,6 +329,8 @@
   .pay-ask.open .pa-btns{display:none;}
   .pay-ask .pa-form .field{margin:0;}
   .pay-ask .pa-form input,.pay-ask .pa-form select{width:100%;}
+  .pay-ask .pa-links{display:flex;flex-wrap:wrap;gap:4px 16px;}
+  .pay-ask .pa-warn{margin-top:8px;font-size:13px;line-height:1.45;color:var(--ink);background:var(--gold-soft);border-radius:10px;padding:8px 10px;}
   .pay-ask .pa-no{display:block;margin-top:8px;font-size:12.5px;color:var(--muted);background:none;border:0;padding:4px 0;cursor:pointer;text-decoration:underline;text-underline-offset:3px;}
   .one-when{font-size:12.5px;line-height:1.45;color:var(--ink2);margin:2px 0 4px;}
   .one-when.warn{color:var(--amber,var(--ink2));}
@@ -370,6 +372,15 @@
   .jp-other{margin-top:14px;padding-top:8px;border-top:1px solid var(--line);}
   .jp-oh{font-size:12.5px;color:var(--muted);margin-bottom:2px;}
   .jp-met{margin-top:10px;font-size:13px;color:var(--ink2);display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+  .sub-pots{font-size:12px;color:var(--gold);margin-top:2px;font-weight:600;}
+  .mline.pots{color:var(--ink2);}
+  .mline.pots small{display:block;font-size:12px;color:var(--muted);line-height:1.4;margin-top:2px;}
+  .recon{margin-top:14px;border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px;background:var(--card);}
+  .recon summary{cursor:pointer;font-weight:600;color:var(--ink);font-size:14.5px;}
+  .recon[open] summary{margin-bottom:10px;}
+  .recon-seg{margin:0 0 10px;}
+  .recon-day{margin-top:8px;}
+  .recon-tips{font-size:12.5px;line-height:1.45;margin-top:12px;}
   .cc-tr{margin:8px 0 4px;display:flex;flex-direction:column;gap:6px;}
   .cc-tr-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:0 10px;font-size:14px;color:var(--ink);}
   .cc-tr-row small{grid-column:1/-1;font-size:12px;color:var(--muted);}
@@ -1042,6 +1053,9 @@
         <dt>Сегодня потрачено</dt><dd>Строка на главной: сколько ты записал трат за сегодня. Нажми — откроется Журнал за сегодня.</dd>
         <dt>Дата разовой траты</dt><dd>Число, к которому нужны деньги. Ближе месяца — сумма откладывается заранее и лимит на день её учитывает. Дальше — откладываю понемногу каждый месяц.</dd>
         <dt>Весь свободный остаток в долги</dt><dd>Переключатель в «Когда закроются долги»: всё, что остаётся после трат и подушки, идёт в долги — сначала без срока, потом досрочно со сроком. Рядом видно, к какому месяцу закроешь с ним и без него.</dd>
+        <dt>Отложено на цели</dt><dd>Под «Деньги сейчас» на главной: сколько лежит в копилках. Эти деньги не входят ни в «сейчас», ни в лимит на день — они отложены. Больше они ни в каких расчётах не участвуют, только засчитываются в подушку месяца, если она задана в плане.</dd>
+        <dt>Сверка с банком</dt><dd>«Деньги сейчас» → «Сверка с банком»: из чего сложилась сумма на карте или в наличных и сколько было на конец любого дня. Сравни с выпиской банка за ту же дату — так видно день, где разошлось. Там же видны твои ручные поправки.</dd>
+        <dt>Зарплата «Уже учтена»</dt><dd>Если зарплата пришла, а ты не нажал «Пришла» и просто поправил сумму на карте — нажми «Уже учтена», чтобы она не прибавилась второй раз. Без ответа больше недели зарплата перестаёт считаться ожидаемой в прогнозе.</dd>
         <dt>Свёрнутые блоки</dt><dd>При каждом заходе блоки свёрнуты, в заголовке — короткая сводка. Нажми на заголовок — раскроется до выхода из приложения.</dd>
         <dt>Подстраховка</dt><dd>Считать, что зарплата может прийти на 3 дня позже, — лимит чуть осторожнее.</dd>
       </dl>
@@ -1133,6 +1147,14 @@
       <div class="hint">деньги − кредитка − кредиты − долги</div>
     </div>
   </div>
+    <details class="recon" data-fold="recon">
+      <summary>Сверка с банком — откуда такая сумма</summary>
+      <div class="recon-seg seg" id="reconAcc"><button type="button" data-acc="card" class="on">Карта</button><button type="button" data-acc="cash">Наличные</button></div>
+      <div id="reconBody"></div>
+      <label class="field" style="margin-top:12px;"><span>Сколько было на конец дня</span><input type="date" id="reconDate"></label>
+      <div id="reconDay"></div>
+      <div class="muted recon-tips">Не сходится с банком? Чаще всего это: <b>кешбэк или проценты</b> от банка — запиши как доход; трата записана <b>не с того кошелька</b> (карта ↔ наличные); забытая подписка или комиссия; <b>неподтверждённая зарплата</b>. Выбери дату из выписки банка и сравни сумму на конец дня — так легко найти день, где разошлось.</div>
+    </details>
   </div>
 </div>
 <div class="sheet" id="sheet-why" role="dialog" aria-modal="true" aria-hidden="true">
@@ -1304,6 +1326,7 @@ function save(){
    в расчётах она считается ожидаемой с завтрашнего дня. */
 function payDateFor(ym,day){return ym+'-'+pad(Math.min(Math.max(1,day),daysInMonth(ym)));}
 function payKey(inc,date){return inc.id+'|'+date;}
+const PAY_STALE=7;   // через сколько дней без ответа «пришла?» перестаю считать зарплату ожидаемой
 /* все плановые выплаты месяцев fromYM..toYM со статусом */
 function payList(fromYM,toYM){
   const out=[];
@@ -1335,6 +1358,7 @@ function expectedPays(toYM){
   const tomorrow=addDaysISO(TODAY_ISO,1);
   return payList(monthNum(state.created.slice(0,7))>monthNum(from)?state.created.slice(0,7):from,toYM)
     .filter(p=>!p.tx&&(p.late||p.date>TODAY_ISO))
+    .filter(p=>!(p.late&&daysUntil(p.date)<-PAY_STALE))   // больше недели без ответа — в прогноз не беру, чтобы не завышать
     .map(p=>({...p,plan:p.date,date:p.late?tomorrow:p.date}));
 }
 /* ручная запись «Зарплата» через «+» засчитывает ближайшую неподтверждённую выплату (чтобы не было двойного дохода) */
@@ -1676,7 +1700,7 @@ let OPEN_SHEET=null;
 function openSheet(id){
   const sh=document.getElementById('sheet-'+id);if(!sh)return;
   if(OPEN_SHEET&&OPEN_SHEET!==sh)closeSheet(true);
-  if(id==='money'&&typeof WHY!=='undefined')$('#moneyWhy').innerHTML=WHY.left||'';
+  if(id==='money'&&typeof WHY!=='undefined'){$('#moneyWhy').innerHTML=WHY.left||'';renderRecon();}
   if(id==='add'&&!$('#txDate').value)$('#txDate').value=TODAY_ISO;
   if(id==='add')syncQType();
   OPEN_SHEET=sh;sh.style.transform='';
@@ -1982,6 +2006,58 @@ $('#payDelay').addEventListener('change',e=>{state.plan.payDelay=e.target.checke
   showToast(e.target.checked?'Подстраховка включена: считаю, что каждая зарплата может прийти на 3 дня позже. Лимит до зарплаты станет осторожнее.':'Подстраховка выключена: зарплаты считаются в свои даты.','ok',6000);});
 /* ================= панель ================= */
 let lastDaily=0;  // сколько можно тратить в день дальше (с учётом всего потраченного) — для всплывашки
+/* ===== сверка с банком: из чего сложился баланс и сколько было на конец любого дня ===== */
+const RECON={acc:'card',date:''};
+function accDelta(t,acc){   // как запись меняет карту или наличные (так же, как в compute)
+  const m=t.method==='cash'?'cash':'card',a=t.amount;
+  switch(t.type){
+    case 'exp':return t.method===acc?-a:0;
+    case 'repay':case 'debtpay':return m===acc?-a:0;
+    case 'move':return t.method==='cash'?(acc==='cash'?-a:a):(acc==='card'?-a:a);
+    case 'save':return m===acc?-a:0;
+    case 'unsave':return m===acc?a:0;
+    default:return m===acc?a:0;   // доход
+  }
+}
+function balanceAt(acc,D){
+  let b=num(state.start[acc]);
+  for(const t of state.tx)if(t.date&&t.date<=D&&t.date<=TODAY_ISO)b+=accDelta(t,acc);
+  for(const l of state.balLog||[])if(l.acc===acc&&l.date>D)b-=(l.to-l.from);   // поправку, сделанную позже, тогда ещё не вносил
+  return b;
+}
+function renderRecon(){
+  const box=$('#reconBody');if(!box)return;
+  const acc=RECON.acc,c=compute();
+  $('#reconAcc').querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.acc===acc));
+  const T=state.tx.filter(t=>t.date&&t.date<=TODAY_ISO);
+  const sum=f=>T.filter(f).reduce((a,t)=>a+accDelta(t,acc),0);
+  const fix=(state.balLog||[]).filter(l=>l.acc===acc),fixSum=fix.reduce((a,l)=>a+(l.to-l.from),0);
+  const startDate=(state.start&&state.start.date)||state.created;
+  const rows=[
+    {n:`Было на старте учёта (${fmtDateShort(startDate)})`,v:num(state.start[acc])-fixSum,base:true},
+    {n:'Ручные поправки «Деньги сейчас»',v:fixSum},
+    {n:'Поступления',v:sum(t=>!['exp','repay','debtpay','move','save','unsave'].includes(t.type))},
+    {n:'Траты',v:sum(t=>t.type==='exp')},
+    {n:'Взносы на кредитку',v:sum(t=>t.type==='repay')},
+    {n:'Возврат долгов',v:sum(t=>t.type==='debtpay')},
+    {n:'В копилки и из копилок',v:sum(t=>t.type==='save'||t.type==='unsave')},
+    {n:'Переводы карта ⇄ наличные',v:sum(t=>t.type==='move')},
+  ].filter(r=>r.base||Math.abs(r.v)>=1);
+  const now=acc==='card'?c.card:c.cash;
+  box.innerHTML=rows.map(r=>`<div class="calc-line"><span class="name">${r.n}</span><span class="${r.base?'':r.v>0?'pos':'neg'}">${r.base?fmt(r.v):(r.v>0?'+':'−')+fmt(Math.abs(r.v))}</span></div>`).join('')
+    +`<div class="calc-line total"><span>Сейчас ${acc==='card'?'на карте':'наличными'}</span><span>${fmt(now)}</span></div>`
+    +(fix.length?`<div class="muted" style="font-size:12.5px;margin-top:6px;">Поправки: ${fix.slice(-5).reverse().map(l=>`${fmtDateShort(l.date)}: ${fmtN(l.from)} → ${fmtN(l.to)} (${l.to-l.from>0?'+':'−'}${fmtN(Math.abs(l.to-l.from))})`).join(' · ')}</div>`:'')
+    +(c.potsTotal>=1?`<div class="muted" style="font-size:12.5px;margin-top:6px;">Отложено в копилки ${fmt(c.potsTotal)} — в «сейчас» не входит. Если в банке эти деньги лежат на этом же счёте, банк покажет на ${fmt(acc==='card'?c.potCard:c.potCash)} больше.</div>`:'');
+  const D=RECON.date||TODAY_ISO;$('#reconDate').value=D;$('#reconDate').max=TODAY_ISO;
+  const dayT=T.filter(t=>t.date===D&&accDelta(t,acc)!==0);
+  const endBal=balanceAt(acc,D),dayFix=(state.balLog||[]).filter(l=>l.acc===acc&&l.date===D);
+  $('#reconDay').innerHTML=`<div class="recon-day"><div class="calc-line total"><span>На конец ${D===TODAY_ISO?'сегодня':fmtDateShort(D)} ${acc==='card'?'на карте':'наличными'}</span><span>${fmt(endBal)}</span></div>`
+    +(dayT.length?dayT.map(t=>{const d=accDelta(t,acc);return `<div class="calc-line"><span class="name">${esc(t.category)}${t.note?' <span class="muted">· '+esc(t.note)+'</span>':''}</span><span class="${d>0?'pos':'neg'}">${d>0?'+':'−'}${fmt(Math.abs(d))}</span></div>`;}).join(''):`<div class="muted" style="font-size:13px;">В этот день движений ${acc==='card'?'по карте':'наличных'} нет.</div>`)
+    +(dayFix.length?`<div class="muted" style="font-size:12.5px;">В этот день была ручная поправка: ${dayFix.map(l=>fmtN(l.from)+' → '+fmtN(l.to)).join(', ')}</div>`:'')+'</div>';
+}
+document.addEventListener('click',e=>{const b=e.target.closest('#reconAcc [data-acc]');if(b){RECON.acc=b.dataset.acc;renderRecon();}});
+document.addEventListener('change',e=>{if(e.target&&e.target.id==='reconDate'){RECON.date=e.target.value>TODAY_ISO?TODAY_ISO:e.target.value;renderRecon();}});
+document.addEventListener('toggle',e=>{if(e.target&&e.target.classList&&e.target.classList.contains('recon')&&e.target.open)renderRecon();},true);
 let LASTM={};      // главные цифры панели после последнего расчёта (для подсказок «что изменилось»)
 let lastRemain=0; // сколько осталось по норме на сегодня — для предупреждения о перерасходе
 function renderDash(c){
@@ -2224,8 +2300,11 @@ function renderDash(c){
   if(nextPays.length)payParts.push(`${monName(NEXT_YM)}: ${nextPays.map(p=>dm(p.date)+' — '+fmtN(p.amount)).join(', ')}`);
   const payments=longReserve-nearOneSum-oneThis-savingsLeft-state.plan.savings-sinkNext;
   const thisMonName=MONTHS_FULL[+TODAY_YM.split('-')[1]-1].toLowerCase(),nextMonName=monName(NEXT_YM).toLowerCase();
-  $('#leftLifeSub').innerHTML=`<div class="sub-short">нал. ${fmtN(c.cash)} · карта ${fmtN(c.card)}</div>`;
+  const potsLive=state.pots.filter(p=>(c.potBal[p.id]||0)>=1);
+  $('#leftLifeSub').innerHTML=`<div class="sub-short">нал. ${fmtN(c.cash)} · карта ${fmtN(c.card)}</div>`
+    +(c.potsTotal>=1?`<div class="sub-pots">+ отложено ${fmtN(c.potsTotal)} ₽ ${potsLive.length===1?'на «'+esc(potsLive[0].name)+'»':'на цели'}</div>`:'');
   WHY.left=`<div class="mline"><span>Наличные</span><b>${fmt(c.cash)}</b></div><div class="mline"><span>На карте</span><b>${fmt(c.card)}</b></div><div class="mline total"><span>Сейчас всего</span><b>${fmt(onHands)}</b></div>`
+    +(c.potsTotal>=1?`<div class="mline pots"><span>Отложено в копилки<small>${potsLive.map(p=>esc(p.name)+' — '+fmtN(c.potBal[p.id])+' ₽').join(' · ')}. Эти деньги не входят в «сейчас» и в лимит на день — они отложены. Вернуть: «Ещё → Копилки → Взять».</small></span><b>${fmt(c.potsTotal)}</b></div>`:'')
     +`<div class="why-note" style="border:0;padding-top:4px;"><b>На жизнь до конца ${curMonthGen}: ${fmt(longFree)}</b></div>`
     +`<div class="mcalc">${fmtN(onHands)} сейчас`
     +(futureInc>0?`<br>+ ${fmtN(futureInc)} ещё придёт в ${monthLoc(TODAY_YM)} (${c.pendingPays.map(p=>dm(p.date)+' — '+fmtN(p.amount)).join(', ')})`:'')
@@ -2342,7 +2421,7 @@ function renderDash(c){
     W.push(['var(--muted)','Капитал',fmtN(c.netWorth)+' ₽']);
     $('#sideWallets').innerHTML=W.map(([col,nm,vl,cl])=>`<div class="sw ${cl||''}"><span class="dot" style="background:${col}"></span><span class="nm">${nm}</span><span class="vl">${vl}</span></div>`).join('');
     renderNav(CUR_TAB);renderMoreLinks(c);
-    if(OPEN_SHEET&&OPEN_SHEET.id==='sheet-money')$('#moneyWhy').innerHTML=WHY.left||'';
+    if(OPEN_SHEET&&OPEN_SHEET.id==='sheet-money'){$('#moneyWhy').innerHTML=WHY.left||'';renderRecon();}
   }catch(err){console.error(err);}
   try{renderPots(c);}catch(err){console.error(err);}
   fitNums();
@@ -2457,6 +2536,26 @@ document.getElementById('goalCard').addEventListener('click',e=>{
   showToast(`План построен: жизнь ${fmt(state.plan.spending)}/мес — цель ${fmt(state.goal)} станет ближе. Проверь вкладку «План месяца».`);
 });
 $('#inCard').addEventListener('input',e=>{if(e.target.value.trim()==='')return;const c=compute();state.start.card=num(e.target.value)-c.incCard+c.expCard+c.repCard+c.dpCard+c.potCard-c.mvCash;save();renderComputed(false);});
+/* ручная правка баланса: запоминаем, что и на сколько поменял (видно в «Сверке с банком»), и показываем, как это повлияло */
+const BAL_EDIT={};
+['inCash','inCard','inDebt'].forEach(id=>{
+  const el=document.getElementById(id);
+  el.addEventListener('focus',()=>{const c=compute();BAL_EDIT[id]={v:Math.round(id==='inCash'?c.cash:id==='inCard'?c.card:c.debt),daily:lastDaily};});
+  el.addEventListener('change',()=>{
+    const b=BAL_EDIT[id];if(!b)return;delete BAL_EDIT[id];
+    const c=compute(),now=Math.round(id==='inCash'?c.cash:id==='inCard'?c.card:c.debt),d=now-b.v;
+    if(Math.abs(d)<1)return;
+    const acc=id==='inCash'?'cash':id==='inCard'?'card':'debt';
+    if(!Array.isArray(state.balLog))state.balLog=[];
+    state.balLog.push({date:TODAY_ISO,acc,from:b.v,to:now});
+    if(state.balLog.length>60)state.balLog=state.balLog.slice(-60);
+    save();renderComputed(true);
+    const name={cash:'Наличные',card:'Карта',debt:'Долг по кредитке'}[acc];
+    let msg=`${name}: ${fmt(b.v)} → <b>${fmt(now)}</b> (${d>0?'+':'−'}${fmt(Math.abs(d))}). Поправка сохранена — её видно в «Сверке с банком».`;
+    if(acc!=='debt'){msg+=lastDaily!==b.daily?`<br>Можно тратить в день: ${fmtN(b.daily)} → <b>${fmtN(lastDaily)}</b> ₽.`:`<br>Лимит в день не изменился: ${fmtN(lastDaily)} ₽.`;}
+    showToast(msg,'ok',8000);
+  });
+});
 $('#inDebt').addEventListener('input',e=>{if(e.target.value.trim()==='')return;const c=compute();state.start.creditDebt=num(e.target.value)-c.expCredit+c.repCash+c.repCard;save();renderComputed(false);});
 
 /* ================= план месяца ================= */
@@ -2885,7 +2984,7 @@ $('#txType').addEventListener('change',e=>{
 });
 $('#txDate').value=TODAY_ISO;
 $('#txAdd').addEventListener('click',()=>{
-  const amount=num($('#txAmount').value);
+  let amount=num($('#txAmount').value);
   if(amount<=0){alert('Введи сумму');return;}
   const limitBefore=lastRemain, dailyBefore=lastDaily; // остаток нормы на сегодня и лимит в день — ДО этой траты
   const before=compute();
@@ -2898,6 +2997,12 @@ $('#txAdd').addEventListener('click',()=>{
     debtRef=state.debts.find(x=>x.id===+$('#txDebt').value);
     if(!debtRef){alert('Выбери долг (добавь его на вкладке «Доходы и расходы»)');return;}
     if(($('#txDate').value||TODAY_ISO)>TODAY_ISO){alert('Возврат долга нельзя записать будущей датой: сумма долга уменьшается сразу. Поставь сегодняшнюю дату или прошедшую.');return;}
+    const leftD=Math.max(0,num(debtRef.amount));
+    if(amount>leftD+0.5){
+      if(leftD<1){alert(`Долг «${debtRef.name}» уже закрыт.`);return;}
+      if(!confirm(`По долгу «${debtRef.name}» осталось вернуть ${fmtN(leftD)} ₽, а ты вписал ${fmtN(amount)} ₽. Записать ${fmtN(leftD)} ₽?`))return;
+      amount=Math.round(leftD);$('#txAmount').value=amount;
+    }
   }
   if(type==='move'){
     if(($('#txDate').value||TODAY_ISO)>TODAY_ISO){alert('Перевод записывается сегодняшней или прошедшей датой.');return;}
@@ -2983,8 +3088,8 @@ document.getElementById('qType').addEventListener('click',e=>{const b=e.target.c
   const me=$('#txMethod');if([...me.options].some(o=>o.value===m)&&!(t==='exp'&&m==='card'&&me.value==='cash'))me.value=m;
   syncQType();setTimeout(()=>{try{$('#txAmount').focus({preventScroll:true});}catch(err){}},50);});
 document.addEventListener('change',e=>{if(e.target.id==='txType'||e.target.id==='txMethod')syncQType();});
-document.getElementById('txHistory').addEventListener('click',e=>{
-  const b=e.target.closest('[data-del]');if(!b)return;
+document.addEventListener('click',e=>{   // ✕ у записи — и в «Истории по месяцам», и в «Тратах за период»
+  const b=e.target.closest('#txHistory [data-del], #txSummary [data-del]');if(!b)return;
   const t=state.tx.find(x=>x.id===+b.dataset.del);
   const beforeDel=compute();
   state.tx=state.tx.filter(x=>x.id!==+b.dataset.del);
@@ -3112,6 +3217,12 @@ function renderHistory(){
 }
 
 /* ================= «Зарплата пришла?» (главная) ================= */
+/* была ли ручная правка этого кошелька после даты выплаты — тогда зарплата могла уже попасть в баланс */
+function fixedAfter(p){
+  const acc=p.method==='cash'?'cash':'card';
+  const L=(state.balLog||[]).filter(l=>l.acc===acc&&l.date>=p.date);
+  return L.length?L.map(l=>fmtDateShort(l.date)+': '+fmtN(l.from)+' → '+fmtN(l.to)).join(', '):'';
+}
 function renderPayAsk(c){
   const box=$('#payAsk');if(!box)return;
   const snooze=state.paySnooze||{};
@@ -3120,7 +3231,8 @@ function renderPayAsk(c){
     const d=daysUntil(p.date),when=d===0?'сегодня':(d===-1?'вчера':fmtDateShort(p.date));
     return `<div class="pay-ask" data-key="${esc(p.key)}">
       <div class="pa-t">${esc(p.name)}: зарплата пришла?</div>
-      <div class="pa-s">По плану ${when} — <b>${fmt(p.amount)}</b> ${p.method==='cash'?'наличными':'на карту'}.${d<0?' Пока не ответишь, считаю, что денег ещё нет.':''}</div>
+      <div class="pa-s">По плану ${when} — <b>${fmt(p.amount)}</b> ${p.method==='cash'?'наличными':'на карту'}.${d<-PAY_STALE?' Больше недели без ответа — в прогнозе её пока не считаю.':d<0?' Пока не ответишь, считаю, что денег ещё нет, а придут завтра.':''}</div>
+      ${fixedAfter(p)?`<div class="pa-warn">После ${fmtDateShort(p.date)} ты вручную поправлял ${p.method==='cash'?'наличные':'карту'} (${fixedAfter(p)}). Если зарплата уже была в той сумме — нажми «Уже учтена», иначе она посчитается дважды.</div>`:''}
       <div class="pa-btns"><button type="button" class="btn primary" data-pa="yes">Пришла</button><button type="button" class="btn" data-pa="wait">Ещё нет</button></div>
       <div class="pa-form">
         <div class="field"><label>Когда пришла</label><input type="date" class="pa-date" value="${p.date}" max="${TODAY_ISO}"></div>
@@ -3128,7 +3240,7 @@ function renderPayAsk(c){
         <div class="field"><label>Куда</label><select class="pa-m"><option value="card"${p.method==='card'?' selected':''}>на карту</option><option value="cash"${p.method==='cash'?' selected':''}>наличными</option></select></div>
         <button type="button" class="btn primary" data-pa="save">Записать</button>
       </div>
-      <button type="button" class="pa-no" data-pa="skip">В этом месяце её не будет</button>
+      <div class="pa-links"><button type="button" class="pa-no" data-pa="already">Уже учтена — я поправлял баланс</button><button type="button" class="pa-no" data-pa="skip">В этом месяце её не будет</button></div>
     </div>`;}).join('');
 }
 document.addEventListener('click',e=>{
@@ -3139,6 +3251,9 @@ document.addEventListener('click',e=>{
   if(act==='wait'){
     if(!state.paySnooze)state.paySnooze={};state.paySnooze[key]=TODAY_ISO;save();renderComputed(true);
     showToast(`Хорошо, спрошу завтра. Пока считаю, что ${fmt(p.amount)} придут завтра — на кошелёк сегодня не добавляю.`);return;}
+  if(act==='already'){
+    state.ignoredAuto.push(key);save();renderComputed(true);
+    showToast(`Отметил: «${esc(p.name)}» за ${fmtDateShort(p.date)} уже в балансе — второй раз не прибавляю.`);return;}
   if(act==='skip'){
     if(!confirm(`«${p.name}» по плану ${fmtDateShort(p.date)} не придёт в этом месяце? Уберу её из расчётов.`))return;
     state.ignoredAuto.push(key);save();renderComputed(true);
