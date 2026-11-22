@@ -1354,7 +1354,15 @@ function payList(fromYM,toYM){
       const exact=new Set(list.map(x=>payKey(inc,x.date)));
       const orphan=resolved.filter(k=>!exact.has(k)).sort();
       const free=list.filter(x=>!resolved.includes(payKey(inc,x.date))).sort((a,b)=>a.date.localeCompare(b.date));
-      const remap={};free.forEach((x,i)=>{if(orphan[i])remap[x.date]=orphan[i];});
+      // переносим старый ответ только на ближайшую выплату не дальше недели (число сдвинули на пару дней),
+      // иначе ответ про 8-е «съел» бы зарплату 25-го
+      const remap={};const used=new Set();
+      for(const k of orphan){
+        const kd=k.split('|')[1];
+        let best=null,bd=99;
+        for(const x of free){if(used.has(x.date))continue;const d=Math.abs(daysBetween(kd,x.date));if(d<bd){bd=d;best=x;}}
+        if(best&&bd<=7){remap[best.date]=k;used.add(best.date);}
+      }
       for(const {p,date} of list){
         const key=remap[date]||payKey(inc,date);
         if(state.ignoredAuto.includes(key))continue;   // «в этом месяце не будет» / «уже учтена»
