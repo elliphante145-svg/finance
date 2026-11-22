@@ -497,6 +497,10 @@
   .ag-ic{width:34px;height:34px;border-radius:50%;background:var(--green-dk);color:var(--green);display:inline-flex;align-items:center;justify-content:center;flex:none;}
   .ag-ic svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;}
   .hero .cap{font-size:14px;color:var(--hero-cap);font-weight:500;}
+  .hero-top{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+  .lim-mode{display:flex;background:rgba(255,255,255,.12);border-radius:999px;padding:2px;flex:none;}
+  .lim-mode button{font:inherit;font-size:12.5px;font-weight:500;border:0;background:none;color:var(--hero-cap);padding:5px 11px;border-radius:999px;cursor:pointer;}
+  .lim-mode button.on{background:rgba(255,255,255,.92);color:#1d2a24;}
   .hero .v{font-size:50px;font-weight:600;letter-spacing:-.035em;line-height:1.05;margin:6px 0 6px;color:var(--hero-ink);white-space:nowrap;font-variant-numeric:proportional-nums;}
   .hero .v.red-txt{color:#F6B9A8;}
   .hero .sub,.hero .sub-short{font-size:13.5px;color:var(--hero-sub);line-height:1.45;}
@@ -732,7 +736,8 @@
     <div class="row" style="margin-top:12px;"><button class="btn small" id="installOk">Понятно, скрыть</button></div>
   </div>
   <div class="hero metric" id="heroCard" role="button" tabindex="0" data-why="daily" aria-label="Почему такой лимит">
-    <div class="cap" id="dailyCap">Можно потратить сегодня</div>
+    <div class="hero-top"><div class="cap" id="dailyCap">Можно потратить сегодня</div>
+      <div class="lim-mode" id="limMode" role="radiogroup" aria-label="Показывать лимит"><button type="button" data-lm="day">День</button><button type="button" data-lm="week">Неделя</button></div></div>
     <div class="v" id="dailySpend"></div>
     <div class="sub" id="dailySpendSub">обновляется после каждой траты</div>
     <div class="hero-bar" aria-hidden="true"><div id="todayBar"></div></div>
@@ -742,6 +747,11 @@
       <div class="he-t">Добавь зарплату и даты выплат — и я посчитаю, сколько можно тратить каждый день</div>
       <button class="btn he-btn" type="button" data-goto="setup">Добавить доходы</button>
     </div>
+  </div>
+
+  <div class="card" id="weekEnvCard" style="display:none;">
+    <h2>Конверты на неделю</h2>
+    <div id="weekEnv"></div>
   </div>
 
   <div class="chips">
@@ -1056,6 +1066,8 @@
         <dt>Отложено на цели</dt><dd>Под «Деньги сейчас» на главной: сколько лежит в копилках. Эти деньги не входят ни в «сейчас», ни в лимит на день — они отложены. Больше они ни в каких расчётах не участвуют, только засчитываются в подушку месяца, если она задана в плане.</dd>
         <dt>Сверка с банком</dt><dd>«Деньги сейчас» → «Сверка с банком»: из чего сложилась сумма на карте или в наличных и сколько было на конец любого дня. Сравни с выпиской банка за ту же дату — так видно день, где разошлось. Там же видны твои ручные поправки.</dd>
         <dt>Зарплата «Уже учтена»</dt><dd>Если зарплата пришла, а ты не нажал «Пришла» и просто поправил сумму на карте — нажми «Уже учтена», чтобы она не прибавилась второй раз. Без ответа больше недели зарплата перестаёт считаться ожидаемой в прогнозе.</dd>
+        <dt>День или Неделя</dt><dd>Переключатель на главной плашке. «День» — сколько можно тратить в день. «Неделя» — сколько можно потратить до воскресенья: бюджет недели считается в понедельник из того, что осталось от плана месяца, и до воскресенья не меняется — каждая трата вычитается целиком. Перерасход уменьшает следующие недели месяца, экономия — увеличивает. За месяц итог тот же.</dd>
+        <dt>Конверты на неделю</dt><dd>В режиме «Неделя» под плашкой: сколько осталось на этой неделе в каждом конверте (Продукты, Транспорт…) и в «Прочем». Лимиты конвертов на месяц — в «План → План месяца».</dd>
         <dt>Свёрнутые блоки</dt><dd>При каждом заходе блоки свёрнуты, в заголовке — короткая сводка. Нажми на заголовок — раскроется до выхода из приложения.</dd>
         <dt>Подстраховка</dt><dd>Считать, что зарплата может прийти на 3 дня позже, — лимит чуть осторожнее.</dd>
       </dl>
@@ -1717,6 +1729,8 @@ function closeSheet(instant){
 }
 document.addEventListener('click',e=>{
   if(e.target.closest('[data-goto]'))return;
+  const lm=e.target.closest('#limMode [data-lm]');
+  if(lm){e.preventDefault();e.stopPropagation();setLimitMode(lm.dataset.lm);return;}
   const o=e.target.closest('[data-sheet]');if(o){e.preventDefault();openSheet(o.dataset.sheet);return;}
   const w=e.target.closest('[data-why]');if(w){e.preventDefault();openWhy(w.dataset.why);return;}
   if(e.target.closest('[data-close]')||e.target.id==='scrim')closeSheet();
@@ -2005,6 +2019,64 @@ document.getElementById('potsCard').addEventListener('click',e=>{
 $('#payDelay').addEventListener('change',e=>{state.plan.payDelay=e.target.checked?3:0;setupChanged();
   showToast(e.target.checked?'Подстраховка включена: считаю, что каждая зарплата может прийти на 3 дня позже. Лимит до зарплаты станет осторожнее.':'Подстраховка выключена: зарплаты считаются в свои даты.','ok',6000);});
 /* ================= панель ================= */
+/* ===== лимит «по дням» или «по неделям» ===== */
+let WEEK=null;
+function limitMode(){try{return localStorage.getItem('fin-limit-mode')==='week'?'week':'day';}catch(e){return 'day';}}
+function setLimitMode(m){try{localStorage.setItem('fin-limit-mode',m==='week'?'week':'day');}catch(e){}renderComputed(true);}
+function weekInfo(){   // неделя с понедельника по воскресенье
+  const wd=(NOW.getDay()+6)%7;   // 0 = понедельник
+  return {start:addDaysISO(TODAY_ISO,-wd),end:addDaysISO(TODAY_ISO,6-wd),left:7-wd};
+}
+function monthGenOf(ym){return MONTHS_GEN[+ym.slice(5)-1];}
+/* план «на жизнь» месяца (если учёт начат в середине месяца — только на оставшиеся дни) */
+function planLifeFor(ym,limit){
+  const L=limit===undefined?num(state.plan.spending):limit,cr=(state.created||TODAY_ISO);
+  if(ym<cr.slice(0,7))return 0;
+  if(ym===cr.slice(0,7)){const dim=daysInMonth(ym),f=+cr.slice(8);return L*(dim-f+1)/dim;}
+  return L;
+}
+/* бюджет недели: по каждому месяцу, на который попадает неделя, — остаток его плана к началу недели × доля дней недели.
+   match — фильтр трат (для конверта), limit — лимит конверта (для общей суммы — план на жизнь) */
+function weekBudget(wk,match,limit){
+  const isLife=t=>t.type==='exp'&&!t.creditId&&!t.oneId&&(!match||match(t));
+  let budget=0;const parts=[];
+  for(let d=wk.start;d<=wk.end;){
+    const ym=d.slice(0,7),mEnd=ym+'-'+pad(daysInMonth(ym)),segEnd=mEnd<wk.end?mEnd:wk.end;
+    const daysSeg=daysBetween(d,segEnd)+1,daysToEnd=daysBetween(d,mEnd)+1;
+    const spentBefore=state.tx.filter(t=>isLife(t)&&t.date.slice(0,7)===ym&&t.date<d).reduce((a,t)=>a+t.amount,0);
+    const left=Math.max(0,planLifeFor(ym,limit)-spentBefore),part=left*daysSeg/daysToEnd;
+    budget+=part;parts.push({ym,left,daysSeg,daysToEnd,part});
+    d=addDaysISO(segEnd,1);
+  }
+  const text=parts.map(p=>`К началу недели от плана ${monthGenOf(p.ym)} оставалось ${fmt(p.left)} на ${p.daysToEnd} ${plural(p.daysToEnd,'день','дня','дней')} — на ${p.daysSeg} ${plural(p.daysSeg,'день','дня','дней')} этой недели приходится ${fmt(p.part)}.`).join(' ');
+  return {budget,parts,text};
+}
+/* конверты на неделю: та же логика, что у общей суммы, — по каждому конверту отдельно */
+function renderWeekEnv(o){
+  const box=$('#weekEnv');if(!box||!o.show)return;
+  const isLife=t=>t.type==='exp'&&!t.creditId&&!t.oneId;
+  const weekTx=state.tx.filter(t=>isLife(t)&&t.date>=o.wk.start&&t.date<=TODAY_ISO);
+  const envs=state.envelopes.map(e=>({name:e.name,cats:e.cats,limit:num(e.limit)}));
+  const envSum=envs.reduce((a,e)=>a+e.limit,0);
+  const inEnv=new Set(envs.flatMap(e=>e.cats));
+  envs.push({name:'Прочее',cats:null,limit:Math.max(0,num(state.plan.spending)-envSum)});
+  const rows=envs.map(e=>{
+    const match=t=>e.cats?e.cats.includes(t.category):!inEnv.has(t.category);
+    const bud=weekBudget(o.wk,match,e.limit).budget,spent=weekTx.filter(match).reduce((a,t)=>a+t.amount,0);
+    const rest=Math.max(0,bud-spent)*o.scale;
+    return {...e,spent,rest,total:spent>bud+0.5?bud*o.scale:rest+spent,over:spent>bud+0.5,overBy:spent-bud};
+  }).filter(r=>r.limit>0||r.spent>0);
+  // перерасход в одном конверте забирает у остальных: сумма конвертов не больше общего остатка на неделю
+  const sumRest=rows.reduce((a,r)=>a+r.rest,0),k2=sumRest>WEEK.rest+0.5&&sumRest>0?WEEK.rest/sumRest:1;
+  if(k2<1)rows.forEach(r=>{if(!r.over){r.rest*=k2;r.total=r.rest+r.spent;}});
+  WEEK.env=rows;WEEK.envSqueezed=k2<1;
+  box.innerHTML=rows.map(r=>{const pct=r.total>0?Math.min(100,r.spent/r.total*100):(r.spent>0?100:0);
+    return `<div class="catbar-row"><div class="t"><span>${esc(r.name)}</span><span>осталось <b class="${r.rest<1&&r.spent>0?'neg':''}">${fmt(r.rest)}</b></span></div>
+      <div class="track"><div class="fill" style="width:${pct.toFixed(1)}%;${r.over?'background:var(--red)':''}"></div></div>
+      <div class="muted" style="font-size:12px;margin-top:3px;">потрачено ${fmt(r.spent)} из ${fmt(r.total)} на неделю${r.over?` · <span style="color:var(--red)">больше на ${fmt(r.overBy)}</span>`:''}</div></div>`;}).join('')
+    +`<div class="footer-note">Конверт на неделю = что осталось от конверта на месяц к понедельнику, поделённое на оставшиеся дни месяца, × 7 дней (или сколько дней недели в этом месяце). До воскресенья не меняется — траты вычитаются целиком. Лимиты конвертов меняются в «План → План месяца».${WEEK.envSqueezed?' Один из конвертов уже превышен — остальные на эту неделю уменьшены, чтобы вместе не выйти за общую сумму.':''}${o.scale<1?' Сейчас денег меньше, чем по плану, — суммы уменьшены в той же доле.':''}</div>`;
+  setSum('weekEnvCard',rows.filter(r=>r.cats).slice(0,2).map(r=>esc(r.name)+' '+fmtN(r.rest)).join(' · '));
+}
 let lastDaily=0;  // сколько можно тратить в день дальше (с учётом всего потраченного) — для всплывашки
 /* ===== сверка с банком: из чего сложился баланс и сколько было на конец любого дня ===== */
 const RECON={acc:'card',date:''};
@@ -2285,6 +2357,49 @@ function renderDash(c){
     headDaily=bind.v;$('#heroCard').classList.toggle('danger',bind.v<=0);
     const SHORT={plan:`по твоему плану, ${untilTxt}`,money:`чтобы хватило до конца ${curMonthGen}`,gap:cp.safeAt>=cp.days-1?`чтобы хватило до конца ${curMonthGen}`:gapOut>0?`меньше обычного: впереди платежи, ${bind.until}`:`чтобы хватило до ${gapNextIn?'зарплаты '+fmtDateShort(gapNextIn.date):fmtDateShort(gapDay)}`};
     showToday(bind.v,whyTxt[bind.k]+how,bind.n,bind.until,SHORT[bind.k]);
+  }
+  /* ===== режим «Неделя»: тот же план месяца, только нарезан по неделям (пн–вс) ===== */
+  {
+    const mode=limitMode();
+    $('#limMode').querySelectorAll('button').forEach(b=>{const on=b.dataset.lm===mode;b.classList.toggle('on',on);b.setAttribute('aria-checked',on);});
+    const wk=weekInfo();
+    const isLife=t=>t.type==='exp'&&!t.creditId&&!t.oneId;
+    const spentWeek=state.tx.filter(t=>isLife(t)&&t.date>=wk.start&&t.date<=TODAY_ISO).reduce((a,t)=>a+t.amount,0);
+    // бюджет недели фиксируется в понедельник: что осталось от плана месяца к началу недели × доля дней
+    const wb0=weekBudget(wk,null);
+    const remM=Math.max(0,planLifeThis-factLife),dlm=daysInMonth(TODAY_YM)-NOW.getDate()+1;
+    const planRest=Math.max(0,wb0.budget-spentWeek);
+    const wc=[];
+    if(followEff)wc.push({k:'plan',v:planRest});
+    wc.push({k:'money',v:moneyPerDay*wk.left});
+    wc.push({k:'gap',v:Math.max(0,cp.safe)*wk.left});
+    const wb=wc.reduce((a,b)=>b.v<a.v-0.5?b:a);
+    const rest=longFree<0?0:Math.max(0,wb.v),total=wb.k==='plan'?Math.max(wb0.budget,rest+spentWeek):rest+spentWeek;
+    WEEK={rest,total,spentWeek,left:wk.left,bind:wb.k,planRest,end:wk.end};
+    const envCard=$('#weekEnvCard');
+    if(mode==='week'){
+      $('#dailyCap').textContent='Можно потратить на этой неделе';
+      ds.textContent=fmt(rest);ds.classList.toggle('red-txt',rest<=0);
+      $('#heroCard').classList.toggle('danger',rest<=0);
+      const perDay=rest/wk.left;
+      const endTxt=wk.left===1?'сегодня последний день недели':`до воскресенья ${wk.left} ${plural(wk.left,'день','дня','дней')} · ≈ ${fmt(perDay)} в день`;
+      const short=longFree<0?`до конца ${curMonthGen} не хватает ${fmt(-longFree)}`
+        :rest>=1?`потрачено ${fmt(spentWeek)} из ${fmt(total)} · ${endTxt}`
+        :wb.k==='plan'?`бюджет недели потрачен: ${fmt(spentWeek)} из ${fmt(wb0.budget)} — перерасход уменьшит следующие недели`
+        :wb.k==='gap'?(gapDay<=TODAY_ISO?'денег на руках меньше, чем нужно на ближайшие платежи':`до ${fmtDateShort(gapDay)} денег впритык — сначала платежи`):`до конца ${curMonthGen} денег впритык`;
+      const NM={plan:'по твоему плану трат',money:'чтобы денег хватило до конца '+curMonthGen,gap:'чтобы ни в один день не уйти в минус'};
+      const overW=spentWeek-wb0.budget;
+      const full=`<b>Неделя ${fmtDateShort(wk.start)} – ${fmtDateShort(wk.end)}.</b> Уже потрачено на жизнь ${fmt(spentWeek)}, можно ещё <b>${fmt(rest)}</b>.<br><br>`
+        +(followEff?`План на жизнь — ${fmt(planLife)} в месяц. ${wb0.text} Бюджет недели — <b>${fmt(wb0.budget)}</b>, он не меняется до воскресенья: каждая трата вычитается из него целиком.${overW>0.5?` <span style="color:var(--amber)">Потрачено больше на ${fmt(overW)} — эта разница уменьшит следующие недели ${monthGenOf(TODAY_YM)}.</span>`:''} Сэкономил — следующие недели станут свободнее. За месяц итог тот же.<br><br>`:'План трат не задан — считаю только по деньгам. Задай «траты на жизнь» в Плане.<br><br>')
+        +`<div class="how"><div style="color:var(--ink);font-weight:600;margin-bottom:4px;">Считаю тремя способами — на ${wk.left} ${plural(wk.left,'день','дня','дней')} до конца недели</div>`
+        +wc.map(x=>`<div class="${x===wb?'pick':''}">${x===wb?'→':'·'} ${NM[x.k]} — <b>${fmt(x.v)}</b></div>`).join('')
+        +`<div class="muted" style="margin-top:6px;">Беру самую осторожную цифру. Это тот же расчёт, что и «по дням», только сумма на всю неделю: деньги на платежи, кредитку, разовые траты и подушку уже отложены.</div></div>`;
+      if(longFree>=0)dsSub.innerHTML=foldSub('daily',short,full);
+      const bar=$('#todayBar');
+      if(bar){const pct=total>0?Math.min(100,spentWeek/total*100):(spentWeek>0?100:0);bar.style.transform=`scaleX(${(pct/100).toFixed(3)})`;bar.classList.toggle('over',rest<=0&&spentWeek>0);}
+      renderWeekEnv({wk,scale:(wb.k!=='plan'&&planRest>0)?Math.min(1,rest/planRest):1,show:followEff});
+    }
+    envCard.style.display=mode==='week'&&followEff?'':'none';
   }
   // деньги: сейчас физически + что станет к концу ноября
   const ll=$('#leftLife');
@@ -2986,6 +3101,7 @@ $('#txDate').value=TODAY_ISO;
 $('#txAdd').addEventListener('click',()=>{
   let amount=num($('#txAmount').value);
   if(amount<=0){alert('Введи сумму');return;}
+  const weekBefore=WEEK?WEEK.rest:0;
   const limitBefore=lastRemain, dailyBefore=lastDaily; // остаток нормы на сегодня и лимит в день — ДО этой траты
   const before=compute();
   const mBefore={...LASTM};
@@ -3054,6 +3170,10 @@ $('#txAdd').addEventListener('click',()=>{
         +(Math.abs(d)>=1?`<br>По плану было ${fmt(plan)} — вышло на <b>${fmt(Math.abs(d))} ${d>0?'больше':'меньше'}</b>. ${d>0?'Разницу беру из общих денег':'Остаток вернулся в общие деньги'}: на жизнь до конца ${MONTHS_GEN[+NEXT_YM.split('-')[1]-1]} ${fmtN(mBefore.longFree)} → <b>${fmtN(LASTM.longFree)}</b> ₽.`:'<br>Ровно по плану.')
         +balanceDiff(before,after)+`<br>Разовая трата не входит в дневной лимит «жизни»${Math.round(dailyBefore)!==Math.round(lastDaily)?`, но денег стало меньше — в день теперь ${fmtN(lastDaily)} ₽ (было ${fmtN(dailyBefore)})`:''}.`;
       if(d>0)kind='warn';
+    }else if(type==='exp'&&t.date>=(WEEK?weekInfo().start:TODAY_ISO)&&t.date<=TODAY_ISO&&limitMode()==='week'&&!t.creditId){
+      msg+=`<br>На этой неделе можно ещё: ${fmtN(weekBefore)} → <b>${fmtN(WEEK.rest)}</b> ₽`;
+      if(amount>Math.max(0,weekBefore)+0.5){kind='warn';
+        msg=`<b>Трата ${fmt(amount)} больше, чем оставалось на неделю (${fmt(Math.max(0,weekBefore))}).</b> Это не запрет: перерасход ложится на оставшиеся недели месяца поровну, и они станут чуть скромнее.`+balanceDiff(before,after);}
     }else if(type==='exp'&&t.date===TODAY_ISO){
       msg+=`<br>Можно тратить в день: ${fmtN(dailyBefore)} → <b>${fmtN(lastDaily)}</b> ₽`;
       if(amount>Math.max(0,limitBefore)){
