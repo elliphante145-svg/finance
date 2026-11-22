@@ -381,6 +381,7 @@
   .recon-seg{margin:0 0 10px;}
   .recon-day{margin-top:8px;}
   .recon-tips{font-size:12.5px;line-height:1.45;margin-top:12px;}
+  .inc-facts{font-size:12.5px;color:var(--ink2);line-height:1.45;margin:4px 0 2px;}
   .cc-tr{margin:8px 0 4px;display:flex;flex-direction:column;gap:6px;}
   .cc-tr-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:0 10px;font-size:14px;color:var(--ink);}
   .cc-tr-row small{grid-column:1/-1;font-size:12px;color:var(--muted);}
@@ -947,7 +948,7 @@
     <h2>Доходы (зарплаты, подработки)</h2>
     <div id="incomesForm"></div>
     <button class="btn small" id="addIncome">+ Добавить источник дохода</button>
-    <div class="footer-note">Укажи, какого числа обычно приходят аванс и зарплата, сколько и куда. В день выплаты на главной спрошу «Зарплата пришла?» — отметишь, когда пришла на самом деле и сколько. Если в середине месяца узнал, что будет больше или меньше, — просто поправь суммы здесь.</div>
+    <div class="footer-note">Укажи, какого числа обычно приходят аванс и зарплата, сколько и куда. В день выплаты на главной спрошу «Зарплата пришла?» — отметишь, когда пришла на самом деле и сколько. <b>Сумма заранее неизвестна?</b> Поставь осторожную — ту, что придёт почти наверняка: если придёт больше, лимиты просто вырастут, а если поставить с запасом и придёт меньше — придётся урезаться задним числом. Сумму и число можно менять когда угодно: уже пришедшие выплаты останутся как были, поменяются только будущие.</div>
   </div>
   <div class="card" id="setCredCard">
     <h2>Кредиты</h2>
@@ -1068,6 +1069,7 @@
         <dt>Зарплата «Уже учтена»</dt><dd>Если зарплата пришла, а ты не нажал «Пришла» и просто поправил сумму на карте — нажми «Уже учтена», чтобы она не прибавилась второй раз. Без ответа больше недели зарплата перестаёт считаться ожидаемой в прогнозе.</dd>
         <dt>День или Неделя</dt><dd>Переключатель на главной плашке. «День» — сколько можно тратить в день. «Неделя» — сколько можно потратить до воскресенья: бюджет недели считается в понедельник из того, что осталось от плана месяца, и до воскресенья не меняется — каждая трата вычитается целиком. Перерасход уменьшает следующие недели месяца, экономия — увеличивает. За месяц итог тот же.</dd>
         <dt>Конверты на неделю</dt><dd>В режиме «Неделя» под плашкой: сколько осталось на этой неделе в каждом конверте (Продукты, Транспорт…) и в «Прочем». Лимиты конвертов на месяц — в «План → План месяца».</dd>
+        <dt>Доход с плавающей суммой</dt><dd>Ставь в план осторожную сумму. Когда деньги придут, в «Зарплата пришла?» впиши фактическую — расчёты пересчитаются от неё. Плановую сумму и число можно менять когда угодно: пришедшие выплаты не меняются. В «Доходах» видно, сколько приходило по факту и в среднем, — одной кнопкой можно поставить среднее в план.</dd>
         <dt>Свёрнутые блоки</dt><dd>При каждом заходе блоки свёрнуты, в заголовке — короткая сводка. Нажми на заголовок — раскроется до выхода из приложения.</dd>
         <dt>Подстраховка</dt><dd>Считать, что зарплата может прийти на 3 дня позже, — лимит чуть осторожнее.</dd>
       </dl>
@@ -1345,12 +1347,17 @@ function payList(fromYM,toYM){
   for(const inc of state.incomes){
     for(let ym=fromYM;monthNum(ym)<=monthNum(toYM);ym=addMonths(ym,1)){
       if(inc.from.slice(0,7)>ym)continue;
-      for(const p of inc.pays){
-        const date=payDateFor(ym,p.day);
-        if(date<inc.from)continue;
-        if(date<=state.created)continue;        // до первого запуска деньги уже учтены в стартовом балансе
-        const key=payKey(inc,date);
-        if(state.ignoredAuto.includes(key))continue;   // «в этом месяце не будет»
+      // если число выплаты поменяли уже после ответа «пришла / не будет» — ответ остаётся за этой выплатой месяца
+      const list=inc.pays.map(p=>({p,date:payDateFor(ym,p.day)})).filter(x=>x.date>=inc.from&&x.date>state.created);
+      const prefix=inc.id+'|'+ym+'-';
+      const resolved=[...new Set([...state.tx.filter(t=>t.srcKey&&t.srcKey.startsWith(prefix)).map(t=>t.srcKey),...state.ignoredAuto.filter(k=>typeof k==='string'&&k.startsWith(prefix))])];
+      const exact=new Set(list.map(x=>payKey(inc,x.date)));
+      const orphan=resolved.filter(k=>!exact.has(k)).sort();
+      const free=list.filter(x=>!resolved.includes(payKey(inc,x.date))).sort((a,b)=>a.date.localeCompare(b.date));
+      const remap={};free.forEach((x,i)=>{if(orphan[i])remap[x.date]=orphan[i];});
+      for(const {p,date} of list){
+        const key=remap[date]||payKey(inc,date);
+        if(state.ignoredAuto.includes(key))continue;   // «в этом месяце не будет» / «уже учтена»
         const tx=state.tx.find(t=>t.srcKey===key);
         out.push({key,ym,date,amount:num(p.amount),name:inc.name,method:p.method==='cash'?'cash':'card',tx:tx||null,
           late:!tx&&date<=TODAY_ISO});
@@ -3628,6 +3635,16 @@ function renderSetup(){
         ${inc.pays.length>1?`<button class="del" data-delpay="${pi}" aria-label="Удалить выплату">✕</button>`:''}
       </div>`;
     });
+    {const facts=state.tx.filter(t=>t.type==='inc'&&t.srcKey&&t.srcKey.startsWith(inc.id+'|')).sort((a,b)=>b.date.localeCompare(a.date));
+     if(facts.length){
+       const byM={};for(const t of facts){const m=t.srcKey.split('|')[1].slice(0,7);byM[m]=(byM[m]||0)+t.amount;}
+       // текущий месяц учитываю, только если все его выплаты уже пришли — иначе среднее занизится
+       if(byM[TODAY_YM]&&payList(TODAY_YM,TODAY_YM).some(p=>p.key.startsWith(inc.id+'|')&&!p.tx))delete byM[TODAY_YM];
+       if(Object.keys(byM).length){
+       const ms=Object.keys(byM).sort().reverse().slice(0,3),avg=Math.round(ms.reduce((a,m)=>a+byM[m],0)/ms.length/100)*100;
+       const plan=inc.pays.reduce((a,p)=>a+num(p.amount),0);
+       h+=`<div class="inc-facts">Фактически приходило: ${ms.map(m=>MONTHS_SHORT[+m.slice(5)-1]+' — '+fmtN(byM[m])).join(' · ')}${ms.length>1?` · в среднем <b>${fmtN(avg)} ₽</b> в месяц`:''}.
+         ${Math.abs(avg-plan)>=Math.max(500,plan*0.05)?(inc.pays.length===1?`<button class="linkish" data-incavg="${avg}">Поставить ${fmtN(avg)} ₽ в план</button>`:`<span class="muted">В плане ${fmtN(plan)} ₽.</span>`):''}</div>`;}}}
     h+=`<div class="item-foot"><button class="btn small" data-addpay>+ ещё выплата (аванс)</button>
       ${later?`<label class="field inline"><span>начнётся с</span><input type="date" class="inc-from" value="${inc.from}"></label>`
         :`<button class="linkish" data-incfrom>Начнётся позже?</button>`}</div></div>`;
@@ -3741,6 +3758,8 @@ document.getElementById('incomesForm').addEventListener('click',e=>{
   const inc=state.incomes.find(i=>i.id===+box.dataset.inc);if(!inc)return;
   const dp=e.target.closest('[data-delpay]');
   if(dp){const pi=+dp.dataset.delpay;inc.pays.splice(pi,1);renderSetup();setupChanged();return;}
+  const av=e.target.closest('[data-incavg]');
+  if(av&&inc.pays.length===1){inc.pays[0].amount=+av.dataset.incavg;renderSetup();setupChanged();showToast(`«${esc(inc.name)}»: в плане теперь ${fmt(+av.dataset.incavg)} — по среднему факту. Уже пришедшие выплаты не меняются.`);return;}
   if(e.target.closest('[data-addpay]')){inc.pays.push({day:25,amount:0,method:'card'});renderSetup();setupChanged();return;}
   if(e.target.closest('[data-incfrom]')){inc.from=addDaysISO(TODAY_ISO,1);renderSetup();setupChanged();return;}
   const di=e.target.closest('[data-delinc]');
