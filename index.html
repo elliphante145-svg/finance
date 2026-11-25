@@ -1388,15 +1388,30 @@ function expectedPays(toYM){
     .filter(p=>!(p.late&&daysUntil(p.date)<-PAY_STALE))   // больше недели без ответа — в прогноз не беру, чтобы не завышать
     .map(p=>({...p,plan:p.date,date:p.late?tomorrow:p.date}));
 }
-/* ручная запись «Зарплата» через «+» засчитывает ближайшую неподтверждённую выплату (чтобы не было двойного дохода) */
-function linkManualSalary(t){
+/* ручная запись «Зарплата» через «+»: засчитываю как плановую выплату САМ только если и дата (±5 дн.), и сумма (50–150%)
+   похожи — иначе спрашиваю кнопкой (бывает премия, подработка, аванс другой работы). Возвращает {linked} или {ask}. */
+function salaryCandidate(t){
   if(t.type!=='inc'||t.category!=='Зарплата'||t.srcKey)return null;
-  const cand=payList(addMonths(t.date.slice(0,7),-1),addMonths(t.date.slice(0,7),1))
+  return payList(addMonths(t.date.slice(0,7),-1),addMonths(t.date.slice(0,7),1))
     .filter(p=>!p.tx&&Math.abs(daysUntil(p.date)-daysUntil(t.date))<=12)
-    .sort((a,b)=>Math.abs(daysUntil(a.date)-daysUntil(t.date))-Math.abs(daysUntil(b.date)-daysUntil(t.date)))[0];
-  if(cand)t.srcKey=cand.key;
-  return cand||null;
+    .sort((a,b)=>Math.abs(daysUntil(a.date)-daysUntil(t.date))-Math.abs(daysUntil(b.date)-daysUntil(t.date)))[0]||null;
 }
+function linkManualSalary(t){
+  const cand=salaryCandidate(t);if(!cand)return null;
+  const close=Math.abs(daysUntil(cand.date)-daysUntil(t.date))<=5&&t.amount>=cand.amount*0.5&&t.amount<=cand.amount*1.5;
+  if(close){t.srcKey=cand.key;return {linked:cand};}
+  return {ask:cand};
+}
+document.addEventListener('click',e=>{
+  const u=e.target.closest('[data-unlinkpay]');
+  if(u){const t=state.tx.find(x=>x.id===+u.dataset.unlinkpay);if(!t||!t.srcKey)return;
+    const p=payList(addMonths(TODAY_YM,-3),addMonths(TODAY_YM,1)).find(x=>x.key===t.srcKey);
+    delete t.srcKey;save();renderComputed(true);
+    showToast(`Понял: это не плановая зарплата${p?` «${esc(p.name)}» за ${fmtDateShort(p.date)}`:''}. Запись осталась как обычный доход${p&&p.date<=TODAY_ISO?', а ту выплату снова жду и спрошу, когда придёт':''}.`);return;}
+  const l=e.target.closest('[data-linkpay]');
+  if(l){const t=state.tx.find(x=>x.id===+l.dataset.tx);if(!t||t.srcKey)return;
+    t.srcKey=l.dataset.linkpay;save();renderComputed(true);showToast('Засчитал. Эту выплату больше не жду.');}
+});
 function confirmPay(key,date,amount,method){
   const p=payList(addMonths(TODAY_YM,-4),TODAY_YM).find(x=>x.key===key);if(!p||p.tx)return null;
   const t={id:uid(),srcKey:key,date,type:'inc',category:'Зарплата',amount,method,note:p.name};
@@ -1843,7 +1858,9 @@ function cashEvents(c){
     if(!cr.paidThisMonth)add(cr.dueISO,-cr.monthly,''+cr.name,'pay');
     if(monthNum(NEXT_YM)<=monthNum(cr.last))add(payDateFor(NEXT_YM,cr.dueDay),-cr.monthly,''+cr.name,'pay');
   }
-  for(const x of c.ccSched)add(x.date,-x.amount,'Взнос на кредитку','pay');
+  // взнос с зарплаты — не раньше, чем она придёт: с подстраховкой «+N дн.» сдвигаем и его
+  const payDaySet=delay?new Set(plannedExpectedDates()):null;
+  for(const x of c.ccSched)add(delay&&payDaySet.has(x.date)?addDaysISO(x.date,delay):x.date,-x.amount,'Взнос на кредитку'+(delay&&payDaySet.has(x.date)?late:''),'pay');
   for(const d of c.debts){
     if(!(d.enabled&&d.deadline&&d.amount>0))continue;
     const dlm=monthNum(d.deadline.slice(0,7));
@@ -2469,10 +2486,9 @@ function renderDash(c){
   }
   // покупки по кредитке: часть долга вернётся уже после конца горизонта — вычитаем её,
   // иначе «накопится» росло бы от покупки в долг
-  const newCcDebt=Math.max(0,c.ccBase-state.start.creditDebt);
+  // (долг на начало учёта сюда не входит — он был и до приложения)
   const eomN=NEXT_YM+'-'+pad(daysInMonth(NEXT_YM));
-  const ccLater=c.ccSched.filter(x=>x.date>eomN).reduce((s,x)=>s+x.amount,0);
-  const ccBeyond=(c.ccBase>0)?newCcDebt*ccLater/c.ccBase:0;
+  const ccBeyond=c.ccSched.filter(x=>x.date>eomN).reduce((s,x)=>s+(x.parts||[]).filter(p=>/^покупки/.test(p.label)).reduce((a,p)=>a+p.amount,0),0);
   endSave-=ccBeyond;
   if(ccBeyond>=1)saveSub+=` · минус ${fmt(ccBeyond)}: часть покупок по кредитке, которую придётся вернуть позже`;
   fs.textContent=(endSave<0?'−':'+')+fmt(Math.abs(endSave));
@@ -3149,9 +3165,10 @@ $('#txAdd').addEventListener('click',()=>{
     debtRef.amount=Math.max(0,num(debtRef.amount)-amount);
   }
   if(oneRef){t.oneId=oneRef.id;t.category='Разовая трата';if(!t.note)t.note=oneRef.name;}
-  const linkedPay=linkManualSalary(t);   // «+» → Зарплата: засчитываю как пришедшую плановую выплату
+  const lk=linkManualSalary(t);   // «+» → Зарплата: похоже на плановую — засчитываю, не похоже — спрашиваю
   state.tx.push(t);
-  if(linkedPay)setTimeout(()=>showToast(`Засчитал как зарплату «${esc(linkedPay.name)}» по плану на ${fmtDateShort(linkedPay.date)} — спрашивать о ней больше не буду.`),400);
+  if(lk&&lk.linked)setTimeout(()=>showToast(`Засчитал как зарплату «${esc(lk.linked.name)}» за ${fmtDateShort(lk.linked.date)} (по плану ${fmt(lk.linked.amount)}) — её больше не жду.<div class="row" style="margin-top:6px;"><button class="btn small" data-unlinkpay="${t.id}">Нет, это другой доход</button></div>`,'ok',12000),400);
+  if(lk&&lk.ask)setTimeout(()=>showToast(`Это зарплата «${esc(lk.ask.name)}» за ${fmtDateShort(lk.ask.date)} (по плану ${fmt(lk.ask.amount)})? Если да — эту выплату больше не буду ждать. Если нет (премия, подработка) — ничего не нажимай.<div class="row" style="margin-top:6px;"><button class="btn small primary" data-linkpay="${lk.ask.key}" data-tx="${t.id}">Да, это она</button></div>`,'warn',15000),400);
   if(oneRef){oneRef.done=true;oneRef.paidTx=t.id;}
   if(type==='exp'&&t.note){
     const norm=t.note.trim().toLowerCase().slice(0,30);
@@ -3257,12 +3274,12 @@ function txRow(t){
     :(t.type==='save'||t.type==='unsave')?(t.type==='save'?'в копилку':'из копилки')+' · '+MN[t.method]
     :t.type==='debtpay'?'возврат долга · '+MN[t.method]
     :t.type==='repay'?'взнос на кредитку · '+MN[t.method]
-    :t.type==='inc'?(t.srcKey?'зарплата':'доход')+' · '+MN[t.method]
+    :t.type==='inc'?(t.srcKey?'зарплата'+(()=>{const d=t.srcKey.split('|')[1];return d&&d!==t.date?' за '+fmtDateShort(d):'';})():'доход')+' · '+MN[t.method]
     :MN[t.method];
   const fut=t.date>TODAY_ISO?' <span class="pill p-fut" title="Будущая дата: на деньги не влияет, пока этот день не наступил">план</span>':'';
   const dup=DUPS.has(dupKey(t))&&!t.srcKey&&!t.creditId?' <span class="pill p-dup" title="Есть такая же запись: та же дата, сумма, категория и способ">дубль?</span>':'';
   const cls=(t.type==='move'||t.type==='save'||t.type==='unsave')?'':(sign==='+'?'pos':'neg');
-  return `<div class="txr"><div class="txm"><div class="txc">${esc(t.category)}${fut}${dup}</div><div class="txs">${fmtDateShort(t.date)} · ${kind}${t.note&&!(t.srcKey)?' · '+esc(t.note):''}</div></div><div class="txa ${cls}">${sign}${fmtN(t.amount)}</div><button class="del" data-del="${t.id}" aria-label="Удалить запись">✕</button></div>`;
+  return `<div class="txr"><div class="txm"><div class="txc">${esc(t.category)}${fut}${dup}</div><div class="txs">${fmtDateShort(t.date)} · ${kind}${t.note&&!(t.srcKey)?' · '+esc(t.note):''}${t.srcKey&&!/\(авто\)/.test(t.note||'')?` · <button type="button" class="linkish" data-unlinkpay="${t.id}" style="padding:0;min-height:0;font-size:12.5px;">не она?</button>`:''}</div></div><div class="txa ${cls}">${sign}${fmtN(t.amount)}</div><button class="del" data-del="${t.id}" aria-label="Удалить запись">✕</button></div>`;
 }
 function renderTx(){
   {const ops=state.tx.filter(t=>t.date===TODAY_ISO&&!t.srcKey).length,ns=(state.noSpend||[]).includes(TODAY_ISO);
