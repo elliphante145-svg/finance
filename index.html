@@ -197,6 +197,7 @@
   .toast-wrap{position:fixed;top:16px;right:16px;z-index:60;display:flex;flex-direction:column;gap:8px;max-width:360px;}
   .toast{position:relative;border-radius:10px;padding:12px 16px 12px 36px;font-size:14px;background:var(--raised);border:1px solid var(--line2);color:var(--ink);
     box-shadow:var(--shadow);animation:slidein .3s var(--ease);pointer-events:none;}
+  .toast button,.toast a,.toast .btn{pointer-events:auto;}
   .toast::before{content:'';position:absolute;left:16px;top:19px;width:8px;height:8px;border-radius:50%;background:var(--green);}
   .toast.warn::before{background:var(--amber);}
   @keyframes flashbox{0%{box-shadow:0 0 0 1px var(--gold);}100%{box-shadow:0 0 0 1px rgba(212,170,90,0);}}
@@ -833,6 +834,7 @@
 
   <div class="card">
     <h2>Мои решения на месяц</h2>
+    <div id="planReality"></div>
     <label class="switch-row">
       <span><b>Соблюдаю план месяца</b><span class="muted">лимит дня учитывает траты на жизнь из плана</span></span>
       <input type="checkbox" id="followPlan" class="switch">
@@ -1057,7 +1059,7 @@
         <dt>На что уходят деньги</dt><dd>Круг на главной: какая доля трат пришлась на каждую категорию за месяц или за 3 месяца. Платежи по кредитам не входят. <i>Продукты 46% → почти половина трат ушла на еду.</i></dd>
         <dt>Стрелки ↑↓ у категорий</dt><dd>На сколько трат в категории стало больше или меньше, чем в прошлом месяце. Текущий месяц сравниваю с теми же днями прошлого — так честно.</dd>
         <dt>Другое и мелочи</dt><dd>Небольшие категории, собранные в одну серую строку, чтобы круг не дробился. Под строкой видно, что в неё вошло.</dd>
-        <dt>Зарплата пришла?</dt><dd>Зарплата сама не записывается. В день выплаты на главной спрошу: «Пришла» — укажешь фактическую дату и сумму; «Ещё нет» — спрошу завтра, а пока этих денег в кошельке не считаю.</dd>
+        <dt>Зарплата пришла?</dt><dd>Зарплата сама не записывается. В день выплаты на главной спрошу: «Пришла» — укажешь, когда и сколько пришло на самом деле (можно больше или меньше плана); «Ещё нет» — спрошу завтра. Не ответил неделю или уже наступила следующая выплата — вопрос исчезнет, и эти деньги я больше не жду. Пришли позже — запиши через «+» → Доход → Зарплата, я спрошу, к какой выплате их отнести.</dd>
         <dt>Список трат в категории</dt><dd>В «На что уходят деньги» нажми на категорию — раскроется, на что именно ушли деньги за выбранный месяц. <i>Разовая трата → «Подарок маме 5 000», «Ремонт телефона 3 200».</i></dd>
         <dt>Кредитка по месяцам</dt><dd>У покупок каждого месяца свой срок без процентов: купил в ноябре — банк ждёт до 28 февраля. Гашу раньше — за 105 дней из 120, чтобы был запас 15 дней.</dd>
         <dt>Траты за период</dt><dd>В Журнале: выбери Сегодня, Вчера, 3 дня, Неделю, Месяц или свои даты — увидишь сумму, среднее за день, сравнение с прошлым таким же периодом и все записи по дням. Нажми на категорию — останутся только её записи.</dd>
@@ -1067,7 +1069,8 @@
         <dt>Отложено на цели</dt><dd>Под «Деньги сейчас» на главной: сколько лежит в копилках. Эти деньги не входят ни в «сейчас», ни в лимит на день — они отложены. Больше они ни в каких расчётах не участвуют, только засчитываются в подушку месяца, если она задана в плане.</dd>
         <dt>Сверка с банком</dt><dd>«Деньги сейчас» → «Сверка с банком»: из чего сложилась сумма на карте или в наличных и сколько было на конец любого дня. Сравни с выпиской банка за ту же дату — так видно день, где разошлось. Там же видны твои ручные поправки.</dd>
         <dt>Зарплата «Уже учтена»</dt><dd>Если зарплата пришла, а ты не нажал «Пришла» и просто поправил сумму на карте — нажми «Уже учтена», чтобы она не прибавилась второй раз. Без ответа больше недели зарплата перестаёт считаться ожидаемой в прогнозе.</dd>
-        <dt>День или Неделя</dt><dd>Переключатель на главной плашке. «День» — сколько можно тратить в день. «Неделя» — сколько можно потратить до воскресенья: бюджет недели считается в понедельник из того, что осталось от плана месяца, и до воскресенья не меняется — каждая трата вычитается целиком. Перерасход уменьшает следующие недели месяца, экономия — увеличивает. За месяц итог тот же.</dd>
+        <dt>День или Неделя</dt><dd>Переключатель на главной плашке. «День» — сколько можно тратить в день. «Неделя» — сколько можно потратить до воскресенья. Оба считаются одинаково — от зарплаты до зарплаты: неделя = сумма «в день» на оставшиеся дни недели. <i>Пример: 800 в день, сегодня пятница → на неделю 2 400 (пт, сб, вс).</i> Перерасход тянется только до ближайшей зарплаты.</dd>
+        <dt>План меньше реальных трат</dt><dd>Если тратишь на жизнь заметно больше плана, в «Как посчитано» и в «План месяца» появится подсказка: сколько ушло, на что больше всего и кнопка «Поднять план». <i>Пример: план 25 000, а ушло 36 000 — из-за ремонта машины. Его лучше вносить как разовую трату.</i></dd>
         <dt>Конверты на неделю</dt><dd>В режиме «Неделя» под плашкой: сколько осталось на этой неделе в каждом конверте (Продукты, Транспорт…) и в «Прочем». Лимиты конвертов на месяц — в «План → План месяца».</dd>
         <dt>Доход с плавающей суммой</dt><dd>Ставь в план осторожную сумму. Когда деньги придут, в «Зарплата пришла?» впиши фактическую — расчёты пересчитаются от неё. Плановую сумму и число можно менять когда угодно: пришедшие выплаты не меняются. В «Доходах» видно, сколько приходило по факту и в среднем, — одной кнопкой можно поставить среднее в план.</dd>
         <dt>Свёрнутые блоки</dt><dd>При каждом заходе блоки свёрнуты, в заголовке — короткая сводка. Нажми на заголовок — раскроется до выхода из приложения.</dd>
@@ -1374,6 +1377,12 @@ function payList(fromYM,toYM){
   }
   return out.sort((a,b)=>a.date.localeCompare(b.date));
 }
+/* вопрос «пришла?» устарел: прошла неделя или уже наступила следующая выплата этой же работы */
+function payExpired(p,all){
+  if(daysUntil(p.date)<-PAY_STALE)return true;
+  const id=p.key.split('|')[0];
+  return (all||payList(addMonths(TODAY_YM,-3),addMonths(TODAY_YM,1))).some(q=>q.key.split('|')[0]===id&&q.date>p.date&&q.date<=TODAY_ISO);
+}
 /* ждут ответа «пришла?»: срок наступил, записи нет (смотрим не дальше 3 месяцев назад) */
 function awaitingPays(){
   const from=addMonths(TODAY_YM,-3);
@@ -1385,11 +1394,11 @@ function expectedPays(toYM){
   const tomorrow=addDaysISO(TODAY_ISO,1);
   return payList(monthNum(state.created.slice(0,7))>monthNum(from)?state.created.slice(0,7):from,toYM)
     .filter(p=>!p.tx&&(p.late||p.date>TODAY_ISO))
-    .filter(p=>!(p.late&&daysUntil(p.date)<-PAY_STALE))   // больше недели без ответа — в прогноз не беру, чтобы не завышать
+    .filter(p=>!(p.late&&payExpired(p)))   // неделя без ответа или уже следующая выплата — в прогноз не беру, чтобы не завышать
     .map(p=>({...p,plan:p.date,date:p.late?tomorrow:p.date}));
 }
-/* ручная запись «Зарплата» через «+»: засчитываю как плановую выплату САМ только если и дата (±5 дн.), и сумма (50–150%)
-   похожи — иначе спрашиваю кнопкой (бывает премия, подработка, аванс другой работы). Возвращает {linked} или {ask}. */
+/* ручная запись «Зарплата» через «+»: сама к плановой выплате не привязывается — спрашиваю кнопкой «Да, это она»
+   (бывает премия, подработка, аванс другой работы). */
 function salaryCandidate(t){
   if(t.type!=='inc'||t.category!=='Зарплата'||t.srcKey)return null;
   return payList(addMonths(t.date.slice(0,7),-1),addMonths(t.date.slice(0,7),1))
@@ -1398,9 +1407,7 @@ function salaryCandidate(t){
 }
 function linkManualSalary(t){
   const cand=salaryCandidate(t);if(!cand)return null;
-  const close=Math.abs(daysUntil(cand.date)-daysUntil(t.date))<=5&&t.amount>=cand.amount*0.5&&t.amount<=cand.amount*1.5;
-  if(close){t.srcKey=cand.key;return {linked:cand};}
-  return {ask:cand};
+  return {ask:cand};   // сам не засчитываю никогда — только спрашиваю
 }
 document.addEventListener('click',e=>{
   const u=e.target.closest('[data-unlinkpay]');
@@ -2052,7 +2059,7 @@ $('#payDelay').addEventListener('change',e=>{state.plan.payDelay=e.target.checke
   showToast(e.target.checked?'Подстраховка включена: считаю, что каждая зарплата может прийти на 3 дня позже. Лимит до зарплаты станет осторожнее.':'Подстраховка выключена: зарплаты считаются в свои даты.','ok',6000);});
 /* ================= панель ================= */
 /* ===== лимит «по дням» или «по неделям» ===== */
-let WEEK=null;
+let WEEK=null,WEEK_PLAN=null;
 function limitMode(){try{return localStorage.getItem('fin-limit-mode')==='week'?'week':'day';}catch(e){return 'day';}}
 function setLimitMode(m){try{localStorage.setItem('fin-limit-mode',m==='week'?'week':'day');}catch(e){}renderComputed(true);}
 function weekInfo(){   // неделя с понедельника по воскресенье
@@ -2094,9 +2101,13 @@ function renderWeekEnv(o){
   envs.push({name:'Прочее',cats:null,limit:Math.max(0,num(state.plan.spending)-envSum)});
   const rows=envs.map(e=>{
     const match=t=>e.cats?e.cats.includes(t.category):!inEnv.has(t.category);
-    const bud=weekBudget(o.wk,match,e.limit).budget,spent=weekTx.filter(match).reduce((a,t)=>a+t.amount,0);
-    const rest=Math.max(0,bud-spent)*o.scale;
-    return {...e,spent,rest,total:spent>bud+0.5?bud*o.scale:rest+spent,over:spent>bud+0.5,overBy:spent-bud};
+    const P=WEEK_PLAN,eDay=e.limit/daysInMonth(TODAY_YM);
+    const spentPer=state.tx.filter(t=>isLife(t)&&match(t)&&t.date>=P.pp.start&&t.date<=TODAY_ISO).reduce((a,t)=>a+t.amount,0);
+    const perDayNow=Math.max(0,eDay*P.pp.len-spentPer)/P.pp.r;
+    const spent=weekTx.filter(match).reduce((a,t)=>a+t.amount,0);
+    const rest=(perDayNow*P.daysBeforePay+eDay*(o.wk.left-P.daysBeforePay))*o.scale;
+    const over=perDayNow<0.5&&spentPer>0&&P.daysBeforePay>0,overBy=spentPer-eDay*P.pp.len;
+    return {...e,spent,rest,total:rest+spent,over,overBy};
   }).filter(r=>r.limit>0||r.spent>0);
   // перерасход в одном конверте забирает у остальных: сумма конвертов не больше общего остатка на неделю
   const sumRest=rows.reduce((a,r)=>a+r.rest,0),k2=sumRest>WEEK.rest+0.5&&sumRest>0?WEEK.rest/sumRest:1;
@@ -2105,8 +2116,8 @@ function renderWeekEnv(o){
   box.innerHTML=rows.map(r=>{const pct=r.total>0?Math.min(100,r.spent/r.total*100):(r.spent>0?100:0);
     return `<div class="catbar-row"><div class="t"><span>${esc(r.name)}</span><span>осталось <b class="${r.rest<1&&r.spent>0?'neg':''}">${fmt(r.rest)}</b></span></div>
       <div class="track"><div class="fill" style="width:${pct.toFixed(1)}%;${r.over?'background:var(--red)':''}"></div></div>
-      <div class="muted" style="font-size:12px;margin-top:3px;">потрачено ${fmt(r.spent)} из ${fmt(r.total)} на неделю${r.over?` · <span style="color:var(--red)">больше на ${fmt(r.overBy)}</span>`:''}</div></div>`;}).join('')
-    +`<div class="footer-note">Конверт на неделю = что осталось от конверта на месяц к понедельнику, поделённое на оставшиеся дни месяца, × 7 дней (или сколько дней недели в этом месяце). До воскресенья не меняется — траты вычитаются целиком. Лимиты конвертов меняются в «План → План месяца».${WEEK.envSqueezed?' Один из конвертов уже превышен — остальные на эту неделю уменьшены, чтобы вместе не выйти за общую сумму.':''}${o.scale<1?' Сейчас денег меньше, чем по плану, — суммы уменьшены в той же доле.':''}</div>`;
+      <div class="muted" style="font-size:12px;margin-top:3px;">потрачено ${fmt(r.spent)} за неделю${r.over?` · <span style="color:var(--red)">до зарплаты по плану уже потрачено на ${fmt(r.overBy)} больше</span>`:''}</div></div>`;}).join('')
+    +`<div class="footer-note">Конверт на неделю считается так же, как общая сумма: от зарплаты до зарплаты, по норме конверта в день. Перерасход в одном конверте уменьшает остальные, чтобы вместе не выйти за общую сумму недели.</div>`;
   setSum('weekEnvCard',rows.filter(r=>r.cats).slice(0,2).map(r=>esc(r.name)+' '+fmtN(r.rest)).join(' · '));
 }
 let lastDaily=0;  // сколько можно тратить в день дальше (с учётом всего потраченного) — для всплывашки
@@ -2398,15 +2409,18 @@ function renderDash(c){
     const isLife=t=>t.type==='exp'&&!t.creditId&&!t.oneId;
     const spentWeek=state.tx.filter(t=>isLife(t)&&t.date>=wk.start&&t.date<=TODAY_ISO).reduce((a,t)=>a+t.amount,0);
     // бюджет недели фиксируется в понедельник: что осталось от плана месяца к началу недели × доля дней
-    const wb0=weekBudget(wk,null);
-    const remM=Math.max(0,planLifeThis-factLife),dlm=daysInMonth(TODAY_YM)-NOW.getDate()+1;
-    const planRest=Math.max(0,wb0.budget-spentWeek);
+    // неделя считается так же, как «по дням»: от зарплаты до зарплаты. Дни недели до ближайшей зарплаты — по остатку
+    // текущего периода, дни после зарплаты — по обычной норме плана (перерасход прошлого периода дальше не тянется)
+    const planDayNow=Math.max(0,periodRest)/pp.r;
+    const daysBeforePay=pp.isPay?Math.min(wk.left,Math.max(0,daysUntil(pp.next))):wk.left;
+    const planRest=planDayNow*daysBeforePay+normDay*(wk.left-daysBeforePay);
+    WEEK_PLAN={pp,daysBeforePay,normDay};
     const wc=[];
     if(followEff)wc.push({k:'plan',v:planRest});
     wc.push({k:'money',v:moneyPerDay*wk.left});
     wc.push({k:'gap',v:Math.max(0,cp.safe)*wk.left});
     const wb=wc.reduce((a,b)=>b.v<a.v-0.5?b:a);
-    const rest=longFree<0?0:Math.max(0,wb.v),total=wb.k==='plan'?Math.max(wb0.budget,rest+spentWeek):rest+spentWeek;
+    const rest=longFree<0?0:Math.max(0,wb.v),total=rest+spentWeek;
     WEEK={rest,total,spentWeek,left:wk.left,bind:wb.k,planRest,end:wk.end};
     const envCard=$('#weekEnvCard');
     if(mode==='week'){
@@ -2417,12 +2431,11 @@ function renderDash(c){
       const endTxt=wk.left===1?'сегодня последний день недели':`до воскресенья ${wk.left} ${plural(wk.left,'день','дня','дней')} · ≈ ${fmt(perDay)} в день`;
       const short=longFree<0?`до конца ${curMonthGen} не хватает ${fmt(-longFree)}`
         :rest>=1?`потрачено ${fmt(spentWeek)} из ${fmt(total)} · ${endTxt}`
-        :wb.k==='plan'?`бюджет недели потрачен: ${fmt(spentWeek)} из ${fmt(wb0.budget)} — перерасход уменьшит следующие недели`
+        :wb.k==='plan'?`по плану до зарплаты ${fmtDateShort(pp.next)} уже всё потрачено`
         :wb.k==='gap'?(gapDay<=TODAY_ISO?'денег на руках меньше, чем нужно на ближайшие платежи':`до ${fmtDateShort(gapDay)} денег впритык — сначала платежи`):`до конца ${curMonthGen} денег впритык`;
       const NM={plan:'по твоему плану трат',money:'чтобы денег хватило до конца '+curMonthGen,gap:'чтобы ни в один день не уйти в минус'};
-      const overW=spentWeek-wb0.budget;
       const full=`<b>Неделя ${fmtDateShort(wk.start)} – ${fmtDateShort(wk.end)}.</b> Уже потрачено на жизнь ${fmt(spentWeek)}, можно ещё <b>${fmt(rest)}</b>.<br><br>`
-        +(followEff?`План на жизнь — ${fmt(planLife)} в месяц. ${wb0.text} Бюджет недели — <b>${fmt(wb0.budget)}</b>, он не меняется до воскресенья: каждая трата вычитается из него целиком.${overW>0.5?` <span style="color:var(--amber)">Потрачено больше на ${fmt(overW)} — эта разница уменьшит следующие недели ${monthGenOf(TODAY_YM)}.</span>`:''} Сэкономил — следующие недели станут свободнее. За месяц итог тот же.<br><br>`:'План трат не задан — считаю только по деньгам. Задай «траты на жизнь» в Плане.<br><br>')
+        +(followEff?`План на жизнь — ${fmt(planLife)} в месяц, это ≈ ${fmt(normDay)} в день. Считаю от зарплаты до зарплаты, как и «по дням»: ${daysBeforePay>0?`до ${fmtDateShort(pp.next)} по плану осталось ${fmt(Math.max(0,periodRest))} — на ${daysBeforePay} ${plural(daysBeforePay,'день','дня','дней')} этой недели ≈ ${fmt(planDayNow*daysBeforePay)}`:''}${wk.left>daysBeforePay?`${daysBeforePay>0?', а ':''}после зарплаты — по ${fmt(normDay)} в день (${wk.left-daysBeforePay} ${plural(wk.left-daysBeforePay,'день','дня','дней')})`:''}. Перерасход прошлого периода дальше не тянется.<br><br>`:'')
         +`<div class="how"><div style="color:var(--ink);font-weight:600;margin-bottom:4px;">Считаю тремя способами — на ${wk.left} ${plural(wk.left,'день','дня','дней')} до конца недели</div>`
         +wc.map(x=>`<div class="${x===wb?'pick':''}">${x===wb?'→':'·'} ${NM[x.k]} — <b>${fmt(x.v)}</b></div>`).join('')
         +`<div class="muted" style="margin-top:6px;">Беру самую осторожную цифру. Это тот же расчёт, что и «по дням», только сумма на всю неделю: деньги на платежи, кредитку, разовые траты и подушку уже отложены.</div></div>`;
@@ -2513,6 +2526,7 @@ function renderDash(c){
   if(savedNow>300&&daysTracked>=3)ph.push(`За ${daysTracked} дн. потратил на ${fmt(savedNow)} меньше возможного — их можно отложить или потратить сегодня сверх лимита`);
   $('#paydayInfo').innerHTML=c.nextPay?`${esc(c.nextPay.name)} +${fmtN(c.nextPay.amount)} · ${c.nextPay.late?'жду с '+fmtDateShort(c.nextPay.plan):(daysUntil(c.nextPay.date)>0?'через '+daysUntil(c.nextPay.date)+' дн.':'сегодня')}`:'Зарплаты не добавлены';
   if(ph.length&&WHY.daily)WHY.daily+=`<div class="why-note">${ph.join('<br>')}</div>`;
+  {const pr=planReality();if(pr&&WHY.daily!==undefined)WHY.daily=pr.html+(WHY.daily||'');}
   /* обязательства */
   const dl=[];
   for(const cr of c.credits){
@@ -2705,7 +2719,40 @@ const BAL_EDIT={};
 $('#inDebt').addEventListener('input',e=>{if(e.target.value.trim()==='')return;const c=compute();state.start.creditDebt=num(e.target.value)-c.expCredit+c.repCash+c.repCard;save();renderComputed(false);});
 
 /* ================= план месяца ================= */
+/* план «на жизнь» и реальные траты: если тратится заметно больше плана — объясняю простыми словами и предлагаю, что сделать */
+function planReality(){
+  const plan=num(state.plan.spending);if(!(plan>0))return null;
+  const dim=daysInMonth(TODAY_YM),cr=state.created||TODAY_ISO;
+  const startDay=cr.slice(0,7)===TODAY_YM?+cr.slice(8):1,elapsed=NOW.getDate()-startDay+1;
+  let ym=TODAY_YM,days=elapsed,planFor=plan*Math.max(0,elapsed)/dim,full=false;
+  if(elapsed<10){                       // в начале месяца смотрю на прошлый, если он был целиком
+    const pm=addMonths(TODAY_YM,-1);if(cr>pm+'-01')return null;
+    ym=pm;days=daysInMonth(pm);planFor=plan;full=true;
+  }
+  const isLife=t=>t.type==='exp'&&!t.creditId&&!t.oneId&&t.date.slice(0,7)===ym&&t.date<=TODAY_ISO;
+  const tx=state.tx.filter(isLife),fact=tx.reduce((a,t)=>a+t.amount,0);
+  if(!(fact>planFor*1.15&&fact-planFor>=2000))return null;
+  const byCat={};tx.forEach(t=>byCat[t.category]=(byCat[t.category]||0)+t.amount);
+  const top=Object.entries(byCat).sort((a,b)=>b[1]-a[1]).slice(0,2);
+  const big=tx.filter(t=>t.amount>=Math.max(2500,plan*0.1)).sort((a,b)=>b.amount-a.amount).slice(0,3);
+  const proj=full?fact:fact/Math.max(1,days)*dim;
+  const sugg=Math.ceil(proj/1000)*1000;
+  const mon=monthLoc(ym);
+  return {ym,fact,planFor,plan,top,big,sugg,full,mon,
+    html:`<div class="banner warn" style="margin-bottom:12px;"><b>${full?`В ${mon} на жизнь ушло ${fmt(fact)}`:`В ${mon} на жизнь уже ушло ${fmt(fact)}`}</b> — а по плану ${full?'на месяц':`к этому дню`} было ${fmt(planFor)}.`
+      +` Больше всего: ${top.map(([k,v])=>esc(k)+' — '+fmt(v)).join(', ')}.`
+      +(big.length?` Крупные траты: ${big.map(t=>esc(t.note||t.category)+' '+fmt(t.amount)).join(', ')}.`:'')
+      +`<div style="margin-top:8px;"><b>Что это значит:</b> план ${fmt(plan)} в месяц меньше твоих реальных трат${full?'':` (в таком темпе за месяц выйдет ≈ ${fmt(proj)})`}. Поэтому «можно потратить» часто будет маленьким или нулём.</div>`
+      +`<div style="margin-top:6px;"><b>Что можно сделать:</b><ol class="al-list"><li>Поднять план до реального — кнопка ниже.</li><li>Крупные редкие траты (ремонт машины, техника, подарки) вносить как «разовые» в «План → Доходы и расходы» — они не съедают лимит на жизнь.</li><li>Или оставить план и стараться в него укладываться.</li></ol></div>`
+      +`<div class="row" style="margin-top:4px;"><button class="btn small primary" data-setplan="${sugg}">Поднять план до ${fmt(sugg)}</button></div></div>`};
+}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-setplan]');if(!b)return;
+  const v=+b.dataset.setplan,old=num(state.plan.spending);
+  if(!confirm(`Поменять план на жизнь с ${fmtN(old)} на ${fmtN(v)} ₽ в месяц?`))return;
+  trackChange();state.plan.spending=v;save();syncSliders();closeSheet();renderComputed(true);renderPlan();
+  showToast(`План на жизнь: ${fmtN(old)} → <b>${fmtN(v)}</b> ₽ в месяц. Вернуть можно в «План → План месяца».`);});
 function renderPlan(){
+  {const pr=planReality();const el=$('#planReality');if(el)el.innerHTML=pr?pr.html:'';}
   const ym=state.plan.month;
   const c=compute();
   const income=incomeFor(ym);
@@ -3378,7 +3425,7 @@ function fixedAfter(p){
 function renderPayAsk(c){
   const box=$('#payAsk');if(!box)return;
   const snooze=state.paySnooze||{};
-  const list=(c.awaiting||[]).filter(p=>snooze[p.key]!==TODAY_ISO);
+  const list=(c.awaiting||[]).filter(p=>snooze[p.key]!==TODAY_ISO&&!payExpired(p));
   box.innerHTML=list.map(p=>{
     const d=daysUntil(p.date),when=d===0?'сегодня':(d===-1?'вчера':fmtDateShort(p.date));
     return `<div class="pay-ask" data-key="${esc(p.key)}">
@@ -4030,15 +4077,12 @@ function tourShow(){
   clearInterval(tourTimer);check();tourTimer=setInterval(check,500);
 }
 /* ===== «Что нового»: показываем один раз после обновления — только то, что важно человеку ===== */
-const NEWS_VER='5.1';
+const NEWS_VER='5.7';
 const NEWS=[
-  {title:'Что нового в приложении',text:'Траты за любой период в Журнале, строка «Сегодня потрачено» на главной, точная дата у разовых трат и понятный блок «Когда закроются долги». Покажу коротко.'},
-  {tab:'dash',target:'#todayLine',title:'Сегодня потрачено',text:'На главной теперь видно, сколько ты потратил сегодня. Нажми на строку — откроется Журнал с тратами за сегодня.'},
-  {tab:'tx',target:'#jpCard',scroll:'#jpChips',open:true,act:()=>{JP.mode='today';JP.cat=null;renderJP();},title:'Шаг 1. Выбери период',text:'В Журнале блок «Траты за период». Сверху выбери: Сегодня, Вчера, 3 дня, Неделя, Месяц (стрелками — любой месяц) или Свой период с датами «с» и «по».'},
-  {tab:'tx',target:'#jpCard',scroll:'#jpChips',open:true,act:()=>{JP.mode='week';JP.cat=null;renderJP();},title:'Шаг 2. Смотри сводку и записи',text:'Сверху — сколько потрачено, сколько записей и в среднем за день, и сравнение с таким же прошлым периодом. Ниже — категории и сами записи по дням с итогом за каждый день.'},
-  {tab:'tx',target:'#jpCard',open:true,act:()=>{JP.mode='week';const b=document.querySelector('#txSummary .jp-cat');if(b){JP.cat=b.dataset.jpcat;renderJP();}return document.querySelector('#txSummary .jp-cats');},title:'Шаг 3. Нажми на категорию',text:'Останутся только её записи. Нажми ещё раз или «показать все» — вернутся все. Доходы, переводы и взносы на кредитку — отдельно внизу, в траты не входят.'},
-  {tab:'setup',target:'#oneTimeForm',open:'#setOneCard',act:()=>{JP.mode='today';JP.cat=null;},title:'Разовые траты: к какому числу',text:'Вместо месяца теперь указываешь число, к которому нужны деньги. Лимит на день заранее их учтёт, а под тратой коротко написано, что это значит. Без числа считаю в конце месяца, как раньше.'},
-  {tab:'debts',target:'#forecastCard',scroll:'#forecastHead',open:true,title:'Когда закроются долги',text:'Сверху — к какому месяцу закроешь все долги, ниже — каждый долг отдельно. Переключатель «Отдавать долгам весь свободный остаток» теперь сам пишет, что он меняет: например, «с ним — к январю, без него — к марту». Внизу — «По месяцам»: нажми на месяц, и покажу, из чего сложился остаток.'},
+  {title:'Что нового',text:'Три изменения — покажу за 30 секунд.'},
+  {tab:'dash',target:'#heroCard',title:'1. «Неделя» больше не показывает 0 зря',text:'«День» и «Неделя» теперь считают одинаково — от зарплаты до зарплаты. Неделя = сумма «в день» на оставшиеся дни недели. Переключатель — на зелёной плашке.'},
+  {tab:'dash',target:'#heroCard',title:'2. Зарплата: отмечаешь сам',text:'В день выплаты на главной появится «Зарплата пришла?». «Пришла» — впиши, когда и сколько пришло (можно больше или меньше плана). «Ещё нет» — спрошу завтра. Через неделю без ответа вопрос исчезнет сам.'},
+  {tab:'plan',target:()=>document.getElementById('planReality').closest('.card'),open:true,title:'3. Если тратишь больше плана',text:'Здесь и в «Как посчитано» появится подсказка: сколько ушло на жизнь, на что больше всего, и кнопка «Поднять план». Нет подсказки — значит, ты укладываешься.'},
 ];
 function newsMarkSeen(){try{localStorage.setItem('fin-news-seen',NEWS_VER);}catch(e){}}
 function newsShow(step){
