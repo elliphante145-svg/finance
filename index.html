@@ -194,7 +194,7 @@
   details.month[open] summary{border-bottom:1px solid var(--line);}
   details.month .m-body{padding:8px 12px 12px;}
   .done-item{opacity:.5;}
-  .toast-wrap{position:fixed;top:16px;right:16px;z-index:60;display:flex;flex-direction:column;gap:8px;max-width:360px;}
+  .toast-wrap{position:fixed;top:16px;right:16px;z-index:95;display:flex;flex-direction:column;gap:8px;max-width:360px;}
   .toast{position:relative;border-radius:10px;padding:12px 16px 12px 36px;font-size:14px;background:var(--raised);border:1px solid var(--line2);color:var(--ink);
     box-shadow:var(--shadow);animation:slidein .3s var(--ease);pointer-events:none;}
   .toast button,.toast a,.toast .btn{pointer-events:auto;}
@@ -325,6 +325,9 @@
   .pay-ask .pa-s{font-size:13.5px;color:var(--ink2);line-height:1.45;}
   .pay-ask .pa-btns{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
   .pay-ask .pa-btns .btn{flex:1 1 120px;}
+  .pay-ask.open .pa-btns{display:none;}
+  .pay-ask .pa-where{grid-column:1/-1;}
+  .pay-ask .pa-seg{margin:0;}
   .pay-ask .pa-form{display:none;margin-top:10px;gap:8px;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));align-items:end;}
   .pay-ask.open .pa-form{display:grid;}
   .pay-ask.open .pa-btns{display:none;}
@@ -1059,7 +1062,7 @@
         <dt>На что уходят деньги</dt><dd>Круг на главной: какая доля трат пришлась на каждую категорию за месяц или за 3 месяца. Платежи по кредитам не входят. <i>Продукты 46% → почти половина трат ушла на еду.</i></dd>
         <dt>Стрелки ↑↓ у категорий</dt><dd>На сколько трат в категории стало больше или меньше, чем в прошлом месяце. Текущий месяц сравниваю с теми же днями прошлого — так честно.</dd>
         <dt>Другое и мелочи</dt><dd>Небольшие категории, собранные в одну серую строку, чтобы круг не дробился. Под строкой видно, что в неё вошло.</dd>
-        <dt>Зарплата пришла?</dt><dd>Зарплата сама не записывается. В день выплаты на главной спрошу: «Пришла» — укажешь, когда и сколько пришло на самом деле (можно больше или меньше плана); «Ещё нет» — спрошу завтра. Не ответил неделю или уже наступила следующая выплата — вопрос исчезнет, и эти деньги я больше не жду. Пришли позже — запиши через «+» → Доход → Зарплата, я спрошу, к какой выплате их отнести.</dd>
+        <dt>Зарплата пришла?</dt><dd>Зарплата сама не записывается. В день выплаты на главной спрошу: «Пришла на карту» или «Пришла наличными» — выбери, куда пришли деньги в этот раз (план не меняется), и укажи, когда и сколько пришло на самом деле (можно больше или меньше плана); «Ещё нет» — спрошу завтра. Не ответил неделю или уже наступила следующая выплата — вопрос исчезнет, и эти деньги я больше не жду. Пришли позже — запиши через «+» → Доход → Зарплата, я спрошу, к какой выплате их отнести. Если такую зарплату ты уже отметил — предупрежу «Не задвоилось?» и предложу удалить лишнюю запись.</dd>
         <dt>Список трат в категории</dt><dd>В «На что уходят деньги» нажми на категорию — раскроется, на что именно ушли деньги за выбранный месяц. <i>Разовая трата → «Подарок маме 5 000», «Ремонт телефона 3 200».</i></dd>
         <dt>Кредитка по месяцам</dt><dd>У покупок каждого месяца свой срок без процентов: купил в ноябре — банк ждёт до 28 февраля. Гашу раньше — за 105 дней из 120, чтобы был запас 15 дней.</dd>
         <dt>Траты за период</dt><dd>В Журнале: выбери Сегодня, Вчера, 3 дня, Неделю, Месяц или свои даты — увидишь сумму, среднее за день, сравнение с прошлым таким же периодом и все записи по дням. Нажми на категорию — останутся только её записи.</dd>
@@ -1131,7 +1134,7 @@
       <div class="field" id="fNote" style="flex:1;min-width:160px;"><label>Примечание</label><input type="text" id="txNote" placeholder="необязательно"></div>
       <div class="field" id="fAdd"><label>&nbsp;</label><button class="btn primary" id="txAdd">Добавить</button></div>
     </div>
-    <div class="footer-note">Начисления зарплаты попадают сюда автоматически в день выплаты. Платежи по кредитам отмечаются кнопкой «Внёс» на главной.</div>
+    <div class="footer-note">Зарплату по плану отмечай на главной в «Зарплата пришла?» — там же выбери, на карту или наличными. Так она не посчитается дважды. Платежи по кредитам — кнопкой «Внёс» на главной.</div>
   </div>
   </div>
 </div>
@@ -1409,6 +1412,12 @@ function linkManualSalary(t){
   const cand=salaryCandidate(t);if(!cand)return null;
   return {ask:cand};   // сам не засчитываю никогда — только спрашиваю
 }
+document.addEventListener('click',e=>{
+  const d=e.target.closest('[data-undotx]');if(!d)return;
+  const i=state.tx.findIndex(x=>x.id===+d.dataset.undotx);if(i<0)return;
+  const before=compute();state.tx.splice(i,1);save();renderComputed(true);d.closest('.toast')?.remove();
+  showToast('Удалил новую запись — зарплата посчитана один раз.'+balanceDiff(before,compute()));
+});
 document.addEventListener('click',e=>{
   const u=e.target.closest('[data-unlinkpay]');
   if(u){const t=state.tx.find(x=>x.id===+u.dataset.unlinkpay);if(!t||!t.srcKey)return;
@@ -3215,6 +3224,9 @@ $('#txAdd').addEventListener('click',()=>{
   const lk=linkManualSalary(t);   // «+» → Зарплата: похоже на плановую — засчитываю, не похоже — спрашиваю
   state.tx.push(t);
   if(lk&&lk.linked)setTimeout(()=>showToast(`Засчитал как зарплату «${esc(lk.linked.name)}» за ${fmtDateShort(lk.linked.date)} (по плану ${fmt(lk.linked.amount)}) — её больше не жду.<div class="row" style="margin-top:6px;"><button class="btn small" data-unlinkpay="${t.id}">Нет, это другой доход</button></div>`,'ok',12000),400);
+  {const twin=t.type==='inc'&&t.category==='Зарплата'&&!t.srcKey&&state.tx.find(x=>x!==t&&x.type==='inc'&&x.srcKey&&Math.abs(daysBetween(x.date,t.date))<=5&&Math.abs(x.amount-t.amount)<=Math.max(500,x.amount*0.1));
+   if(twin&&lk)lk.ask=null;   // похоже на уже отмеченную зарплату — сначала предупреждаю о дубле, к другой выплате не предлагаю
+   if(twin)setTimeout(()=>showToast(`<b>Не задвоилось?</b> ${fmtDateShort(twin.date)} ты уже отметил зарплату «${esc(twin.note||'')}» — ${fmt(twin.amount)} ${twin.method==='cash'?'наличными':'на карту'}. Сейчас записал ещё ${fmt(t.amount)}. Если это та же зарплата — удали новую запись.<div class="row" style="margin-top:6px;"><button class="btn small" data-undotx="${t.id}">Удалить новую запись</button></div>`,'warn',15000),450);}
   if(lk&&lk.ask)setTimeout(()=>showToast(`Это зарплата «${esc(lk.ask.name)}» за ${fmtDateShort(lk.ask.date)} (по плану ${fmt(lk.ask.amount)})? Если да — эту выплату больше не буду ждать. Если нет (премия, подработка) — ничего не нажимай.<div class="row" style="margin-top:6px;"><button class="btn small primary" data-linkpay="${lk.ask.key}" data-tx="${t.id}">Да, это она</button></div>`,'warn',15000),400);
   if(oneRef){oneRef.done=true;oneRef.paidTx=t.id;}
   if(type==='exp'&&t.note){
@@ -3432,21 +3444,30 @@ function renderPayAsk(c){
       <div class="pa-t">${esc(p.name)}: зарплата пришла?</div>
       <div class="pa-s">По плану ${when} — <b>${fmt(p.amount)}</b> ${p.method==='cash'?'наличными':'на карту'}.${d<-PAY_STALE?' Больше недели без ответа — в прогнозе её пока не считаю.':d<0?' Пока не ответишь, считаю, что денег ещё нет, а придут завтра.':''}</div>
       ${fixedAfter(p)?`<div class="pa-warn">После ${fmtDateShort(p.date)} ты вручную поправлял ${p.method==='cash'?'наличные':'карту'} (${fixedAfter(p)}). Если зарплата уже была в той сумме — нажми «Уже учтена», иначе она посчитается дважды.</div>`:''}
-      <div class="pa-btns"><button type="button" class="btn primary" data-pa="yes">Пришла</button><button type="button" class="btn" data-pa="wait">Ещё нет</button></div>
+      <div class="pa-btns">${(p.method==='cash'?['cash','card']:['card','cash']).map((m,k)=>`<button type="button" class="btn${k?'':' primary'}" data-pa="yes" data-m="${m}">Пришла ${m==='cash'?'наличными':'на карту'}</button>`).join('')}<button type="button" class="btn" data-pa="wait">Ещё нет</button></div>
       <div class="pa-form">
+        <div class="field pa-where"><label>Куда пришла</label><div class="seg pa-seg"><button type="button" data-pm="card">На карту</button><button type="button" data-pm="cash">Наличными</button></div><input type="hidden" class="pa-m" value="${p.method==='cash'?'cash':'card'}"></div>
         <div class="field"><label>Когда пришла</label><input type="date" class="pa-date" value="${p.date}" max="${TODAY_ISO}"></div>
         <div class="field"><label>Сколько, ₽</label><input type="number" inputmode="decimal" class="pa-amt" value="${Math.round(p.amount)}"></div>
-        <div class="field"><label>Куда</label><select class="pa-m"><option value="card"${p.method==='card'?' selected':''}>на карту</option><option value="cash"${p.method==='cash'?' selected':''}>наличными</option></select></div>
         <button type="button" class="btn primary" data-pa="save">Записать</button>
       </div>
       <div class="pa-links"><button type="button" class="pa-no" data-pa="already">Уже учтена — я поправлял баланс</button><button type="button" class="pa-no" data-pa="skip">В этом месяце её не будет</button></div>
     </div>`;}).join('');
 }
 document.addEventListener('click',e=>{
+  const pm=e.target.closest('#payAsk [data-pm]');if(!pm)return;
+  const card=pm.closest('.pay-ask');card.querySelector('.pa-m').value=pm.dataset.pm;
+  card.querySelectorAll('[data-pm]').forEach(x=>x.classList.toggle('on',x===pm));
+});
+document.addEventListener('click',e=>{
   const b=e.target.closest('#payAsk [data-pa]');if(!b)return;
+  if(b.dataset.pa==='save'){if(b.dataset.busy)return;b.dataset.busy='1';setTimeout(()=>{delete b.dataset.busy;},1500);}
   const card=b.closest('.pay-ask'),key=card.dataset.key,act=b.dataset.pa;
   const p=awaitingPays().find(x=>x.key===key);if(!p){renderComputed(true);return;}
-  if(act==='yes'){card.classList.add('open');card.querySelector('.pa-amt').focus();return;}
+  if(act==='yes'){const m=b.dataset.m||p.method;card.querySelector('.pa-m').value=m;
+    card.querySelectorAll('[data-pm]').forEach(x=>x.classList.toggle('on',x.dataset.pm===m));
+    card.querySelectorAll('[data-pa=yes]').forEach(x=>x.classList.toggle('chosen',x===b));
+    card.classList.add('open');card.querySelector('.pa-amt').focus();return;}
   if(act==='wait'){
     if(!state.paySnooze)state.paySnooze={};state.paySnooze[key]=TODAY_ISO;save();renderComputed(true);
     showToast(`Хорошо, спрошу завтра. Пока считаю, что ${fmt(p.amount)} придут завтра — на кошелёк сегодня не добавляю.`);return;}
@@ -3463,11 +3484,14 @@ document.addEventListener('click',e=>{
     if(!(amt>0)){showToast('Впиши сумму больше нуля.','warn');return;}
     if(date>TODAY_ISO){showToast('Дата не может быть в будущем.','warn');return;}
     const before=compute();
-    const t=confirmPay(key,date,amt,card.querySelector('.pa-m').value==='cash'?'cash':'card');
-    if(!t){renderComputed(true);return;}
+    const m=card.querySelector('.pa-m').value==='cash'?'cash':'card';
+    const t=confirmPay(key,date,amt,m);
+    if(!t){renderComputed(true);showToast('Эта зарплата уже записана — второй раз не добавляю.','warn');return;}
     save();renderComputed(true);
     const diff=amt-p.amount;
-    showToast(`Записал: +${fmt(amt)} · ${esc(p.name)}, ${fmtDateShort(date)}${Math.abs(diff)>=1?` (${diff>0?'на '+fmt(diff)+' больше':'на '+fmt(-diff)+' меньше'} плана)`:''}`+balanceDiff(before,compute()));
+    showToast(`Записал: +${fmt(amt)} ${m==='cash'?'наличными':'на карту'} · ${esc(p.name)}, ${fmtDateShort(date)}${Math.abs(diff)>=1?` (${diff>0?'на '+fmt(diff)+' больше':'на '+fmt(-diff)+' меньше'} плана)`:''}`
+      +balanceDiff(before,compute())
+      +(m!==p.method?`<br>В этот раз ${m==='cash'?'наличными':'на карту'}. В плане по-прежнему «${p.method==='cash'?'наличными':'на карту'}» — если теперь всегда так, поменяй в «План → Доходы и расходы».`:''));
   }
 });
 
